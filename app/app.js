@@ -24,7 +24,6 @@ const ALIASES = {
   'data architectures': 'Data architecture',
 };
 
-const LEVELS = ['Beginner', 'Beginner-Intermediate', 'Intermediate', 'Intermediate-Advanced', 'Advanced'];
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 
 const collator = new Intl.Collator(undefined, { numeric: true, sensitivity: 'base' });
@@ -64,7 +63,6 @@ function toBooks(records) {
   const books = records.map((r, idx) => {
     const monthNum = MONTHS.indexOf((r['Publication month'] || '').toLowerCase()) + 1;
     const year = Number(r['Publication year']) || 0;
-    const level = r['Level'] || 'Unspecified';
     const book = {
       id: r['Deck ID'] || `book-${idx}`,
       title: r['Title'],
@@ -77,8 +75,6 @@ function toBooks(records) {
       platform: splitList(r['Platform / Vendor'], ';'),
       techKeys: [...new Set(splitList(r['Technologies'], ';').map(normTech.add))],
       type: r['Book type'],
-      level,
-      levelRank: LEVELS.indexOf(level) === -1 ? 99 : LEVELS.indexOf(level),
       year,
       month: r['Publication month'],
       date: year * 100 + monthNum,
@@ -95,7 +91,7 @@ function toBooks(records) {
     b.topics = b.topicKeys.map(normTopic.label);
     b.extras = [b.repo && 'Companion repo', b.chapters.length && 'Deck chapters'].filter(Boolean);
     b.searchText = fold([b.title, b.subtitle, ...b.authors, b.publisher, b.category, ...b.platform,
-      ...b.technologies, ...b.topics, b.type, b.level, b.summary, ...b.chapters, String(b.year), b.id].join(' \u0001 '));
+      ...b.technologies, ...b.topics, b.type, b.summary, ...b.chapters, String(b.year), b.id].join(' \u0001 '));
   }
   return books;
 }
@@ -145,12 +141,9 @@ const FACETS = [
   { key: 'platform', label: 'Platform / Vendor', get: (b) => b.platform, multi: true, open: true },
   { key: 'technologies', label: 'Technologies', get: (b) => b.technologies, multi: true, limit: 16, find: true, open: true },
   { key: 'topics', label: 'Topics', get: (b) => b.topics, multi: true, limit: 16, find: true, open: true },
-  { key: 'level', label: 'Level', get: (b) => [b.level], order: (a, b) => LEVELS.indexOf(a) - LEVELS.indexOf(b), open: true },
   { key: 'type', label: 'Book type', get: (b) => [b.type] },
   { key: 'publisher', label: 'Publisher', get: (b) => [b.publisher] },
   { key: 'year', label: 'Year', get: (b) => [String(b.year)], order: (a, b) => b - a },
-  { key: 'edition', label: 'Edition', get: (b) => [b.edition], order: collator.compare },
-  { key: 'authors', label: 'Authors', get: (b) => b.authors, multi: true, limit: 10, find: true },
   { key: 'extras', label: 'Includes', get: (b) => b.extras },
 ];
 const FACET = Object.fromEntries(FACETS.map((f) => [f.key, f]));
@@ -161,9 +154,7 @@ const SORTS = {
   publisher: (a, b) => collator.compare(a.publisher, b.publisher),
   category: (a, b) => collator.compare(a.category, b.category),
   platform: (a, b) => collator.compare(a.platform.join(', '), b.platform.join(', ')),
-  level: (a, b) => a.levelRank - b.levelRank,
   type: (a, b) => collator.compare(a.type, b.type),
-  edition: (a, b) => collator.compare(a.edition, b.edition),
   chapters: (a, b) => a.chapters.length - b.chapters.length,
 };
 
@@ -171,7 +162,6 @@ const GROUPS = {
   year: { get: (b) => [String(b.year)], order: (a, b) => b - a },
   category: { get: (b) => [b.category] },
   platform: { get: (b) => b.platform },
-  level: { get: (b) => [b.level], order: (a, b) => LEVELS.indexOf(a) - LEVELS.indexOf(b) },
   publisher: { get: (b) => [b.publisher] },
 };
 
@@ -445,8 +435,7 @@ function buildCard(b) {
     h('div', { class: 'card-content' },
       h('p', { class: 'meta' }, `${b.month ? b.month.slice(0, 3) + ' ' : ''}${b.year} · ${b.publisher}${b.edition && b.edition !== '1st' ? ` · ${b.edition} ed.` : ''}`),
       h('p', { class: 'authors', text: b.authors.join(', ') }),
-      h('ul', { class: 'badges', 'aria-label': 'Level and platform' },
-        h('li', { class: `badge level l${b.levelRank}`, text: b.level }),
+      h('ul', { class: 'badges', 'aria-label': 'Platform' },
         b.platform.map((p) => h('li', { class: 'badge', text: p }))),
       h('p', { class: 'summary', text: b.summary })),
   );
@@ -502,9 +491,7 @@ function buildRow(b) {
     h('td', { text: b.publisher }),
     h('td', {}, h('span', { class: 'cat-dot', 'aria-hidden': 'true' }), b.category),
     h('td', { text: b.platform.join(', ') }),
-    h('td', {}, h('span', { class: `badge level l${b.levelRank}`, text: b.level })),
     h('td', { text: b.type }),
-    h('td', { text: b.edition }),
     h('td', { class: 'num', text: b.chapters.length || '–' }),
     h('td', { class: 'tech' }, b.technologies.slice(0, 5).join(', '), b.technologies.length > 5 ? ` +${b.technologies.length - 5}` : ''),
     h('td', {}, b.repo ? h('a', { href: b.repo, target: '_blank', rel: 'noopener', text: 'GitHub', 'aria-label': `Companion repo for ${b.title}` }) : '–'),
@@ -781,7 +768,6 @@ function renderGraphPanel() {
         b.subtitle && h('p', { class: 'subtitle', text: b.subtitle }))),
     h('p', { class: 'authors', text: b.authors.join(', ') }),
     h('p', { class: 'meta' }, `${b.month} ${b.year} · ${b.publisher}${b.edition ? ` · ${b.edition} ed.` : ''} · ${b.type}`),
-    h('ul', { class: 'badges' }, h('li', { class: `badge level l${b.levelRank}`, text: b.level })),
     h('p', { class: 'summary', text: b.summary }),
     h('h3', { text: 'Platform' }), tagButtons('platform', b.platform),
     h('h3', { text: 'Technologies' }), tagButtons('technologies', b.technologies),
@@ -824,7 +810,6 @@ function renderDialog(b) {
         row('Published', `${b.month} ${b.year}`),
         row('Publisher', `${b.publisher}${b.edition ? `, ${b.edition} edition` : ''}`),
         row('Type', b.type),
-        row('Level', h('span', { class: `badge level l${b.levelRank}`, text: b.level })),
         row('Platform', tagButtons('platform', b.platform)),
         row('Companion repo', b.repo && h('a', { href: b.repo, target: '_blank', rel: 'noopener', text: b.repo.replace(/^https?:\/\/(www\.)?/, '') }))),
       h('h2', { text: 'Technologies' }), tagButtons('technologies', b.technologies),

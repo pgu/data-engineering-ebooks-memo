@@ -13,7 +13,7 @@ python3 -m http.server 8000
 
 Views:
 
-- **Shelf**: cover cards, sortable and groupable (year, category, platform, level, publisher).
+- **Shelf**: cover cards, sortable and groupable (year, category, platform, publisher).
 - **Table**: dense sortable table (click column headers).
 - **Graph**: force-directed network linking books through shared technologies, topics, platforms, categories or authors (D3 loaded from CDN on demand). Clicking a cover previews the book in a side panel (with related books) without leaving the graph. With Topics or Technologies, the default *Lifecycle zones* layout places each tag in a data engineering lifecycle stage (Generation → Ingestion / Transformation / Serving over Storage → Analytics · ML) or undercurrent (Security, Data management, DataOps, Data architecture, Orchestration, Software engineering); books sit in the band between. Tag → zone classification lives in [`app/lifecycle.js`](app/lifecycle.js) (`OVERRIDES` + regex `RULES`).
 

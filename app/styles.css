@@ -186,12 +186,6 @@ body[data-view="graph"]:not(.show-filters) .layout { grid-template-columns: minm
   display: inline-block; font-size: .72rem; padding: 1px 8px; border-radius: 6px;
   background: var(--surface-2); color: var(--muted); white-space: nowrap;
 }
-.badge.level { font-weight: 600; }
-.badge.l0 { background: light-dark(#dff3e4, #1d3a26); color: light-dark(#1c6b33, #8fdaa5); }
-.badge.l1 { background: light-dark(#e5f2dc, #26391c); color: light-dark(#3f6b1c, #b2d993); }
-.badge.l2 { background: light-dark(#fdf0d5, #3d3219); color: light-dark(#8a5a00, #f0c870); }
-.badge.l3 { background: light-dark(#fde3d4, #432617); color: light-dark(#a4440d, #f5a878); }
-.badge.l4 { background: light-dark(#fbdada, #451c1f); color: light-dark(#a8232b, #f58e94); }
 
 /* Table ------------------------------------------------------------------- */
 .table-wrapper {
