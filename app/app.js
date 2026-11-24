@@ -923,6 +923,13 @@ function wireEvents() {
   });
   $('#shelf-group').addEventListener('change', (e) => { state.group = e.target.value; update({ animate: true }); });
   $('#graph-dim').addEventListener('change', (e) => { state.graphDim = e.target.value; update(); });
+  $('#toggle-filters').addEventListener('click', (e) => {
+    const show = !document.body.classList.contains('show-filters');
+    document.body.classList.toggle('show-filters', show);
+    e.currentTarget.setAttribute('aria-expanded', String(show));
+    if (show) $('#filters-details').open = true;
+    if (state.view === 'graph' && !isZoned()) { graph.key = null; renderGraph(); } // free layout sizes to the container
+  });
   $('#graph-layout').addEventListener('change', (e) => { state.graphLayout = e.target.value; update(); });
   $('#graph-min').addEventListener('change', (e) => { state.graphMin = Math.max(1, Math.min(6, Number(e.target.value) || 1)); update(); });
 

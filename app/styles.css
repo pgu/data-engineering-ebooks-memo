@@ -68,6 +68,17 @@ code { font-size: .9em; background: var(--surface-2); padding: .1em .35em; borde
   .app-header { padding: 10px 16px; }
 }
 
+/* Graph view: filters column hidden by default to give the graph the space */
+.toggle-filters { display: none; }
+body[data-view="graph"] .toggle-filters {
+  display: inline-flex; align-items: center; gap: 6px; min-block-size: 32px; padding: 4px 12px;
+  border: 1px solid var(--border); border-radius: 8px; background: var(--surface); cursor: pointer;
+}
+body[data-view="graph"] .toggle-filters::before { content: "☰"; font-size: .9em; }
+body[data-view="graph"] .toggle-filters[aria-expanded="true"] { background: var(--accent-soft); border-color: var(--accent); color: var(--accent); }
+body[data-view="graph"]:not(.show-filters) .filters { display: none; }
+body[data-view="graph"]:not(.show-filters) .layout { grid-template-columns: minmax(0, 1fr); }
+
 /* Filters ----------------------------------------------------------------- */
 .filters > details {
   position: sticky; top: 84px;

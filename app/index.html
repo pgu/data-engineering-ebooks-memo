@@ -28,7 +28,7 @@
   </header>
 
   <div class="layout">
-    <aside class="filters" aria-labelledby="filters-title">
+    <aside id="filters" class="filters" aria-labelledby="filters-title">
       <details id="filters-details" open>
         <summary>
           <h2 id="filters-title">Filters</h2>
@@ -40,6 +40,7 @@
 
     <main id="main">
       <div class="toolbar">
+        <button type="button" id="toggle-filters" class="toggle-filters" aria-controls="filters" aria-expanded="false">Filters</button>
         <p id="result-count" class="result-count"></p>
         <div id="active-filters" class="active-filters" aria-label="Active filters"></div>
 
