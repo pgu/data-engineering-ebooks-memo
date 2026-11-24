@@ -1,0 +1,136 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Data Engineering Library</title>
+  <meta name="description" content="Explore, filter and sort a catalogue of data engineering ebooks.">
+  <link rel="stylesheet" href="styles.css">
+  <script type="module" src="app.js"></script>
+</head>
+<body>
+  <header class="app-header">
+    <div class="brand">
+      <h1>Data Engineering Library</h1>
+      <p id="stats" class="stats" aria-live="off"></p>
+    </div>
+
+    <search class="search">
+      <label for="q" class="visually-hidden">Search books</label>
+      <input id="q" type="search" placeholder="Search titles, authors, topics, chapters…" autocomplete="off" spellcheck="false">
+    </search>
+
+    <nav class="views" aria-label="View">
+      <button type="button" data-view="shelf" aria-pressed="true">Shelf</button>
+      <button type="button" data-view="table" aria-pressed="false">Table</button>
+      <button type="button" data-view="graph" aria-pressed="false">Graph</button>
+    </nav>
+  </header>
+
+  <div class="layout">
+    <aside class="filters" aria-labelledby="filters-title">
+      <details id="filters-details" open>
+        <summary>
+          <h2 id="filters-title">Filters</h2>
+          <span id="filter-count" class="pill" hidden></span>
+        </summary>
+        <div id="facets" class="facets"></div>
+      </details>
+    </aside>
+
+    <main id="main">
+      <div class="toolbar">
+        <p id="result-count" class="result-count"></p>
+        <div id="active-filters" class="active-filters" aria-label="Active filters"></div>
+
+        <div class="view-controls" data-for="shelf">
+          <label>Sort
+            <select id="shelf-sort">
+              <option value="date:descending">Newest first</option>
+              <option value="date:ascending">Oldest first</option>
+              <option value="title:ascending">Title A–Z</option>
+              <option value="level:ascending">Level: beginner → advanced</option>
+              <option value="level:descending">Level: advanced → beginner</option>
+              <option value="publisher:ascending">Publisher</option>
+            </select>
+          </label>
+          <label>Group
+            <select id="shelf-group">
+              <option value="">None</option>
+              <option value="year">Year</option>
+              <option value="category">Category</option>
+              <option value="platform">Platform / Vendor</option>
+              <option value="level">Level</option>
+              <option value="publisher">Publisher</option>
+            </select>
+          </label>
+        </div>
+
+        <div class="view-controls" data-for="graph" hidden>
+          <label>Link books by
+            <select id="graph-dim">
+              <option value="technologies">Technologies</option>
+              <option value="topics">Topics</option>
+              <option value="platform">Platform / Vendor</option>
+              <option value="category">Category</option>
+              <option value="authors">Authors</option>
+            </select>
+          </label>
+          <label>Shared by ≥
+            <input id="graph-min" type="number" min="1" max="6" value="2" inputmode="numeric">
+            books
+          </label>
+        </div>
+      </div>
+
+      <section id="view-shelf" class="view" aria-label="Shelf view">
+        <div id="shelf" class="shelf"></div>
+      </section>
+
+      <section id="view-table" class="view" aria-label="Table view" hidden>
+        <div class="table-wrapper" role="region" aria-labelledby="table-caption" tabindex="0">
+          <table id="book-table">
+            <caption id="table-caption" class="visually-hidden">Data engineering ebooks</caption>
+            <thead>
+              <tr>
+                <th scope="col"><span class="visually-hidden">Cover</span></th>
+                <th scope="col" data-key="title"><button type="button" commandfor="book-table" command="--sort">Title<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="date"><button type="button" commandfor="book-table" command="--sort">Published<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="publisher"><button type="button" commandfor="book-table" command="--sort">Publisher<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="category"><button type="button" commandfor="book-table" command="--sort">Category<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="platform"><button type="button" commandfor="book-table" command="--sort">Platform<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="level"><button type="button" commandfor="book-table" command="--sort">Level<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="type"><button type="button" commandfor="book-table" command="--sort">Type<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="edition"><button type="button" commandfor="book-table" command="--sort">Ed.<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col" data-key="chapters"><button type="button" commandfor="book-table" command="--sort">Deck ch.<svg aria-hidden="true" viewBox="0 0 16 16" class="sort-icon"><path d="M4 6l4-4 4 4M4 10l4 4 4-4"/></svg></button></th>
+                <th scope="col">Technologies</th>
+                <th scope="col">Repo</th>
+              </tr>
+            </thead>
+            <tbody></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section id="view-graph" class="view" aria-label="Graph view" hidden>
+        <p class="graph-hint">Drag to pan, scroll to zoom. Click a tag node to filter by it; click a cover to open the book.</p>
+        <div id="graph" class="graph"></div>
+      </section>
+
+      <p id="empty" class="empty" hidden>No book matches these filters. <button type="button" data-action="clear">Clear all filters</button></p>
+    </main>
+  </div>
+
+  <dialog id="book-dialog" closedby="any" aria-labelledby="dlg-title">
+    <div id="dlg-body"></div>
+    <footer class="dlg-nav">
+      <button type="button" data-step="-1" aria-label="Previous book">← Prev</button>
+      <span id="dlg-pos"></span>
+      <button type="button" data-step="1" aria-label="Next book">Next →</button>
+      <button type="button" command="close" commandfor="book-dialog" class="dlg-close" autofocus>Close</button>
+    </footer>
+  </dialog>
+
+  <p id="status" role="status" class="visually-hidden"></p>
+</body>
+</html>
