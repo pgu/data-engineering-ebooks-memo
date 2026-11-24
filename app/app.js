@@ -190,6 +190,7 @@ const state = {
   graphLayout: 'lifecycle', // 'lifecycle' | 'free'
   book: null, // book open in the modal
   sel: null, // book previewed in the graph side panel
+  selTag: null, // tag node last clicked in the graph (panel lists its books)
 };
 
 function writeHash() {
@@ -205,6 +206,7 @@ function writeHash() {
     if (state.graphLayout !== 'lifecycle') p.set('layout', state.graphLayout);
   }
   if (state.view === 'graph' && state.sel) p.set('sel', state.sel);
+  if (state.view === 'graph' && activeTag()) p.set('tag', activeTag());
   if (state.book) p.set('book', state.book);
   const s = p.toString();
   history.replaceState(null, '', s ? `#${s}` : location.pathname + location.search);
@@ -228,6 +230,7 @@ function readHash() {
   state.graphLayout = p.get('layout') === 'free' ? 'free' : 'lifecycle';
   state.book = p.get('book');
   state.sel = BY_ID.has(p.get('sel')) ? p.get('sel') : null;
+  state.selTag = p.get('tag');
 }
 
 // ---------------------------------------------------------------------------
@@ -263,6 +266,13 @@ function visibleBooks() {
   const f = dir === 'ascending' ? 1 : -1;
   return BOOKS.filter((b) => matches(b)).sort((a, b) =>
     f * SORTS[key](a, b) || SORTS.date(b, a) || SORTS.title(a, b));
+}
+
+// Graph tag click: single selection within the facet. Clicking the only selected value clears it.
+function selectOnlyFilter(key, value) {
+  const set = state.filters.get(key);
+  if (set?.size === 1 && set.has(value)) state.filters.delete(key);
+  else state.filters.set(key, new Set([value]));
 }
 
 function toggleFilter(key, value, force) {
@@ -622,7 +632,12 @@ function buildGraph() {
 
   const activate = (d) => {
     if (d.kind === 'book') selectGraphBook(d.book.id);
-    else { toggleFilter(state.graphDim, d.value); update(); }
+    else { // tag click: single-select filter, reset book preview, list the tag's books in the panel
+      state.sel = null;
+      selectOnlyFilter(state.graphDim, d.value);
+      state.selTag = state.filters.get(state.graphDim)?.has(d.value) ? d.value : null;
+      update();
+    }
   };
   node.on('click', (e, d) => { if (!e.defaultPrevented) activate(d); })
     .on('keydown', (e, d) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(d); } })
@@ -692,6 +707,25 @@ function styleGraph() {
   graph.links.classed('current', (l) => l.source.book?.id === state.sel);
 }
 
+// Side panel, tag mode: the selected tag as title + compact list of its (filtered) books.
+function renderTagPanel(panel, tag) {
+  const facet = FACET[state.graphDim];
+  const zone = isZoned() ? ZONE[zoneOf(tag)] : null;
+  const list = visibleBooks();
+  panel.replaceChildren(h('article', { class: 'gp gp-tag', style: zone ? `--zc:${zone.color}` : '' },
+    h('p', { class: 'eyebrow', text: zone ? `${facet.label} · ${zone.group}: ${zone.label}` : facet.label }),
+    h('h2', { id: 'gp-title', text: tag }),
+    h('p', { class: 'meta', text: `${list.length} book${list.length === 1 ? '' : 's'}${state.filters.size > 1 || state.q ? ' (with other active filters)' : ''}` }),
+    h('ul', { class: 'gp-books' }, list.map((o) => h('li', {},
+      h('button', { type: 'button', 'data-select': o.id, style: `--hue:${hueOf(o)}` },
+        coverEl(o, 'gp-thumb'),
+        h('span', {}, h('span', { class: 'gp-book-title', text: o.title }),
+          h('span', { class: 'gp-book-meta', text: `${o.year} · ${o.publisher}` })))))),
+    h('footer', { class: 'gp-actions' },
+      h('button', { type: 'button', 'data-clear-tag': '1', text: 'Clear selection' })),
+  ));
+}
+
 // Side panel: non-blocking book preview while browsing the graph.
 function selectGraphBook(id) {
   state.sel = state.sel === id ? null : id;
@@ -701,28 +735,35 @@ function selectGraphBook(id) {
   if (state.sel) announce(`Previewing ${BY_ID.get(id).title}`);
 }
 
-// Re-render only when the previewed book or link dimension changes; otherwise
+// The clicked tag only counts while its filter is still active (sidebar removal resets it).
+function activeTag() {
+  return state.selTag && state.filters.get(state.graphDim)?.has(state.selTag) ? state.selTag : null;
+}
+
+// Re-render only when what the panel shows changes; otherwise
 // just refresh chip states in place so keyboard focus stays on the chip.
 let panelKey = null;
 const panelOpen = {};
+const currentPanelKey = () => `${state.sel}:${state.graphDim}:${activeTag()}:${activeTag() && !state.sel ? visibleBooks().map((b) => b.id).join() : ''}`;
 function syncGraphPanel() {
-  const key = `${state.sel}:${state.graphDim}`;
-  if (key !== panelKey) { renderGraphPanel(); return; }
+  if (currentPanelKey() !== panelKey) { renderGraphPanel(); return; }
   for (const chip of $$('#graph-panel button.chip[data-facet]')) {
     chip.setAttribute('aria-pressed', String(!!state.filters.get(chip.dataset.facet)?.has(chip.dataset.value)));
   }
 }
 
 function renderGraphPanel() {
-  panelKey = `${state.sel}:${state.graphDim}`;
+  panelKey = currentPanelKey();
   const panel = $('#graph-panel');
   // Remember which collapsible sections were open so browsing related books keeps them open.
   for (const d of $$('details[data-sec]', panel)) panelOpen[d.dataset.sec] = d.open;
   const b = state.sel && BY_ID.get(state.sel);
+  const tag = activeTag();
+  if (!b && tag) { renderTagPanel(panel, tag); return; }
   if (!b) {
     panel.replaceChildren(h('div', { class: 'gp-empty' },
-      h('p', { text: 'Click a cover in the graph to preview the book here.' }),
-      h('p', { class: 'muted', text: 'Click again (or Close) to deselect. Tag chips below a preview toggle filters without leaving the graph.' })));
+      h('p', { text: 'Click a cover to preview the book, or a tag node to list its books.' }),
+      h('p', { class: 'muted', text: 'Click the same node again to deselect.' })));
     return;
   }
   const facet = FACET[state.graphDim];
@@ -731,6 +772,7 @@ function renderGraphPanel() {
     .map((o) => ({ o, n: facet.get(o).filter((v) => shared.has(v)).length }))
     .sort((x, y) => y.n - x.n || SORTS.date(y.o, x.o)).slice(0, 6);
   panel.replaceChildren(h('article', { class: 'gp', style: `--hue:${hueOf(b)}` },
+    tag && h('button', { type: 'button', class: 'gp-back', 'data-back': '1' }, `← ${tag}`),
     h('header', { class: 'gp-head' },
       coverEl(b, 'gp-cover'),
       h('div', {},
@@ -911,7 +953,14 @@ function wireEvents() {
     const chip = e.target.closest('button.chip[data-facet]');
     if (chip) { toggleFilter(chip.dataset.facet, chip.dataset.value); update(); return; }
     const sel = e.target.closest('[data-select]');
-    if (sel) selectGraphBook(sel.dataset.select);
+    if (sel) { selectGraphBook(sel.dataset.select); return; }
+    if (e.target.closest('[data-back]')) { state.sel = null; styleGraph(); renderGraphPanel(); writeHash(); return; }
+    if (e.target.closest('[data-clear-tag]')) {
+      state.filters.get(state.graphDim)?.delete(activeTag());
+      if (!state.filters.get(state.graphDim)?.size) state.filters.delete(state.graphDim);
+      state.selTag = null; state.sel = null;
+      update();
+    }
   });
 
   const dlg = $('#book-dialog');

@@ -305,6 +305,24 @@ label[hidden] { display: none; }
 }
 .gp-related button:hover { background: var(--surface-2); }
 .gp-related button:focus-visible { outline: 2px solid var(--accent); }
+.gp-back {
+  all: unset; cursor: pointer; display: inline-block; margin-bottom: 10px; padding: 2px 8px; border-radius: 6px;
+  font-size: .8rem; color: var(--accent); background: var(--accent-soft);
+}
+.gp-back:focus-visible { outline: 2px solid var(--accent); }
+.gp-tag .eyebrow { color: color-mix(in oklab, var(--zc, var(--accent)) 80%, var(--text)); }
+.gp-tag h2 { font-size: 1.25rem; }
+.gp-books { list-style: none; margin: 12px 0 0; padding: 0; display: grid; gap: 4px; }
+.gp-books button {
+  all: unset; box-sizing: border-box; display: grid; grid-template-columns: 36px 1fr; gap: 10px; align-items: center;
+  inline-size: 100%; padding: 6px; border-radius: 8px; cursor: pointer;
+}
+.gp-books button:hover { background: var(--surface-2); }
+.gp-books button:focus-visible { outline: 2px solid var(--accent); }
+.gp-thumb { inline-size: 36px; block-size: auto; aspect-ratio: 3 / 4; object-fit: cover; object-position: top; border-radius: 3px; box-shadow: var(--shadow); border-left: 3px solid oklch(0.62 0.13 var(--hue)); }
+.gp-thumb.cover-ph { font-size: .6rem; }
+.gp-book-title { display: block; font-weight: 600; line-height: 1.25; }
+.gp-book-meta { display: block; font-size: .76rem; color: var(--muted); }
 .gp-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border); }
 .gp-actions button { min-block-size: 32px; padding: 4px 12px; border: 1px solid var(--border); border-radius: 8px; background: var(--surface); cursor: pointer; }
 .gp-actions button.primary { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
