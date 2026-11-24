@@ -72,8 +72,12 @@
               <option value="technologies">Technologies</option>
               <option value="topics">Topics</option>
               <option value="platform">Platform / Vendor</option>
-              <option value="category">Category</option>
-              <option value="authors">Authors</option>
+            </select>
+          </label>
+          <label id="graph-layout-ctl">Layout
+            <select id="graph-layout">
+              <option value="lifecycle">Lifecycle zones</option>
+              <option value="free">Free</option>
             </select>
           </label>
           <label>Shared by ≥
@@ -113,7 +117,7 @@
       </section>
 
       <section id="view-graph" class="view" aria-label="Graph view" hidden>
-        <p class="graph-hint">Drag to pan, scroll to zoom. Click a tag node to filter by it; click a cover to preview the book in the side panel.</p>
+        <p class="graph-hint">Drag to pan, scroll to zoom. Click a tag node to filter by it; click a cover to preview the book in the side panel. With Topics or Technologies, tags are arranged by data engineering lifecycle stage (top) and undercurrent (bottom).</p>
         <div class="graph-layout">
           <div id="graph" class="graph"></div>
           <aside id="graph-panel" class="graph-panel" aria-label="Book preview"></aside>

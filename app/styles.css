@@ -249,6 +249,27 @@ td.tech { color: var(--muted); max-inline-size: 260px; }
 .graph-svg .book.current .ring { stroke: var(--accent); stroke-width: 6; }
 .graph-svg .book.current { opacity: 1; }
 
+/* Lifecycle zones (graph background) ------------------------------------- */
+.zones .zone rect {
+  fill: color-mix(in oklab, var(--zc) 13%, var(--surface));
+  stroke: color-mix(in oklab, var(--zc) 55%, var(--surface)); stroke-width: 1.5;
+}
+.zones .zone text { font-size: 15px; font-weight: 700; fill: color-mix(in oklab, var(--zc) 75%, var(--text)); }
+.zones .zone .zone-count { font-weight: 400; fill: var(--muted); font-size: 12px; }
+.zones .zone.empty rect { fill: transparent; stroke-dasharray: 5 5; }
+.zones .zone.empty text { opacity: .55; }
+.zones .zone-title { font-size: 17px; font-weight: 700; fill: var(--muted); letter-spacing: .02em; }
+.zones .zone-rule { stroke: var(--border); stroke-width: 2; }
+.zones .zone-flow { stroke: var(--muted); stroke-width: 2.5; }
+.zones marker path { fill: var(--muted); }
+.graph-svg.zoned .tag circle {
+  fill: color-mix(in oklab, var(--zc) 30%, var(--surface)); stroke: var(--zc);
+}
+.graph-svg.zoned .tag.selected circle { fill: var(--zc); }
+.graph-svg.zoned .tag text { font-size: 10.5px; }
+.graph-svg.zoned .links line { stroke-opacity: .55; }
+label[hidden] { display: none; }
+
 /* Graph side panel -------------------------------------------------------- */
 .graph-layout {
   display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 16px; align-items: start;

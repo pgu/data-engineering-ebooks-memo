@@ -1,7 +1,11 @@
 // Data Engineering Library — vanilla JS, no build step.
 // Serve the repository root over HTTP (e.g. `python3 -m http.server`) and open /app/.
 
+import { ZONES, ZONE, BOOK_BAND, zoneOf, zoneCenter } from './lifecycle.js';
+
 const CSV_URL = '../seed/data-engineering-ebooks.csv';
+const GRAPH_DIMS = ['technologies', 'topics', 'platform'];
+const ZONED_DIMS = ['technologies', 'topics']; // dims that support the lifecycle layout
 const COVERS_DIR = '../ebook-covers/';
 const D3_URL = 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
 
@@ -183,6 +187,7 @@ const state = {
   group: '',
   graphDim: 'technologies',
   graphMin: 2,
+  graphLayout: 'lifecycle', // 'lifecycle' | 'free'
   book: null, // book open in the modal
   sel: null, // book previewed in the graph side panel
 };
@@ -195,7 +200,10 @@ function writeHash() {
   for (const [k, m] of state.modes) if (m === 'all') p.set(`m.${k}`, 'all');
   if (state.sort.key !== 'date' || state.sort.dir !== 'descending') p.set('sort', `${state.sort.key}:${state.sort.dir}`);
   if (state.group) p.set('group', state.group);
-  if (state.view === 'graph') { p.set('dim', state.graphDim); p.set('min', state.graphMin); }
+  if (state.view === 'graph') {
+    p.set('dim', state.graphDim); p.set('min', state.graphMin);
+    if (state.graphLayout !== 'lifecycle') p.set('layout', state.graphLayout);
+  }
   if (state.view === 'graph' && state.sel) p.set('sel', state.sel);
   if (state.book) p.set('book', state.book);
   const s = p.toString();
@@ -215,8 +223,9 @@ function readHash() {
   const [sk, sd] = (p.get('sort') || 'date:descending').split(':');
   state.sort = { key: SORTS[sk] ? sk : 'date', dir: sd === 'ascending' ? 'ascending' : 'descending' };
   state.group = GROUPS[p.get('group')] ? p.get('group') : '';
-  state.graphDim = p.get('dim') && FACET[p.get('dim')] ? p.get('dim') : 'technologies';
+  state.graphDim = GRAPH_DIMS.includes(p.get('dim')) ? p.get('dim') : 'technologies';
   state.graphMin = Math.max(1, Number(p.get('min')) || 2);
+  state.graphLayout = p.get('layout') === 'free' ? 'free' : 'lifecycle';
   state.book = p.get('book');
   state.sel = BY_ID.has(p.get('sel')) ? p.get('sel') : null;
 }
@@ -526,36 +535,71 @@ async function renderGraph() {
       return;
     }
   }
-  const key = `${state.graphDim}:${state.graphMin}`;
-  if (graph.key !== key) buildGraph();
+  if (graph.key !== graphKey()) buildGraph();
   styleGraph();
+}
+
+const isZoned = () => state.graphLayout === 'lifecycle' && ZONED_DIMS.includes(state.graphDim);
+const graphKey = () => `${state.graphDim}:${state.graphMin}:${isZoned()}`;
+
+// Background boxes laid out like the lifecycle / undercurrents figure.
+function drawZones(g, tags) {
+  const perZone = new Map();
+  for (const t of tags) perZone.set(t.zone, (perZone.get(t.zone) ?? 0) + 1);
+  const layer = g.append('g').attr('class', 'zones').attr('aria-hidden', 'true');
+  layer.append('text').attr('class', 'zone-title').attr('x', -185).attr('y', -515).attr('text-anchor', 'middle')
+    .text('Data engineering lifecycle');
+  layer.append('text').attr('class', 'zone-title').attr('x', 0).attr('y', 215).attr('text-anchor', 'middle').text('Undercurrents');
+  layer.append('line').attr('class', 'zone-rule').attr('x1', -700).attr('x2', 700).attr('y1', 196).attr('y2', 196);
+  // Flow arrows: generation → core → consumption
+  layer.append('defs').append('marker').attr('id', 'zone-arrow').attr('viewBox', '0 0 10 10').attr('refX', 9).attr('refY', 5)
+    .attr('markerWidth', 7).attr('markerHeight', 7).attr('orient', 'auto').append('path').attr('d', 'M0,0L10,5L0,10z');
+  for (const [x1, x2, y] of [[-508, -484, -290], [412, 436, -315]]) {
+    layer.append('line').attr('class', 'zone-flow').attr('x1', x1).attr('x2', x2).attr('y1', y).attr('y2', y).attr('marker-end', 'url(#zone-arrow)');
+  }
+  const z = layer.selectAll('g.zone').data(ZONES.filter((zz) => zz.id !== 'other' || perZone.get('other'))).join('g')
+    .attr('class', (d) => `zone ${perZone.get(d.id) ? '' : 'empty'}`).style('--zc', (d) => d.color);
+  z.append('rect').attr('x', (d) => d.rect[0]).attr('y', (d) => d.rect[1]).attr('width', (d) => d.rect[2]).attr('height', (d) => d.rect[3]).attr('rx', 14)
+    .append('title').text((d) => (d.desc ? `${d.label}: ${d.desc}` : d.label));
+  z.append('text').attr('x', (d) => d.rect[0] + 12).attr('y', (d) => d.rect[1] + 22)
+    .text((d) => d.label).append('tspan').attr('class', 'zone-count').text((d) => (perZone.get(d.id) ? `  ${perZone.get(d.id)}` : ''));
 }
 
 function buildGraph() {
   const host = $('#graph');
   graph.sim?.stop();
   const facet = FACET[state.graphDim];
+  const zoned = isZoned();
   const counts = new Map();
   for (const b of BOOKS) for (const v of new Set(facet.get(b))) counts.set(v, (counts.get(v) ?? 0) + 1);
   const tags = [...counts].filter(([, n]) => n >= state.graphMin);
   const nodes = [
     ...BOOKS.map((b) => ({ id: `b:${b.id}`, kind: 'book', book: b })),
-    ...tags.map(([v, n]) => ({ id: `t:${v}`, kind: 'tag', value: v, degree: n })),
+    ...tags.map(([v, n]) => ({ id: `t:${v}`, kind: 'tag', value: v, degree: n, zone: zoned ? zoneOf(v) : null })),
   ];
+  if (zoned) { // seed positions near the target zone / book band so the layout settles quickly
+    const rnd = d3.randomLcg(42);
+    for (const n of nodes) {
+      if (n.kind === 'tag') { const [cx, cy] = zoneCenter(ZONE[n.zone]); n.x = cx + (rnd() - 0.5) * 60; n.y = cy + (rnd() - 0.5) * 40; }
+      else { n.x = BOOK_BAND.x[0] + rnd() * (BOOK_BAND.x[1] - BOOK_BAND.x[0]); n.y = BOOK_BAND.y[0] + rnd() * (BOOK_BAND.y[1] - BOOK_BAND.y[0]); }
+    }
+  }
   const tagSet = new Set(tags.map(([v]) => v));
   const links = BOOKS.flatMap((b) => [...new Set(facet.get(b))].filter((v) => tagSet.has(v)).map((v) => ({ source: `b:${b.id}`, target: `t:${v}` })));
 
   const width = host.clientWidth || 900;
   const height = Math.max(520, Math.min(900, innerHeight * 0.72));
   const R = 24;
-  const svg = d3.create('svg').attr('viewBox', [-width / 2, -height / 2, width, height]).attr('class', 'graph-svg')
-    .attr('role', 'group').attr('aria-label', `Books linked by ${facet.label.toLowerCase()}`);
+  const viewBox = zoned ? [-720, -545, 1440, 1065] : [-width / 2, -height / 2, width, height];
+  const svg = d3.create('svg').attr('viewBox', viewBox).attr('class', `graph-svg${zoned ? ' zoned' : ''}`)
+    .attr('role', 'group').attr('aria-label', `Books linked by ${facet.label.toLowerCase()}${zoned ? ', arranged by data engineering lifecycle stage and undercurrent' : ''}`);
   svg.append('defs').append('clipPath').attr('id', 'clip-circle').attr('clipPathUnits', 'objectBoundingBox')
     .append('circle').attr('cx', 0.5).attr('cy', 0.5).attr('r', 0.5);
   const g = svg.append('g');
   svg.call(d3.zoom().scaleExtent([0.3, 4]).on('zoom', (e) => g.attr('transform', e.transform)));
+  if (zoned) drawZones(g, nodes.filter((n) => n.kind === 'tag'));
 
-  const link = g.append('g').attr('class', 'links').selectAll('line').data(links).join('line');
+  const link =g.append('g').attr('class', 'links').selectAll('line').data(links).join('line');
   const node = g.append('g').attr('class', 'nodes').selectAll('g').data(nodes, (d) => d.id).join('g')
     .attr('class', (d) => `node ${d.kind}`).attr('tabindex', 0).attr('role', 'button')
     .attr('aria-label', (d) => d.kind === 'book' ? `${d.book.title}, open details` : `${facet.label}: ${d.value}, ${d.degree} books, toggle filter`);
@@ -573,7 +617,8 @@ function buildGraph() {
   const tagNodes = node.filter((d) => d.kind === 'tag');
   tagNodes.append('circle').attr('r', (d) => 5 + 3.2 * Math.sqrt(d.degree));
   tagNodes.append('text').attr('dy', (d) => -(9 + 3.2 * Math.sqrt(d.degree))).attr('text-anchor', 'middle').text((d) => d.value);
-  tagNodes.append('title').text((d) => `${d.value}: ${d.degree} books`);
+  tagNodes.append('title').text((d) => `${d.value}: ${d.degree} books${d.zone ? ` · ${ZONE[d.zone].group}: ${ZONE[d.zone].label}` : ''}`);
+  if (zoned) tagNodes.style('--zc', (d) => ZONE[d.zone].color);
 
   const activate = (d) => {
     if (d.kind === 'book') selectGraphBook(d.book.id);
@@ -593,12 +638,33 @@ function buildGraph() {
     link.classed('hl', (l) => l.source.id === d.id || l.target.id === d.id);
   }
 
-  const sim = d3.forceSimulation(nodes)
-    .force('link', d3.forceLink(links).id((d) => d.id).distance(80).strength(0.5))
-    .force('charge', d3.forceManyBody().strength((d) => (d.kind === 'book' ? -320 : -160)))
-    .force('collide', d3.forceCollide((d) => (d.kind === 'book' ? R + 8 : 14 + 3 * Math.sqrt(d.degree))))
-    .force('x', d3.forceX().strength(0.06)).force('y', d3.forceY().strength(0.08))
-    .on('tick', () => {
+  const sim = d3.forceSimulation(nodes);
+  if (zoned) {
+    // Tags are held inside their zone; books are kept in the band between lifecycle and undercurrents.
+    const clamp = (v, lo, hi) => Math.max(lo, Math.min(hi, v));
+    const keepInZones = () => {
+      for (const n of nodes) {
+        if (n.kind === 'tag') {
+          const [x, y, w, hh] = ZONE[n.zone].rect;
+          n.x = clamp(n.x, x + 16, x + w - 16); n.y = clamp(n.y, y + 44, y + hh - 12);
+        } else {
+          n.x = clamp(n.x, BOOK_BAND.x[0] + R, BOOK_BAND.x[1] - R); n.y = clamp(n.y, BOOK_BAND.y[0] + R, BOOK_BAND.y[1] - R);
+        }
+      }
+    };
+    sim.force('link', d3.forceLink(links).id((d) => d.id).distance(120).strength(0.08))
+      .force('charge', d3.forceManyBody().strength((d) => (d.kind === 'book' ? -220 : -40)))
+      .force('collide', d3.forceCollide((d) => (d.kind === 'book' ? R + 6 : 18 + 2 * Math.sqrt(d.degree))))
+      .force('x', d3.forceX((d) => (d.kind === 'tag' ? zoneCenter(ZONE[d.zone])[0] : 0)).strength((d) => (d.kind === 'tag' ? 0.25 : 0.01)))
+      .force('y', d3.forceY((d) => (d.kind === 'tag' ? zoneCenter(ZONE[d.zone])[1] : (BOOK_BAND.y[0] + BOOK_BAND.y[1]) / 2)).strength((d) => (d.kind === 'tag' ? 0.25 : 0.05)))
+      .force('zones', keepInZones);
+  } else {
+    sim.force('link', d3.forceLink(links).id((d) => d.id).distance(80).strength(0.5))
+      .force('charge', d3.forceManyBody().strength((d) => (d.kind === 'book' ? -320 : -160)))
+      .force('collide', d3.forceCollide((d) => (d.kind === 'book' ? R + 8 : 14 + 3 * Math.sqrt(d.degree))))
+      .force('x', d3.forceX().strength(0.06)).force('y', d3.forceY().strength(0.08));
+  }
+  sim.on('tick', () => {
       link.attr('x1', (d) => d.source.x).attr('y1', (d) => d.source.y).attr('x2', (d) => d.target.x).attr('y2', (d) => d.target.y);
       node.attr('transform', (d) => `translate(${d.x},${d.y})`);
     });
@@ -610,7 +676,7 @@ function buildGraph() {
     .on('end', (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
 
   host.replaceChildren(svg.node());
-  Object.assign(graph, { key: `${state.graphDim}:${state.graphMin}`, svg, nodes: node, links: link, sim });
+  Object.assign(graph, { key: graphKey(), svg, nodes: node, links: link, sim });
 }
 
 function styleGraph() {
@@ -784,6 +850,8 @@ function update({ animate = false } = {}) {
   $('#shelf-group').value = state.group;
   $('#graph-dim').value = state.graphDim;
   $('#graph-min').value = state.graphMin;
+  $('#graph-layout').value = state.graphLayout;
+  $('#graph-layout-ctl').hidden = !ZONED_DIMS.includes(state.graphDim);
   writeHash();
 }
 
@@ -813,6 +881,7 @@ function wireEvents() {
   });
   $('#shelf-group').addEventListener('change', (e) => { state.group = e.target.value; update({ animate: true }); });
   $('#graph-dim').addEventListener('change', (e) => { state.graphDim = e.target.value; update(); });
+  $('#graph-layout').addEventListener('change', (e) => { state.graphLayout = e.target.value; update(); });
   $('#graph-min').addEventListener('change', (e) => { state.graphMin = Math.max(1, Math.min(6, Number(e.target.value) || 1)); update(); });
 
   // Table header sort via invoker commands, with click fallback.
