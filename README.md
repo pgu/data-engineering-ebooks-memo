@@ -15,7 +15,7 @@ Views:
 
 - **Shelf**: cover cards, sortable and groupable (year, category, platform, level, publisher).
 - **Table**: dense sortable table (click column headers).
-- **Graph**: force-directed network linking books through shared technologies, topics, platforms, categories or authors (D3 loaded from CDN on demand).
+- **Graph**: force-directed network linking books through shared technologies, topics, platforms, categories or authors (D3 loaded from CDN on demand). Clicking a cover previews the book in a side panel (with related books) without leaving the graph.
 
 Filters: full-text search (titles, authors, summary, topics, chapters) plus facet chips with live counts. Values within a facet are OR'ed by default; multi-valued facets (technologies, topics, platform, authors) can switch to **All** (AND). Facets combine with AND. The full state (view, filters, sort, open book) lives in the URL hash, so any view can be bookmarked or shared.
 

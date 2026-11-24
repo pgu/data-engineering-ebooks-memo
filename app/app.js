@@ -183,7 +183,8 @@ const state = {
   group: '',
   graphDim: 'technologies',
   graphMin: 2,
-  book: null,
+  book: null, // book open in the modal
+  sel: null, // book previewed in the graph side panel
 };
 
 function writeHash() {
@@ -195,6 +196,7 @@ function writeHash() {
   if (state.sort.key !== 'date' || state.sort.dir !== 'descending') p.set('sort', `${state.sort.key}:${state.sort.dir}`);
   if (state.group) p.set('group', state.group);
   if (state.view === 'graph') { p.set('dim', state.graphDim); p.set('min', state.graphMin); }
+  if (state.view === 'graph' && state.sel) p.set('sel', state.sel);
   if (state.book) p.set('book', state.book);
   const s = p.toString();
   history.replaceState(null, '', s ? `#${s}` : location.pathname + location.search);
@@ -216,6 +218,7 @@ function readHash() {
   state.graphDim = p.get('dim') && FACET[p.get('dim')] ? p.get('dim') : 'technologies';
   state.graphMin = Math.max(1, Number(p.get('min')) || 2);
   state.book = p.get('book');
+  state.sel = BY_ID.has(p.get('sel')) ? p.get('sel') : null;
 }
 
 // ---------------------------------------------------------------------------
@@ -573,7 +576,7 @@ function buildGraph() {
   tagNodes.append('title').text((d) => `${d.value}: ${d.degree} books`);
 
   const activate = (d) => {
-    if (d.kind === 'book') openBook(d.book.id);
+    if (d.kind === 'book') selectGraphBook(d.book.id);
     else { toggleFilter(state.graphDim, d.value); update(); }
   };
   node.on('click', (e, d) => { if (!e.defaultPrevented) activate(d); })
@@ -618,6 +621,74 @@ function styleGraph() {
     .classed('selected', (d) => d.kind === 'tag' && sel.has(d.value))
     .attr('aria-pressed', (d) => (d.kind === 'tag' ? String(sel.has(d.value)) : null));
   graph.links.classed('dim', (l) => !ok.has(l.source.book?.id));
+  graph.nodes.classed('current', (d) => d.kind === 'book' && d.book.id === state.sel)
+    .attr('aria-current', (d) => (d.kind === 'book' && d.book.id === state.sel ? 'true' : null));
+  graph.links.classed('current', (l) => l.source.book?.id === state.sel);
+}
+
+// Side panel: non-blocking book preview while browsing the graph.
+function selectGraphBook(id) {
+  state.sel = state.sel === id ? null : id;
+  styleGraph();
+  renderGraphPanel();
+  writeHash();
+  if (state.sel) announce(`Previewing ${BY_ID.get(id).title}`);
+}
+
+// Re-render only when the previewed book or link dimension changes; otherwise
+// just refresh chip states in place so keyboard focus stays on the chip.
+let panelKey = null;
+const panelOpen = {};
+function syncGraphPanel() {
+  const key = `${state.sel}:${state.graphDim}`;
+  if (key !== panelKey) { renderGraphPanel(); return; }
+  for (const chip of $$('#graph-panel button.chip[data-facet]')) {
+    chip.setAttribute('aria-pressed', String(!!state.filters.get(chip.dataset.facet)?.has(chip.dataset.value)));
+  }
+}
+
+function renderGraphPanel() {
+  panelKey = `${state.sel}:${state.graphDim}`;
+  const panel = $('#graph-panel');
+  // Remember which collapsible sections were open so browsing related books keeps them open.
+  for (const d of $$('details[data-sec]', panel)) panelOpen[d.dataset.sec] = d.open;
+  const b = state.sel && BY_ID.get(state.sel);
+  if (!b) {
+    panel.replaceChildren(h('div', { class: 'gp-empty' },
+      h('p', { text: 'Click a cover in the graph to preview the book here.' }),
+      h('p', { class: 'muted', text: 'Click again (or Close) to deselect. Tag chips below a preview toggle filters without leaving the graph.' })));
+    return;
+  }
+  const facet = FACET[state.graphDim];
+  const shared = new Set(facet.get(b));
+  const related = BOOKS.filter((o) => o !== b && facet.get(o).some((v) => shared.has(v)))
+    .map((o) => ({ o, n: facet.get(o).filter((v) => shared.has(v)).length }))
+    .sort((x, y) => y.n - x.n || SORTS.date(y.o, x.o)).slice(0, 6);
+  panel.replaceChildren(h('article', { class: 'gp', style: `--hue:${hueOf(b)}` },
+    h('header', { class: 'gp-head' },
+      coverEl(b, 'gp-cover'),
+      h('div', {},
+        h('p', { class: 'eyebrow', text: b.category }),
+        h('h2', { id: 'gp-title', text: b.title }),
+        b.subtitle && h('p', { class: 'subtitle', text: b.subtitle }))),
+    h('p', { class: 'authors', text: b.authors.join(', ') }),
+    h('p', { class: 'meta' }, `${b.month} ${b.year} · ${b.publisher}${b.edition ? ` · ${b.edition} ed.` : ''} · ${b.type}`),
+    h('ul', { class: 'badges' }, h('li', { class: `badge level l${b.levelRank}`, text: b.level })),
+    h('p', { class: 'summary', text: b.summary }),
+    h('h3', { text: 'Platform' }), tagButtons('platform', b.platform),
+    h('h3', { text: 'Technologies' }), tagButtons('technologies', b.technologies),
+    h('details', { class: 'gp-more', 'data-sec': 'topics', open: !!panelOpen.topics }, h('summary', { text: `Topics (${b.topics.length})` }), tagButtons('topics', b.topics)),
+    b.chapters.length ? h('details', { class: 'gp-more', 'data-sec': 'chapters', open: !!panelOpen.chapters }, h('summary', { text: `Chapters covered in deck (${b.chapters.length})` }),
+      h('ol', { class: 'chapters' }, b.chapters.map((c) => h('li', { text: c })))) : null,
+    related.length ? h('details', { class: 'gp-more', 'data-sec': 'related', open: !!panelOpen.related },
+      h('summary', { text: `Related by ${facet.label.toLowerCase()} (${related.length})` }),
+      h('ul', { class: 'gp-related' }, related.map(({ o, n }) => h('li', {},
+        h('button', { type: 'button', 'data-select': o.id }, o.title, h('span', { class: 'chip-count', text: ` ${n} shared` })))))) : null,
+    h('footer', { class: 'gp-actions' },
+      h('button', { type: 'button', 'data-open': b.id, text: 'Full details' }),
+      b.repo && h('a', { href: b.repo, target: '_blank', rel: 'noopener', text: 'Companion repo' }),
+      h('button', { type: 'button', 'data-select': b.id, text: 'Close' })),
+  ));
 }
 
 // ---------------------------------------------------------------------------
@@ -693,7 +764,7 @@ function update({ animate = false } = {}) {
     if (state.view === 'table') renderTable(list);
   };
   withTransition(apply, animate && state.view !== 'graph');
-  if (state.view === 'graph') renderGraph();
+  if (state.view === 'graph') { renderGraph(); syncGraphPanel(); }
   updateFacets();
   updateActiveFilters();
   const text = `${list.length} of ${BOOKS.length} books`;
@@ -765,6 +836,13 @@ function wireEvents() {
       state.filters.clear(); state.q = ''; $('#q').value = '';
       update({ animate: true });
     }
+  });
+
+  $('#graph-panel').addEventListener('click', (e) => {
+    const chip = e.target.closest('button.chip[data-facet]');
+    if (chip) { toggleFilter(chip.dataset.facet, chip.dataset.value); update(); return; }
+    const sel = e.target.closest('[data-select]');
+    if (sel) selectGraphBook(sel.dataset.select);
   });
 
   const dlg = $('#book-dialog');
