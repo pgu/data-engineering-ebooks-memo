@@ -381,6 +381,5 @@
     "verification",
     "similarity search",
     "Streamlit",
-    "Visualization",
-    "See"
+    "Visualization"
 ]
