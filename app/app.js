@@ -91,7 +91,7 @@ function parseCSV(text) {
 
 const folderOf = (coverFile) => (coverFile || '').replace(/\.(jpe?g|webp|png|avif|gif)$/i, '');
 
-function toBooks(records, media = {}) {
+function toBooks(records, media = {}, coverThumbs = {}) {
   const normTech = makeNormalizerWithLabels();
   const normTopic = makeNormalizerWithLabels({ capitalize: true });
   const books = records.map((r, idx) => {
@@ -121,7 +121,9 @@ function toBooks(records, media = {}) {
     // Pictures + keywords inferred from them (seed/media.json) enrich the CSV tags.
     const m = media[folderOf(book.coverFile)];
     const dir = COVERS_DIR + encodeURI(folderOf(book.coverFile)) + '/';
+    book.coverThumb = coverThumbs[folderOf(book.coverFile)] ? COVERS_DIR + encodeURI(coverThumbs[folderOf(book.coverFile)]) : null;
     book.pictures = (m?.images ?? []).map((img, i) => ({ ...img, i, book, src: dir + encodeURI(img.file),
+      thumbSrc: img.thumb ? dir + encodeURI(img.thumb) : dir + encodeURI(img.file),
       text: fold([img.caption, ...img.keywords, KIND_LABEL[img.kind]].join(' \u0001 ')) }));
     for (const t of m?.technologies ?? []) if (!NOT_TECH.has(t.toLowerCase())) book.techKeys.push(normTech.add(t));
     for (const t of m?.topics ?? []) book.topicKeys.push(normTopic.add(t));
@@ -223,6 +225,7 @@ const state = {
   graphDim: 'technologies',
   graphMin: 2,
   graphLayout: 'lifecycle', // 'lifecycle' | 'free'
+  picMatch: 'exact', // pictures: 'exact' phrase | 'partial' words
   book: null, // book open in the modal
   sel: null, // book previewed in the graph side panel
   selTag: null, // tag node last clicked in the graph (panel lists its books)
@@ -240,6 +243,7 @@ function writeHash() {
     p.set('dim', state.graphDim); p.set('min', state.graphMin);
     if (state.graphLayout !== 'lifecycle') p.set('layout', state.graphLayout);
   }
+  if (state.picMatch !== 'exact') p.set('pm', state.picMatch);
   if (state.view === 'graph' && state.sel) p.set('sel', state.sel);
   if (state.view === 'graph' && activeTag()) p.set('tag', activeTag());
   if (state.book) p.set('book', state.book);
@@ -263,6 +267,7 @@ function readHash() {
   state.graphDim = GRAPH_DIMS.includes(p.get('dim')) ? p.get('dim') : 'technologies';
   state.graphMin = Math.max(1, Number(p.get('min')) || 2);
   state.graphLayout = p.get('layout') === 'free' ? 'free' : 'lifecycle';
+  state.picMatch = p.get('pm') === 'partial' ? 'partial' : 'exact';
   state.book = p.get('book');
   state.sel = BY_ID.has(p.get('sel')) ? p.get('sel') : null;
   state.selTag = p.get('tag');
@@ -355,8 +360,9 @@ function withTransition(update, animate = true) {
 let catHue = new Map();
 const hueOf = (b) => catHue.get(b.category) ?? 220;
 
+const SMALL_COVERS = new Set(['thumb-img', 'gp-thumb', 'gal-cover']); // use the small AVIF thumbnail
 function coverEl(b, cls = 'cover') {
-  if (b.cover) return h('img', { class: cls, src: b.cover, alt: '', loading: 'lazy', decoding: 'async', width: 300, height: 400 });
+  if (b.cover) return h('img', { class: cls, src: (SMALL_COVERS.has(cls) && b.coverThumb) || b.cover, alt: '', loading: 'lazy', decoding: 'async', width: 300, height: 400 });
   const initials = b.title.split(/\s+/).filter((w) => /^[A-Z]/.test(w)).slice(0, 3).map((w) => w[0]).join('');
   return h('div', { class: `${cls} media cover-ph`, 'aria-hidden': 'true', text: initials });
 }
@@ -578,6 +584,8 @@ function sortByHeader(button) {
 // ---------------------------------------------------------------------------
 let d3 = null;
 const graph = { key: null, svg: null, nodes: null, sim: null };
+const layoutCache = new Map(); // graphKey -> Map(node id -> [x, y]): switching back is instant and identical
+const LABEL_MIN_DEGREE = 3; // tags linked to fewer books only show their label on hover/selection
 
 async function renderGraph() {
   const host = $('#graph');
@@ -630,7 +638,10 @@ function buildGraph() {
     ...BOOKS.map((b) => ({ id: `b:${b.id}`, kind: 'book', book: b })),
     ...tags.map(([v, n]) => ({ id: `t:${v}`, kind: 'tag', value: v, degree: n, zone: zoned ? zoneOf(v) : null })),
   ];
-  if (zoned) { // seed positions near the target zone / book band so the layout settles quickly
+  const cached = layoutCache.get(graphKey());
+  if (cached) {
+    for (const n of nodes) { const pos = cached.get(n.id); if (pos) [n.x, n.y] = pos; }
+  } else if (zoned) { // seed positions near the target zone / book band so the layout settles quickly
     const rnd = d3.randomLcg(42);
     for (const n of nodes) {
       if (n.kind === 'tag') { const [cx, cy] = zoneCenter(ZONE[n.zone]); n.x = cx + (rnd() - 0.5) * 60; n.y = cy + (rnd() - 0.5) * 40; }
@@ -654,14 +665,14 @@ function buildGraph() {
 
   const link =g.append('g').attr('class', 'links').selectAll('line').data(links).join('line');
   const node = g.append('g').attr('class', 'nodes').selectAll('g').data(nodes, (d) => d.id).join('g')
-    .attr('class', (d) => `node ${d.kind}`).attr('tabindex', 0).attr('role', 'button')
+    .attr('class', (d) => `node ${d.kind}${d.kind === 'tag' && d.degree < LABEL_MIN_DEGREE ? ' minor' : ''}`).attr('tabindex', 0).attr('role', 'button')
     .attr('aria-label', (d) => d.kind === 'book' ? `${d.book.title}, open details` : `${facet.label}: ${d.value}, ${d.degree} books, toggle filter`);
 
   const books = node.filter((d) => d.kind === 'book').style('--hue', (d) => hueOf(d.book));
   books.append('circle').attr('class', 'ring').attr('r', R + 3);
   books.each(function (d) {
     const sel = d3.select(this);
-    if (d.book.cover) sel.append('image').attr('href', d.book.cover).attr('x', -R).attr('y', -R).attr('width', 2 * R).attr('height', 2 * R)
+    if (d.book.cover) sel.append('image').attr('href', d.book.coverThumb || d.book.cover).attr('x', -R).attr('y', -R).attr('width', 2 * R).attr('height', 2 * R)
       .attr('preserveAspectRatio', 'xMidYMin slice').attr('clip-path', 'url(#clip-circle)');
     else sel.append('circle').attr('class', 'ph').attr('r', R);
   });
@@ -688,7 +699,14 @@ function buildGraph() {
 
   const neighbors = new Map(nodes.map((n) => [n.id, new Set([n.id])]));
   for (const l of links) { neighbors.get(l.source).add(l.target); neighbors.get(l.target).add(l.source); }
+  // Hover highlight, coalesced to one update per frame and ignored while dragging.
+  let hlPending = null, hlFrame = 0, dragging = false;
   function highlight(d) {
+    if (dragging) return;
+    hlPending = d;
+    if (!hlFrame) hlFrame = requestAnimationFrame(() => { hlFrame = 0; applyHighlight(hlPending); });
+  }
+  function applyHighlight(d) {
     svg.classed('hovering', !!d);
     if (!d) { node.classed('hl', false); link.classed('hl', false); return; }
     const nb = neighbors.get(d.id);
@@ -722,16 +740,25 @@ function buildGraph() {
       .force('collide', d3.forceCollide((d) => (d.kind === 'book' ? R + 8 : 14 + 3 * Math.sqrt(d.degree))))
       .force('x', d3.forceX().strength(0.06)).force('y', d3.forceY().strength(0.08));
   }
-  sim.on('tick', () => {
-      link.attr('x1', (d) => d.source.x).attr('y1', (d) => d.source.y).attr('x2', (d) => d.target.x).attr('y2', (d) => d.target.y);
-      node.attr('transform', (d) => `translate(${d.x},${d.y})`);
-    });
-  if (reduceMotion.matches) { sim.stop(); for (let i = 0; i < 300; i++) sim.tick(); sim.on('tick')(); }
+  // Settle the layout off-screen, then draw it once: no jitter, no animation frames.
+  const render = () => {
+    link.attr('x1', (d) => d.source.x).attr('y1', (d) => d.source.y).attr('x2', (d) => d.target.x).attr('y2', (d) => d.target.y);
+    node.attr('transform', (d) => `translate(${d.x},${d.y})`);
+  };
+  sim.stop();
+  if (!cached) {
+    const ticks = Math.ceil(Math.log(sim.alphaMin()) / Math.log(1 - sim.alphaDecay())); // ≈300
+    for (let i = 0; i < ticks; i++) sim.tick();
+  } // (cached: forces were initialised when added, so links already point at node objects)
+  render();
+  const saveLayout = () => layoutCache.set(graphKey(), new Map(nodes.map((n) => [n.id, [n.x, n.y]])));
+  saveLayout();
 
+  // Dragging moves just that node (and its links); the rest stays put.
   node.call(d3.drag()
-    .on('start', (e, d) => { if (!e.active) sim.alphaTarget(0.2).restart(); d.fx = d.x; d.fy = d.y; })
-    .on('drag', (e, d) => { d.fx = e.x; d.fy = e.y; })
-    .on('end', (e, d) => { if (!e.active) sim.alphaTarget(0); d.fx = null; d.fy = null; }));
+    .on('start', () => { dragging = true; })
+    .on('drag', (e, d) => { d.x = e.x; d.y = e.y; render(); })
+    .on('end', () => { dragging = false; saveLayout(); }));
 
   host.replaceChildren(svg.node());
   Object.assign(graph, { key: graphKey(), svg, nodes: node, links: link, sim });
@@ -909,11 +936,35 @@ function stepBook(step) {
 // ---------------------------------------------------------------------------
 const queryTerms = () => fold(state.q).split(/\s+/).filter(Boolean);
 
-// A picture matches when every search term is in its caption/keywords (or names the book itself).
-function matchingPictures(b, terms = queryTerms()) {
-  if (!terms.length) return b.pictures;
-  const title = fold(b.title);
-  return b.pictures.filter((p) => terms.every((t) => p.text.includes(t) || title.includes(t)) && terms.some((t) => p.text.includes(t)));
+// Picture matching:
+// - exact (default): the whole query as a phrase, on word boundaries (plural allowed), in a keyword or the caption.
+//   "data engineer" matches the keyword "data engineers" but not "data engineering".
+// - partial: every word somewhere in the picture's text (or the book title), e.g. "data" + "engineer…".
+const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+let hitCache = { key: null, map: new WeakMap() };
+function pictureHits(p) {
+  const key = `${state.picMatch}:${state.q}`;
+  if (hitCache.key !== key) hitCache = { key, map: new WeakMap() };
+  if (hitCache.map.has(p)) return hitCache.map.get(p);
+  const phrase = fold(state.q).trim().replace(/\s+/g, ' ');
+  let hits = null;
+  if (state.picMatch === 'partial') {
+    const terms = phrase.split(' ');
+    const title = fold(p.book.title);
+    if (terms.every((t) => p.text.includes(t) || title.includes(t)) && terms.some((t) => p.text.includes(t))) {
+      hits = p.keywords.filter((k) => terms.some((t) => fold(k).includes(t)));
+    }
+  } else {
+    const re = new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(phrase)}(e?s)?($|[^\\p{L}\\p{N}])`, 'u');
+    const kw = p.keywords.filter((k) => re.test(fold(k)));
+    if (kw.length || re.test(fold(p.caption))) hits = kw;
+  }
+  hitCache.map.set(p, hits);
+  return hits;
+}
+function matchingPictures(b) {
+  if (!state.q.trim()) return b.pictures;
+  return b.pictures.filter((p) => pictureHits(p));
 }
 const galleryPictures = (list = visibleBooks()) => list.flatMap((b) => matchingPictures(b));
 
@@ -921,15 +972,24 @@ function pictureThumbs(pics, listKind) {
   return h('ul', { class: 'pic-grid' }, pics.map((p) => h('li', {},
     h('button', { type: 'button', class: `pic-thumb k-${p.kind}`, 'data-pic': `${p.book.id}:${p.i}`, 'data-list': listKind,
       'aria-label': `${KIND_LABEL[p.kind]}${p.caption ? `: ${p.caption}` : ''}` },
-      h('img', { src: p.src, alt: '', loading: 'lazy', decoding: 'async' }),
-      h('span', { class: 'pic-kind', 'aria-hidden': 'true', text: KIND_LABEL[p.kind] })))));
+      h('img', { src: p.thumbSrc, alt: '', loading: 'lazy', decoding: 'async' }),
+      h('span', { class: 'pic-kind', 'aria-hidden': 'true', text: KIND_LABEL[p.kind] }),
+      hitLabel(p)))));
+}
+// While searching: show which keyword made the picture match (or "in caption").
+function hitLabel(p) {
+  if (!state.q.trim()) return null;
+  const hits = pictureHits(p);
+  if (!hits) return null;
+  const text = hits.length ? hits[0] + (hits.length > 1 ? ` +${hits.length - 1}` : '') : 'in caption';
+  return h('span', { class: 'pic-hit', title: hits.join(', ') || 'Matched in the caption', text });
 }
 
 let galleryKey = null;
 function renderGallery(list) {
   const terms = queryTerms();
-  const sections = list.map((b) => [b, matchingPictures(b, terms)]).filter(([, pics]) => pics.length);
-  const key = sections.map(([b, pics]) => b.id + pics.map((p) => p.i).join('.')).join('|');
+  const sections = list.map((b) => [b, matchingPictures(b)]).filter(([, pics]) => pics.length);
+  const key = state.picMatch + state.q + sections.map(([b, pics]) => b.id + pics.map((p) => p.i).join('.')).join('|');
   if (key === galleryKey) return;
   galleryKey = key;
   const root = $('#gallery');
@@ -938,14 +998,19 @@ function renderGallery(list) {
     root.replaceChildren(h('p', { class: 'empty', text: terms.length ? `No picture matches “${state.q}”.` : 'No pictures for these books.' }));
     return;
   }
-  root.replaceChildren(...sections.map(([b, pics]) => h('section', { class: 'gal-book', style: `--hue:${hueOf(b)}`, 'aria-labelledby': `gal-${b.id}` },
+  const nPics = sections.reduce((n, [, pics]) => n + pics.length, 0);
+  const summary = terms.length ? h('p', { class: 'gal-summary' },
+    h('strong', { text: `${nPics} picture${nPics === 1 ? '' : 's'}` }),
+    ` match “${state.q.trim()}” in ${sections.length} book${sections.length === 1 ? '' : 's'}`,
+    state.picMatch === 'exact' ? ' (exact phrase). Tick “Include partial matches” to widen.' : ' (partial words).') : null;
+  root.replaceChildren(...[summary, ...sections.map(([b, pics]) => h('section', { class: 'gal-book', style: `--hue:${hueOf(b)}`, 'aria-labelledby': `gal-${b.id}` },
     h('header', { class: 'gal-head' },
       coverEl(b, 'gal-cover'),
       h('div', {},
         h('h2', { id: `gal-${b.id}` }, h('button', { type: 'button', class: 'card-link', 'data-open': b.id, text: b.title })),
         h('p', { class: 'meta' }, `${b.year} · ${b.publisher} · ${pics.length}${terms.length ? ` of ${b.pictures.length}` : ''} picture${pics.length === 1 ? '' : 's'}`,
           b.repo ? [' · ', h('a', { href: b.repo, target: '_blank', rel: 'noopener', text: 'Companion repo ↗' })] : null))),
-    pictureThumbs(pics, 'gallery'))));
+    pictureThumbs(pics, 'gallery')))].filter(Boolean));
 }
 
 let viewerList = [];
@@ -974,6 +1039,7 @@ function renderViewer() {
   const img = h('img', { class: 'pv-img', src: p.src, alt: p.caption || `${KIND_LABEL[p.kind]} — ${b.title}` });
   const zoomBtn = h('button', { type: 'button', class: 'pv-zoom', 'data-pv-zoom': '1', 'aria-pressed': 'false', text: 'Zoom to full size' });
   const q = fold(state.q);
+  const hitSet = new Set(state.q.trim() ? pictureHits(p) ?? [] : []);
   $('#pv-body').replaceChildren(h('figure', { class: 'pv', style: `--hue:${hueOf(b)}` },
     h('header', { class: 'pv-head' },
       h('p', { class: 'eyebrow', text: `${KIND_LABEL[p.kind]} · ${p.file}` }),
@@ -987,7 +1053,7 @@ function renderViewer() {
         : h('p', { class: 'muted', text: 'No repository link in the catalogue for this book.' })),
       p.caption && h('p', { class: 'pv-caption', text: p.caption }),
       p.keywords.length ? h('ul', { class: 'chips', 'aria-label': 'Keywords (click to search)' }, p.keywords.map((k) =>
-        h('li', {}, h('button', { type: 'button', class: 'chip', 'data-kw': k, 'aria-pressed': String(!!q && fold(k) === q), text: k })))) : null,
+        h('li', {}, h('button', { type: 'button', class: `chip${hitSet.has(k) ? ' hit' : ''}`, 'data-kw': k, 'aria-pressed': String(!!q && fold(k) === q), text: k })))) : null,
       h('p', {}, h('button', { type: 'button', class: 'linkish', 'data-open-book': b.id, text: 'Book details' })))));
   $('#pv-pos').textContent = `${viewerIdx + 1} / ${viewerList.length}`;
   for (const btn of $$('[data-pv-step]')) btn.disabled = viewerList.length < 2;
@@ -1039,6 +1105,7 @@ function update({ animate = false } = {}) {
   $('#graph-dim').value = state.graphDim;
   $('#graph-min').value = state.graphMin;
   $('#graph-layout').value = state.graphLayout;
+  $('#pic-partial').checked = state.picMatch === 'partial';
   $('#graph-layout-ctl').hidden = !ZONED_DIMS.includes(state.graphDim);
   writeHash();
 }
@@ -1093,6 +1160,7 @@ function wireEvents() {
     if (state.view === 'graph' && !isZoned()) { graph.key = null; renderGraph(); } // free layout sizes to the container
   });
   $('#graph-layout').addEventListener('change', (e) => { state.graphLayout = e.target.value; update(); });
+  $('#pic-partial').addEventListener('change', (e) => { state.picMatch = e.target.checked ? 'partial' : 'exact'; update(); });
   $('#graph-min').addEventListener('change', (e) => { state.graphMin = Math.max(1, Math.min(6, Number(e.target.value) || 1)); update(); });
 
   // Table header sort via invoker commands, with click fallback.
@@ -1219,11 +1287,12 @@ async function main() {
     return;
   }
   let media = {};
+  let coverThumbs = {};
   try {
     const res = await fetch(MEDIA_URL);
-    if (res.ok) media = (await res.json()).books ?? {};
+    if (res.ok) ({ books: media = {}, covers: coverThumbs = {} } = await res.json());
   } catch { /* pictures are optional */ }
-  BOOKS = toBooks(parseCSV(text), media);
+  BOOKS = toBooks(parseCSV(text), media, coverThumbs);
   BY_ID = new Map(BOOKS.map((b) => [b.id, b]));
   await resolveCovers(BOOKS);
 

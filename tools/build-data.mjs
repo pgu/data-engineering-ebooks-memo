@@ -2,10 +2,12 @@
 // Builds the static data files the web app reads (GitHub Pages can't list directories):
 //   seed/media.json            pictures per ebook folder + per-picture keywords (from seed/keywords/*.json)
 //   seed/index-referential.json  merged, cleaned index.js keywords bucketed by length (typing game)
+//   ebook-covers/<folder>/thumbs/*.avif, ebook-covers/thumbs/*.avif  small AVIF thumbnails (macOS `sips`)
 // Run from the repo root:  node tools/build-data.mjs
 
-import { readFileSync, readdirSync, writeFileSync, existsSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, writeFileSync, existsSync, statSync, mkdirSync } from 'node:fs';
 import { join } from 'node:path';
+import { execFileSync } from 'node:child_process';
 
 const ROOT = new URL('..', import.meta.url).pathname;
 const COVERS = join(ROOT, 'ebook-covers');
@@ -23,7 +25,35 @@ function deckIdsByFolder() {
   return map;
 }
 const DECK = deckIdsByFolder();
-const folders = readdirSync(COVERS).filter((d) => statSync(join(COVERS, d)).isDirectory()).sort();
+const THUMBS = 'thumbs';
+const folders = readdirSync(COVERS).filter((d) => d !== THUMBS && statSync(join(COVERS, d)).isDirectory()).sort();
+
+// ---------------------------------------------------------------------------
+// 0. Thumbnails: AVIF, downscaled to `width`; regenerated only when the source is newer.
+// ---------------------------------------------------------------------------
+let hasSips = true;
+try { execFileSync('sips', ['--help'], { stdio: 'ignore' }); } catch { hasSips = false; console.warn('! sips not found (macOS only): thumbnails skipped'); }
+let thumbsMade = 0;
+function thumb(srcAbs, dir, width) {
+  const name = srcAbs.split('/').pop().replace(/\.[a-z]+$/i, '.avif');
+  const out = join(dir, name);
+  if (existsSync(out) && statSync(out).mtimeMs >= statSync(srcAbs).mtimeMs) return name;
+  if (!hasSips) return null;
+  mkdirSync(dir, { recursive: true });
+  const w = Number(execFileSync('sips', ['-g', 'pixelWidth', srcAbs]).toString().match(/pixelWidth: (\d+)/)?.[1] ?? 0);
+  const args = ['-s', 'format', 'avif', '-s', 'formatOptions', '70'];
+  if (w > width) args.push('--resampleWidth', String(width));
+  execFileSync('sips', [...args, srcAbs, '--out', out], { stdio: 'ignore' });
+  thumbsMade++;
+  return name;
+}
+const PICTURE_THUMB_W = 480; // grids show ~120–240 CSS px, so 2× density
+const COVER_THUMB_W = 160; // graph nodes, table rows, panel lists
+const coverThumbs = {};
+for (const f of readdirSync(COVERS).filter((f) => IMG.test(f))) {
+  const t = thumb(join(COVERS, f), join(COVERS, THUMBS), COVER_THUMB_W);
+  if (t) coverThumbs[f.replace(/\.[a-z]+$/i, '')] = `${THUMBS}/${t}`;
+}
 
 // ---------------------------------------------------------------------------
 // 1. Media manifest
@@ -42,6 +72,7 @@ for (const folder of folders) {
     deckId: DECK[folder] ?? kw?.deckId ?? null,
     images: files.sort((a, b) => orderOf(a) - orderOf(b)).map((file) => ({
       file,
+      thumb: (() => { const t = thumb(join(COVERS, folder, file), join(COVERS, folder, THUMBS), PICTURE_THUMB_W); return t && `${THUMBS}/${t}`; })(),
       kind: kindOf(file),
       caption: byFile[file]?.caption ?? '',
       keywords: byFile[file]?.keywords ?? [],
@@ -53,7 +84,8 @@ for (const folder of folders) {
   if (!kw) console.warn(`! no keywords yet for ${folder}`);
   bookKeywords[folder] = kw;
 }
-writeFileSync(join(ROOT, 'seed', 'media.json'), JSON.stringify({ generated: new Date().toISOString().slice(0, 10), books: media }, null, 1) + '\n');
+writeFileSync(join(ROOT, 'seed', 'media.json'), JSON.stringify({ generated: new Date().toISOString().slice(0, 10), covers: coverThumbs, books: media }, null, 1) + '\n');
+console.log(`thumbnails: ${thumbsMade} generated`);
 console.log(`media.json: ${folders.length} folders, ${Object.values(media).reduce((n, b) => n + b.images.length, 0)} pictures`);
 
 // ---------------------------------------------------------------------------

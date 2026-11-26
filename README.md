@@ -14,6 +14,7 @@ node tools/build-data.mjs
 
 - [`seed/keywords/<folder>.json`](seed/keywords/): keywords inferred from each book's pictures (caption + keywords per picture, plus book-level technologies / topics / providers). Hand-editable; they enrich the CSV tags in the app.
 - `seed/media.json` (generated): pictures per book + their keywords.
+- `ebook-covers/<folder>/thumbs/*.avif` and `ebook-covers/thumbs/*.avif` (generated, macOS `sips`): small AVIF thumbnails (pictures 480 px wide, covers 160 px) used by the grids, table and graph; the viewer loads the original PNG. Only regenerated when the source is newer. On other systems thumbnails are skipped and the app falls back to the originals.
 - `seed/index-referential.json` (generated): all `index.js` files merged and cleaned (sub-entries dropped, parentheses split, duplicates and near-duplicates merged, generic words removed), each keyword with its books and a length bucket: easy ≤ 10, medium ≤ 20, hard ≤ 25 characters.
 
 ## Library web app

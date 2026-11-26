@@ -1,11 +1,36 @@
 {
- "generated": "2026-11-25",
+ "generated": "2026-11-26",
+ "covers": {
+  "2021-02_data-pipelines-pocket-ref": "thumbs/2021-02_data-pipelines-pocket-ref.avif",
+  "2022-06_fund-data-eng": "thumbs/2022-06_fund-data-eng.avif",
+  "2024-02_Deciphering-data-arch": "thumbs/2024-02_Deciphering-data-arch.avif",
+  "2024-04_data-eng-google-cloud-platform": "thumbs/2024-04_data-eng-google-cloud-platform.avif",
+  "2024-07_Practical-lakehouse-arch": "thumbs/2024-07_Practical-lakehouse-arch.avif",
+  "2024-08_duckdb-in-action": "thumbs/2024-08_duckdb-in-action.avif",
+  "2024-10_build-modern-data-apps-databricks": "thumbs/2024-10_build-modern-data-apps-databricks.avif",
+  "2024-11_data-eng-aws-cookbook": "thumbs/2024-11_data-eng-aws-cookbook.avif",
+  "2024-12_duckdb-up-and-running": "thumbs/2024-12_duckdb-up-and-running.avif",
+  "2025-02_Databricks-cert-data-eng-guide": "thumbs/2025-02_Databricks-cert-data-eng-guide.avif",
+  "2025-03_Build-med-arch": "thumbs/2025-03_Build-med-arch.avif",
+  "2025-04_data-eng-design-patt": "thumbs/2025-04_data-eng-design-patt.avif",
+  "2025-06_Fund-Microsoft-Fabric": "thumbs/2025-06_Fund-Microsoft-Fabric.avif",
+  "2025-12_eng-lakehouses-open-table-formats": "thumbs/2025-12_eng-lakehouses-open-table-formats.avif",
+  "2026-01_practical-data-eng-apache-projects": "thumbs/2026-01_practical-data-eng-apache-projects.avif",
+  "2026-02_designing-data-intensive-apps": "thumbs/2026-02_designing-data-intensive-apps.avif",
+  "2026-04_data-eng-azure-databricks": "thumbs/2026-04_data-eng-azure-databricks.avif",
+  "2026-05_data-eng-gen-ai-aws": "thumbs/2026-05_data-eng-gen-ai-aws.avif",
+  "2026-07_Snowflake-cookbook": "thumbs/2026-07_Snowflake-cookbook.avif",
+  "2026-08_serverless-etl-analytics-aws-glue": "thumbs/2026-08_serverless-etl-analytics-aws-glue.avif",
+  "2026-08_trusted-data-platforms-Azure-Databricks-GenAI": "thumbs/2026-08_trusted-data-platforms-Azure-Databricks-GenAI.avif",
+  "2026-10_Analytics-eng-microsoft-fabric-power-bi": "thumbs/2026-10_Analytics-eng-microsoft-fabric-power-bi.avif"
+ },
  "books": {
   "2021-02_data-pipelines-pocket-ref": {
    "deckId": "deb06",
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter table with keywords: ingestion, transformation, orchestration, validation, monitoring",
      "keywords": [
@@ -26,6 +51,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Python script extracting PostgreSQL orders to CSV and uploading to S3",
      "keywords": [
@@ -43,6 +69,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Redshift COPY command loading CSV from S3 with IAM role",
      "keywords": [
@@ -57,6 +84,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Snowflake external S3 stage with storage integration and file format",
      "keywords": [
@@ -71,6 +99,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Snowflake COPY INTO from S3 stage with filename pattern",
      "keywords": [
@@ -85,6 +114,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Python Snowflake connector executing COPY INTO load from S3 stage",
      "keywords": [
@@ -99,6 +129,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "SQL model deriving current order status counts from CDC table",
      "keywords": [
@@ -115,6 +146,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Airflow ELT DAG with BashOperator and PostgresOperator dependencies",
      "keywords": [
@@ -132,6 +164,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "SQL z-score anomaly check on daily revenue for data validation",
      "keywords": [
@@ -215,6 +248,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Three-part chapter list: lifecycle, architecture, ingestion, serving, security",
      "keywords": [
@@ -236,6 +270,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Data engineering lifecycle diagram: generation, ingestion, transformation, serving, storage",
      "keywords": [
@@ -257,6 +292,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Six undercurrents of data engineering with their key practices",
      "keywords": [
@@ -357,6 +393,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter table: warehouse, lake, fabric, lakehouse, data mesh, modeling, ingestion",
      "keywords": [
@@ -378,6 +415,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Data lakehouse flow: ingest, store, transform, model, visualize with Delta Lake",
      "keywords": [
@@ -397,6 +435,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Data lake folder structure for raw and cleaned zones",
      "keywords": [
@@ -412,6 +451,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Data lakehouse architecture with raw, cleaned, presentation layers and Delta Lake",
      "keywords": [
@@ -501,6 +541,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter list: BigQuery, Cloud Composer, Dataproc, Pub/Sub, Dataflow, Looker Studio",
      "keywords": [
@@ -522,6 +563,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "GitHub repo: BigQuery Python script building daily fact table",
      "keywords": [
@@ -542,6 +584,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Data life cycle flow and data engineer focus diagram",
      "keywords": [
@@ -559,6 +602,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Distributed filesystem splitting large file into 128 MB blocks",
      "keywords": [
@@ -572,6 +616,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "MapReduce word count: map, shuffle, reduce steps",
      "keywords": [
@@ -586,6 +631,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "GCP services map: storage, big data analytics, AI/BI, infrastructure",
      "keywords": [
@@ -608,6 +654,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Airflow DAG structure by role: extract-load, transform, data mart",
      "keywords": [
@@ -626,6 +673,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Streaming pattern: Pub/Sub to Dataflow to BigQuery with GCS",
      "keywords": [
@@ -640,6 +688,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "BigQuery policy tags taxonomy for data masking of PII",
      "keywords": [
@@ -654,6 +703,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "CI/CD flow with Cloud Build, Source Repository, Container Registry",
      "keywords": [
@@ -749,6 +799,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter table: open table formats, catalogs, compute engines, governance, future",
      "keywords": [
@@ -772,6 +823,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Lakehouse equals separate storage plus separate compute",
      "keywords": [
@@ -794,6 +846,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "AWS lakehouse flow: EMR/Glue, Hudi on S3, Glue Catalog, Athena",
      "keywords": [
@@ -813,6 +866,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Azure lakehouse flow: Synapse notebooks, Delta on ADLS, Purview",
      "keywords": [
@@ -829,6 +883,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "GCP lakehouse flow: Dataproc, Iceberg on GCS, BigLake, Dataplex, BigQuery",
      "keywords": [
@@ -846,6 +901,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Databricks lakehouse flow: notebooks, Delta on ADLS, Unity Catalog, Databricks SQL",
      "keywords": [
@@ -862,6 +918,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Snowflake native Iceberg tables on external cloud storage read by Spark",
      "keywords": [
@@ -879,6 +936,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Processing engine preferences: Spark for engineers, SQL for analysts",
      "keywords": [
@@ -894,6 +952,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Data processing activities across raw, cleansed, curated, semantic zones",
      "keywords": [
@@ -915,6 +974,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "AWS lakehouse blueprint: DMS, Kinesis, Glue, EMR, Iceberg, S3, Athena",
      "keywords": [
@@ -937,6 +997,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "Databricks lakehouse blueprint: notebooks, DLT, Delta Lake, Unity Catalog, Workflows",
      "keywords": [
@@ -957,6 +1018,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "XTable metadata conversion between Iceberg, Hudi and Delta Lake",
      "keywords": [
@@ -974,6 +1036,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "Microsoft Fabric architecture: personas, experiences, OneLake storage",
      "keywords": [
@@ -1081,6 +1144,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Ten chapters: DuckDB intro, SQL, Python, MotherDuck, pipelines, data apps, performance",
      "keywords": [
@@ -1098,6 +1162,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: ch03 schema.sql with sequences, tables, view; dagster, dbt, dlt folders",
      "keywords": [
@@ -1120,6 +1185,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "DuckDB CLI querying a remote CSV with read_csv_auto, exporting to CSV",
      "keywords": [
@@ -1135,6 +1201,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "INSERT from remote CSV with time_bucket, FILTER clause and ON CONFLICT DO NOTHING",
      "keywords": [
@@ -1154,6 +1221,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "DuckDB PIVOT statement aggregating kWh per year",
      "keywords": [
@@ -1168,6 +1236,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "ASOF JOIN with running sum window function over prices",
      "keywords": [
@@ -1183,6 +1252,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Python API: in-memory connection, install httpfs extension, read_csv",
      "keywords": [
@@ -1198,6 +1268,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Defining a dlt pipeline with DuckDB as destination",
      "keywords": [
@@ -1212,6 +1283,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Dagster asset using DuckDBResource to load ATP CSV files",
      "keywords": [
@@ -1229,6 +1301,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Query processing pipeline: parser, planner, optimizer, physical planner",
      "keywords": [
@@ -1315,6 +1388,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Three parts: DLT pipelines, Unity Catalog governance, CI/CD and monitoring",
      "keywords": [
@@ -1334,6 +1408,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: taxi trip data generator notebook writing to ADLS via SAS token",
      "keywords": [
@@ -1356,6 +1431,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Delta table layout: _delta_log JSON commits and date-partitioned Parquet files",
      "keywords": [
@@ -1371,6 +1447,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Delta Lake writes a Parquet checkpoint every 10th commit",
      "keywords": [
@@ -1387,6 +1464,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Scan operations: predicate matching, tombstoned files, rewritten table files",
      "keywords": [
@@ -1489,6 +1567,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Thirteen chapters: data lake storage, Glue, orchestration, EMR, governance, migrations",
      "keywords": [
@@ -1509,6 +1588,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: Glue PySpark job converting CSV to partitioned Parquet on S3",
      "keywords": [
@@ -1531,6 +1611,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "AWS Glue workflow graph: trigger, crawler, conditional trigger, CSV-to-Parquet job",
      "keywords": [
@@ -1547,6 +1628,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Airflow DAG on MWAA triggering Glue crawler and ETL job",
      "keywords": [
@@ -1563,6 +1645,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "CloudWatch metric alarm on Glue S3 write bytes",
      "keywords": [
@@ -1578,6 +1661,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "EMR Serverless job runs list with success and failed Spark jobs",
      "keywords": [
@@ -1592,6 +1676,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Spark application UI on EMR showing completed SparkPi job",
      "keywords": [
@@ -1608,6 +1693,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Glue Data Quality results: DQ score, trend, anomaly detection, IsComplete rule",
      "keywords": [
@@ -1623,6 +1709,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Glue Studio visual job evaluating multiframe data quality with DQDL rules",
      "keywords": [
@@ -1639,6 +1726,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Glue DataBrew redact values transform masking a Fax column",
      "keywords": [
@@ -1653,6 +1741,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "CodePipeline prod stage: CloudFormation prepare and deploy succeeded",
      "keywords": [
@@ -1667,6 +1756,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "AWS Billing cost allocation tags: user-defined tags activation",
      "keywords": [
@@ -1681,6 +1771,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "AWS services per stage: ingestion, processing, analytics/storage, visualization/ML",
      "keywords": [
@@ -1703,6 +1794,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "Batch architecture: S3, SNS, Lambda, Glue crawlers and job, Athena, QuickSight",
      "keywords": [
@@ -1724,6 +1816,7 @@
     },
     {
      "file": "memo13.png",
+     "thumb": "thumbs/memo13.avif",
      "kind": "memo",
      "caption": "AWS services for real-time data lakes: IoT, Kinesis, MSK, EMR, Redshift",
      "keywords": [
@@ -1746,6 +1839,7 @@
     },
     {
      "file": "memo14.png",
+     "thumb": "thumbs/memo14.avif",
      "kind": "memo",
      "caption": "Real-time architecture: IoT Core, Kinesis, Lambda, S3 raw/processed, EMR, Redshift",
      "keywords": [
@@ -1767,6 +1861,7 @@
     },
     {
      "file": "memo15.png",
+     "thumb": "thumbs/memo15.avif",
      "kind": "memo",
      "caption": "Typical AWS lakehouse: S3 landing/raw/stage/presentation zones, Hudi upserts, Redshift",
      "keywords": [
@@ -1789,6 +1884,7 @@
     },
     {
      "file": "memo16.png",
+     "thumb": "thumbs/memo16.avif",
      "kind": "memo",
      "caption": "Reusable ETL framework: EventBridge, Lambda DAG invokers, MWAA, Glue templates",
      "keywords": [
@@ -1810,6 +1906,7 @@
     },
     {
      "file": "memo17.png",
+     "thumb": "thumbs/memo17.avif",
      "kind": "memo",
      "caption": "Modern data analytics reference architecture on AWS, sources to purpose-built analytics",
      "keywords": [
@@ -1918,6 +2015,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter list: DuckDB basics, SQL, Polars, EDA, JSON, JupySQL, remote data, MotherDuck",
      "keywords": [
@@ -1936,6 +2034,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Python duckdb.connect then CREATE TABLE AS SELECT from read_csv_auto",
      "keywords": [
@@ -1952,6 +2051,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Load CSV with pandas and register the DataFrame in DuckDB",
      "keywords": [
@@ -1966,6 +2066,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Create a DuckDB table from read_parquet with LIMIT",
      "keywords": [
@@ -1980,6 +2081,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "COPY FROM statement loading a Parquet file into a table",
      "keywords": [
@@ -1993,6 +2095,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "duckdb.sql query over a DataFrame returned as Polars with .pl()",
      "keywords": [
@@ -2007,6 +2110,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "CREATE TABLE flights from read_csv_auto via conn.execute",
      "keywords": [
@@ -2021,6 +2125,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Plot airports on a map with folium CircleMarker",
      "keywords": [
@@ -2035,6 +2140,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Spatial extension: ST_DWithin query for airports near Miami",
      "keywords": [
@@ -2052,6 +2158,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "Pie chart of airports per state with Matplotlib and Seaborn",
      "keywords": [
@@ -2066,6 +2173,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "Query nested JSON fields with read_json and bracket notation",
      "keywords": [
@@ -2080,6 +2188,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "JupySQL queries DuckDB and database server, visualized with Matplotlib",
      "keywords": [
@@ -2096,6 +2205,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "Query a remote Parquet file directly from a GitHub URL",
      "keywords": [
@@ -2111,6 +2221,7 @@
     },
     {
      "file": "memo13.png",
+     "thumb": "thumbs/memo13.avif",
      "kind": "memo",
      "caption": "Create table from Hugging Face dataset using hf:// path",
      "keywords": [
@@ -2192,6 +2303,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapters: lakehouse, Delta Lake, Spark, incremental data, DLT, Databricks SQL, governance",
      "keywords": [
@@ -2214,6 +2326,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "oreilly-databricks-dea repo: chapter notebooks, MERGE INTO and INSERT examples",
      "keywords": [
@@ -2236,6 +2349,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Databricks lakehouse architecture layers and control plane versus data plane",
      "keywords": [
@@ -2258,6 +2372,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Delta Lake storage layer with ACID guarantees, files plus transaction log",
      "keywords": [
@@ -2276,6 +2391,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "DLT pipeline graph with streaming tables and materialized view",
      "keywords": [
@@ -2294,6 +2410,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "PySpark writeStream to Delta with checkpoint and availableNow trigger",
      "keywords": [
@@ -2311,6 +2428,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "DLT SQL materialized view aggregating LIVE enrollments by day",
      "keywords": [
@@ -2327,6 +2445,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Unity Catalog security model: privileges, securable objects, principals",
      "keywords": [
@@ -2436,6 +2555,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Thirteen chapters with keywords: medallion layers, Microsoft Fabric, case studies, GenAI",
      "keywords": [
@@ -2457,6 +2577,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: Auto Loader notebook streaming Parquet landing data to bronze Delta",
      "keywords": [
@@ -2479,6 +2600,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Medallion architecture overview: sources, landing zone, bronze, silver, gold, governance",
      "keywords": [
@@ -2499,6 +2621,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Detailed medallion layers: raw exports, validated Delta, historized tables, marts, OBT",
      "keywords": [
@@ -2521,6 +2644,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Data Factory pipeline: Lookup, ForEach CopyTable, create bronze tables, If condition",
      "keywords": [
@@ -2627,6 +2751,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter table: ingestion, errors, idempotency, value, flow, security, storage, quality, observability",
      "keywords": [
@@ -2649,6 +2774,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "bartosz25 design-patterns repo: chapter-02 full loader Airflow PostgreSQL and Spark examples",
      "keywords": [
@@ -2671,6 +2797,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Blog analytics case-study platform: API gateway, topics, jobs, lakehouse medallion",
      "keywords": [
@@ -2690,6 +2817,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Data ingestion design patterns table with use cases and gotchas",
      "keywords": [
@@ -2802,6 +2930,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "18 chapters: OneLake, Data Factory, engineering, warehousing, RTI, Power BI, CI/CD",
      "keywords": [
@@ -2824,6 +2953,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "OneLake big picture: Delta Parquet storage shared by Spark, T-SQL, KQL engines",
      "keywords": [
@@ -2846,6 +2976,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Fabric workspace New item menu: Lakehouse, API for GraphQL, Dataflow Gen2, Copy job",
      "keywords": [
@@ -2865,6 +2996,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Semantic Link bridges data science and Power BI over medallion layers",
      "keywords": [
@@ -2967,6 +3099,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapters 2-12: open lakehouse, transactions, Iceberg, Hudi, Delta, catalogs, interoperability, governance",
      "keywords": [
@@ -2987,6 +3120,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: per-chapter Spark, Flink, single-node engines; DuckDB Iceberg SQL",
      "keywords": [
@@ -3009,6 +3143,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Lakehouse stack layers: analytics, compute, catalog, table formats, file formats, storage",
      "keywords": [
@@ -3031,6 +3166,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Hudi vs Iceberg vs Delta: keys, indexes, update/delete, write models",
      "keywords": [
@@ -3053,6 +3189,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Delta Lake read query flow: checkpoint, log replay, file pruning",
      "keywords": [
@@ -3069,6 +3206,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Table 10.1 comparing Iceberg, Hudi, Delta: workloads, ecosystem, maintenance, evolution",
      "keywords": [
@@ -3091,6 +3229,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Acme open lakehouse: Iceberg medallion tables, Nessie catalog, MinIO, Superset",
      "keywords": [
@@ -3111,6 +3250,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Real-time CDC pipeline: MySQL, Debezium, Kafka, Spark Streaming, Hudi, S3, Trino",
      "keywords": [
@@ -3219,6 +3359,7 @@
    "images": [
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo per chapter with Iceberg bronze/silver table DDL",
      "keywords": [
@@ -3241,6 +3382,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "The data engineering lifecycle: ingestion, processing, storage, serving",
      "keywords": [
@@ -3254,6 +3396,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Runtime lakehouse architecture: Iceberg REST catalog, MinIO, Spark, Jupyter, Docker",
      "keywords": [
@@ -3273,6 +3416,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "PySpark job loading pageview JSON from MinIO into Iceberg bronze table",
      "keywords": [
@@ -3291,6 +3435,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Bronze-to-silver transformer: SparkSession configured with Iceberg Hive catalog",
      "keywords": [
@@ -3308,6 +3453,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Silver users transformation with email regex validation and full name",
      "keywords": [
@@ -3324,6 +3470,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Airflow PythonOperator tasks exporting CSV and uploading to MinIO",
      "keywords": [
@@ -3421,6 +3568,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter list: trade-offs, storage, replication, sharding, transactions, consensus, batch, stream",
      "keywords": [
@@ -3443,6 +3591,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Simplified ETL from operational databases into a data warehouse",
      "keywords": [
@@ -3459,6 +3608,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Sidebar: shuffle in batch processing produces sorted order, not random",
      "keywords": [
@@ -3559,6 +3709,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter list: ingestion, Spark, streaming, Delta Lake, pipelines, CI/CD, governance, ML",
      "keywords": [
@@ -3581,6 +3732,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Azure Databricks Data Intelligence Platform reference lakehouse architecture",
      "keywords": [
@@ -3603,6 +3755,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Unity Catalog object model and proposed governed lakehouse architecture on Azure",
      "keywords": [
@@ -3625,6 +3778,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "PySpark reading CSV from ADLS with explicit StructType schema",
      "keywords": [
@@ -3641,6 +3795,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Download SFTP files with paramiko into DBFS using Key Vault secrets",
      "keywords": [
@@ -3658,6 +3813,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Spark cluster architecture on Azure Databricks: driver, executors, cluster manager",
      "keywords": [
@@ -3678,6 +3834,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Spark DAG execution flow with Catalyst, Photon and adaptive query execution",
      "keywords": [
@@ -3699,6 +3856,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Spark partitioning strategies: hash, range, file-based, pruning, skew",
      "keywords": [
@@ -3715,6 +3873,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Spark scaling strategies: horizontal, vertical, load balancing, skew mitigation",
      "keywords": [
@@ -3731,6 +3890,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "Querying raw Parquet files versus a Delta Lake table with transaction log",
      "keywords": [
@@ -3746,6 +3906,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "Spark Declarative Pipelines bronze tables ingesting CSV with Auto Loader",
      "keywords": [
@@ -3764,6 +3925,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "Silver customers table with expectations, deduplication and standardization",
      "keywords": [
@@ -3781,6 +3943,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "Spark Declarative Pipeline run results: streaming tables and expectations",
      "keywords": [
@@ -3797,6 +3960,7 @@
     },
     {
      "file": "memo13.png",
+     "thumb": "thumbs/memo13.avif",
      "kind": "memo",
      "caption": "Quarantine pattern: silver drops invalid orders, quarantine table captures them",
      "keywords": [
@@ -3812,6 +3976,7 @@
     },
     {
      "file": "memo14.png",
+     "thumb": "thumbs/memo14.avif",
      "kind": "memo",
      "caption": "Python data quality threshold check sending alerts on expectation failures",
      "keywords": [
@@ -3828,6 +3993,7 @@
     },
     {
      "file": "memo15.png",
+     "thumb": "thumbs/memo15.avif",
      "kind": "memo",
      "caption": "Comparison of Lakeflow Jobs, Azure Data Factory and Apache Airflow",
      "keywords": [
@@ -3844,6 +4010,7 @@
     },
     {
      "file": "memo16.png",
+     "thumb": "thumbs/memo16.avif",
      "kind": "memo",
      "caption": "SQL on system tables to trace downstream lineage of PII-tagged columns",
      "keywords": [
@@ -3949,6 +4116,7 @@
    "images": [
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: S3 Tables and Iceberg demo script querying via Athena",
      "keywords": [
@@ -3971,6 +4139,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Data lake on AWS reference architecture by layer",
      "keywords": [
@@ -3993,6 +4162,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Progressive medallion architecture stages with Glue, Data Catalog and Athena",
      "keywords": [
@@ -4012,6 +4182,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "AWS Glue versions and supported Apache Iceberg versions",
      "keywords": [
@@ -4025,6 +4196,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Core components of Amazon DataZone between producers and consumers",
      "keywords": [
@@ -4041,6 +4213,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Fixed capacity risk: excess capacity versus job failure over time",
      "keywords": [
@@ -4056,6 +4229,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "AWS Glue DataBrew project with profiling, recipe steps and DQ rules",
      "keywords": [
@@ -4072,6 +4246,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "SageMaker Unified Studio JupyterLab PySpark notebook with Glue Interactive Sessions",
      "keywords": [
@@ -4088,6 +4263,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Agentic data quality pipeline: MWAA, Glue job with Deequ, SNS alerts",
      "keywords": [
@@ -4107,6 +4283,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "Document extraction with Lambda, Textract and Bedrock Claude Sonnet",
      "keywords": [
@@ -4123,6 +4300,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "AWS services enabling semantic vector search",
      "keywords": [
@@ -4144,6 +4322,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "Amazon S3 Vectors integration with Bedrock Knowledge Bases and OpenSearch",
      "keywords": [
@@ -4159,6 +4338,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "Amazon Aurora zero-ETL replication to Amazon Redshift",
      "keywords": [
@@ -4175,6 +4355,7 @@
     },
     {
      "file": "memo13.png",
+     "thumb": "thumbs/memo13.avif",
      "kind": "memo",
      "caption": "Amazon QuickSight semantic layer: topics, synonyms, named entities, SPICE",
      "keywords": [
@@ -4276,6 +4457,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter list: Snowflake setup, pipelines, security, sharing, Time Travel, Cortex",
      "keywords": [
@@ -4294,6 +4476,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: Snowflake recipes, managing tables SQL script",
      "keywords": [
@@ -4314,6 +4497,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Virtual warehouse sizes matched to workloads",
      "keywords": [
@@ -4330,6 +4514,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Creating a materialized view aggregating TPC-H line items",
      "keywords": [
@@ -4344,6 +4529,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Storage integration to Amazon S3 with IAM role",
      "keywords": [
@@ -4358,6 +4544,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Creating database, schema and S3 stage using storage integration",
      "keywords": [
@@ -4373,6 +4560,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Parquet file format definition with compression and NULL_IF",
      "keywords": [
@@ -4385,6 +4573,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Stage on S3 bucket using Parquet file format",
      "keywords": [
@@ -4398,6 +4587,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Inserting typed columns selected from Parquet stage files",
      "keywords": [
@@ -4412,6 +4602,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "CTAS parsing NDJSON credit card data with PARSE_JSON",
      "keywords": [
@@ -4427,6 +4618,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "Snowpipe auto-ingest pipe copying CSV into table",
      "keywords": [
@@ -4442,6 +4634,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "Snowflake Openflow canvas starting a PostgreSQL connector",
      "keywords": [
@@ -4456,6 +4649,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "Scheduled task inserting aggregated customer orders every 30 minutes",
      "keywords": [
@@ -4472,6 +4666,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "Append-only stream on staging table",
      "keywords": [
@@ -4485,6 +4680,7 @@
     },
     {
      "file": "memo13.png",
+     "thumb": "thumbs/memo13.avif",
      "kind": "memo",
      "caption": "Dynamic table with target lag and auto refresh",
      "keywords": [
@@ -4499,6 +4695,7 @@
     },
     {
      "file": "memo14.png",
+     "thumb": "thumbs/memo14.avif",
      "kind": "memo",
      "caption": "Time Travel query with BEFORE timestamp clause",
      "keywords": [
@@ -4512,6 +4709,7 @@
     },
     {
      "file": "memo15.png",
+     "thumb": "thumbs/memo15.avif",
      "kind": "memo",
      "caption": "Zero-copy cloning a production database",
      "keywords": [
@@ -4524,6 +4722,7 @@
     },
     {
      "file": "memo16.png",
+     "thumb": "thumbs/memo16.avif",
      "kind": "memo",
      "caption": "Snowpark DataFrame group-by aggregation of revenue per customer",
      "keywords": [
@@ -4537,6 +4736,7 @@
     },
     {
      "file": "memo17.png",
+     "thumb": "thumbs/memo17.avif",
      "kind": "memo",
      "caption": "Dynamic data masking policy by current role",
      "keywords": [
@@ -4551,6 +4751,7 @@
     },
     {
      "file": "memo18.png",
+     "thumb": "thumbs/memo18.avif",
      "kind": "memo",
      "caption": "Cortex COMPLETE with Llama classifying feedback sentiment",
      "keywords": [
@@ -4641,6 +4842,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Three-part chapter list: Glue basics, data management and security, tuning and scenarios",
      "keywords": [
@@ -4663,6 +4865,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: Glue job ingesting CSV from S3 with Spark DataFrames",
      "keywords": [
@@ -4685,6 +4888,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Apache Spark cluster architecture: driver, cluster manager, worker executors",
      "keywords": [
@@ -4702,6 +4906,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "AWS Glue Data Catalog storage, partitions, partition indexes and consuming services",
      "keywords": [
@@ -4724,6 +4929,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Glue Studio visual job: Redshift source, Change Schema, Filter, S3 target",
      "keywords": [
@@ -4741,6 +4947,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Glue Studio Evaluate Data Quality node with DQDL rules and results",
      "keywords": [
@@ -4759,6 +4966,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Apache Parquet versus Apache ORC file layouts",
      "keywords": [
@@ -4775,6 +4983,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "PyDeequ AnalysisRunner computing size, completeness and min/max/mean metrics",
      "keywords": [
@@ -4791,6 +5000,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "PyDeequ VerificationSuite checks: uniqueness, completeness, allowed values",
      "keywords": [
@@ -4808,6 +5018,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Glue ETL jobs loading databases into an S3 data lake, then aggregation",
      "keywords": [
@@ -4823,6 +5034,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "AWS Glue workflow graph: trigger, crawler, job",
      "keywords": [
@@ -4837,6 +5049,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "Step Functions state machine running Glue crawler then Glue job",
      "keywords": [
@@ -4853,6 +5066,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "Airflow DAG on Amazon MWAA with Glue crawler and job operators",
      "keywords": [
@@ -4868,6 +5082,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "AWS Glue Studio monitoring dashboard: job runs, DPU hours, worker types",
      "keywords": [
@@ -4884,6 +5099,7 @@
     },
     {
      "file": "memo13.png",
+     "thumb": "thumbs/memo13.avif",
      "kind": "memo",
      "caption": "Amazon Athena console querying a Glue Data Catalog table with SQL",
      "keywords": [
@@ -4898,6 +5114,7 @@
     },
     {
      "file": "memo14.png",
+     "thumb": "thumbs/memo14.avif",
      "kind": "memo",
      "caption": "Glue streaming CDC job: dedupe DMS records, write partitioned Parquet micro-batches",
      "keywords": [
@@ -4920,6 +5137,7 @@
     },
     {
      "file": "memo15.png",
+     "thumb": "thumbs/memo15.avif",
      "kind": "memo",
      "caption": "YAML data contract with schema and SLA latency properties",
      "keywords": [
@@ -4934,6 +5152,7 @@
     },
     {
      "file": "memo16.png",
+     "thumb": "thumbs/memo16.avif",
      "kind": "memo",
      "caption": "Open table formats layered between engines and storage",
      "keywords": [
@@ -5042,6 +5261,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter list: data platforms, Azure, Databricks, medallion layers with GenAI, governance",
      "keywords": [
@@ -5064,6 +5284,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: Electroniz silver DLT pipeline with expectations and SCD Type 2",
      "keywords": [
@@ -5085,6 +5306,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "Structured, semi-structured and unstructured data: table, JSON, XML, logs",
      "keywords": [
@@ -5099,6 +5321,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Lambda architecture: batch, serving and speed layers with Spark Streaming",
      "keywords": [
@@ -5116,6 +5339,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Data experts team, data product creation process and endorsement badges",
      "keywords": [
@@ -5136,6 +5360,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Unity Catalog three-level namespace: metastore, catalogs, schemas, tables, volumes, models",
      "keywords": [
@@ -5156,6 +5381,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "Watermark technique for incremental data ingestion",
      "keywords": [
@@ -5169,6 +5395,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Databricks SQL MERGE WITH SCHEMA EVOLUTION upserting CDC employees",
      "keywords": [
@@ -5186,6 +5413,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Azure Data Factory batch ingestion pipeline with ForEach, copy and watermark",
      "keywords": [
@@ -5203,6 +5431,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Silver table expectations panel: upserted records and DROP actions",
      "keywords": [
@@ -5218,6 +5447,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "Catalog Explorer data quality monitoring dashboard of bronze tables",
      "keywords": [
@@ -5233,6 +5463,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "ODCS YAML data contract for PII-masked golden record customer product",
      "keywords": [
@@ -5340,6 +5571,7 @@
    "images": [
     {
      "file": "memo0.png",
+     "thumb": "thumbs/memo0.avif",
      "kind": "chapters",
      "caption": "Chapter list: analytics engineering, Fabric workloads, Power BI semantic models, governance",
      "keywords": [
@@ -5361,6 +5593,7 @@
     },
     {
      "file": "gh.png",
+     "thumb": "thumbs/gh.avif",
      "kind": "repo",
      "caption": "Companion repo: sample sales/orders CSV data and Python processing script",
      "keywords": [
@@ -5376,6 +5609,7 @@
     },
     {
      "file": "memo1.png",
+     "thumb": "thumbs/memo1.avif",
      "kind": "memo",
      "caption": "ETL versus ELT: evolution of data engineer and analytics engineer roles",
      "keywords": [
@@ -5393,6 +5627,7 @@
     },
     {
      "file": "memo2.png",
+     "thumb": "thumbs/memo2.avif",
      "kind": "memo",
      "caption": "Conceptual data model of stadium, event, customer, attendee, ticket entities",
      "keywords": [
@@ -5405,6 +5640,7 @@
     },
     {
      "file": "memo3.png",
+     "thumb": "thumbs/memo3.avif",
      "kind": "memo",
      "caption": "Logical data model with primary keys and cardinality",
      "keywords": [
@@ -5419,6 +5655,7 @@
     },
     {
      "file": "memo4.png",
+     "thumb": "thumbs/memo4.avif",
      "kind": "memo",
      "caption": "Physical data model with data types and foreign keys",
      "keywords": [
@@ -5432,6 +5669,7 @@
     },
     {
      "file": "memo5.png",
+     "thumb": "thumbs/memo5.avif",
      "kind": "memo",
      "caption": "SCD Type 2 table with surrogate key, start/end dates, current flag",
      "keywords": [
@@ -5446,6 +5684,7 @@
     },
     {
      "file": "memo6.png",
+     "thumb": "thumbs/memo6.avif",
      "kind": "memo",
      "caption": "Fabric Data Factory items: dataflows, pipelines, copy job, Airflow job",
      "keywords": [
@@ -5462,6 +5701,7 @@
     },
     {
      "file": "memo7.png",
+     "thumb": "thumbs/memo7.avif",
      "kind": "memo",
      "caption": "Medallion architecture across bronze, silver, gold lakehouses",
      "keywords": [
@@ -5479,6 +5719,7 @@
     },
     {
      "file": "memo8.png",
+     "thumb": "thumbs/memo8.avif",
      "kind": "memo",
      "caption": "Fabric copy job full copy from source lakehouse to bronze lakehouse",
      "keywords": [
@@ -5493,6 +5734,7 @@
     },
     {
      "file": "memo9.png",
+     "thumb": "thumbs/memo9.avif",
      "kind": "memo",
      "caption": "Apache Airflow job in Fabric editing a Hello World DAG",
      "keywords": [
@@ -5508,6 +5750,7 @@
     },
     {
      "file": "memo10.png",
+     "thumb": "thumbs/memo10.avif",
      "kind": "memo",
      "caption": "Lakehouse bronze/silver with gold in warehouse, consumed by Power BI",
      "keywords": [
@@ -5527,6 +5770,7 @@
     },
     {
      "file": "memo11.png",
+     "thumb": "thumbs/memo11.avif",
      "kind": "memo",
      "caption": "Converting Parquet files to Delta tables with PySpark or Spark SQL",
      "keywords": [
@@ -5543,6 +5787,7 @@
     },
     {
      "file": "memo12.png",
+     "thumb": "thumbs/memo12.avif",
      "kind": "memo",
      "caption": "PySpark generating surrogate keys for new gold dimension rows",
      "keywords": [
@@ -5558,6 +5803,7 @@
     },
     {
      "file": "memo13.png",
+     "thumb": "thumbs/memo13.avif",
      "kind": "memo",
      "caption": "Lakehouse explorer showing gold dim/fact tables and bronze files",
      "keywords": [
@@ -5575,6 +5821,7 @@
     },
     {
      "file": "memo14.png",
+     "thumb": "thumbs/memo14.avif",
      "kind": "memo",
      "caption": "T-SQL COPY INTO loading OneLake CSV into a Fabric warehouse",
      "keywords": [
@@ -5590,6 +5837,7 @@
     },
     {
      "file": "memo15.png",
+     "thumb": "thumbs/memo15.avif",
      "kind": "memo",
      "caption": "Real-Time Intelligence: Eventstream, Eventhouse, KQL, Activator over OneLake",
      "keywords": [
@@ -5612,6 +5860,7 @@
     },
     {
      "file": "memo16.png",
+     "thumb": "thumbs/memo16.avif",
      "kind": "memo",
      "caption": "SQL to Kusto Query Language cheat sheet",
      "keywords": [
@@ -5625,6 +5874,7 @@
     },
     {
      "file": "memo17.png",
+     "thumb": "thumbs/memo17.avif",
      "kind": "memo",
      "caption": "Fabric IQ ontology layer binding OneLake sources for agents and reports",
      "keywords": [
@@ -5643,6 +5893,7 @@
     },
     {
      "file": "memo18.png",
+     "thumb": "thumbs/memo18.avif",
      "kind": "memo",
      "caption": "Languages supported per storage: lakehouse, warehouse, eventhouse",
      "keywords": [
@@ -5662,6 +5913,7 @@
     },
     {
      "file": "memo19.png",
+     "thumb": "thumbs/memo19.avif",
      "kind": "memo",
      "caption": "Fabric ingestion methods compared: dataflows, pipelines, copy job, notebooks, mirroring",
      "keywords": [
@@ -5681,6 +5933,7 @@
     },
     {
      "file": "memo20.png",
+     "thumb": "thumbs/memo20.avif",
      "kind": "memo",
      "caption": "Power BI storage modes: Import, DirectQuery, Live connection, Direct Lake",
      "keywords": [
@@ -5699,6 +5952,7 @@
     },
     {
      "file": "memo21.png",
+     "thumb": "thumbs/memo21.avif",
      "kind": "memo",
      "caption": "Tip on cardinality meanings in Power BI relationships and Import mode",
      "keywords": [
@@ -5712,6 +5966,7 @@
     },
     {
      "file": "memo22.png",
+     "thumb": "thumbs/memo22.avif",
      "kind": "memo",
      "caption": "Semantic Link SemPy finding and plotting table functional dependencies",
      "keywords": [
