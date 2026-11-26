@@ -76,7 +76,20 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
   const overlay = el('div', { class: 'gm-overlay', hidden: true });
   const sink = el('div', { class: 'gm-sink', text: 'sink' });
   board.append(sink);
-  root.replaceChildren(el('div', { class: 'gm' }, setup, hud, el('div', { class: 'gm-stage' }, board, overlay), inputRow, logBox, live));
+  // Visual theme (this browser only).
+  const THEMES = { neon: 'Neon grid', retro: 'Retro terminal', classic: 'Classic' };
+  const THEME_KEY = 'pipeline-rush-theme';
+  const savedTheme = store.get(THEME_KEY);
+  const themeSelect = el('select', { 'data-gm': 'theme' },
+    Object.entries(THEMES).map(([k, label]) => el('option', { value: k, text: label })));
+  themeSelect.value = THEMES[savedTheme] ? savedTheme : 'neon';
+  const shell = el('div', { class: 'gm', 'data-theme': themeSelect.value });
+  themeSelect.addEventListener('change', () => {
+    shell.dataset.theme = themeSelect.value;
+    store.set(THEME_KEY, themeSelect.value);
+  });
+  root.replaceChildren(shell);
+  shell.append(el('div', { class: 'gm-top' }, el('label', { class: 'gm-theme' }, 'Theme ', themeSelect)), setup, hud, el('div', { class: 'gm-stage' }, board, overlay), inputRow, logBox, live);
 
   function bestKey(mode) { return `pipeline-rush-best:${mode}`; }
   // Score history (this browser only): every finished game, newest first, capped.
