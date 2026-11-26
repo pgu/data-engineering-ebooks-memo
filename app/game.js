@@ -246,8 +246,7 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     g.lives -= 1;
     g.combo = 0;
     g.missed.push(p.word);
-    input.value = '';
-    refreshHighlights();
+    refreshHighlights(); // keep what's typed: it may still match another packet (re-targeted here)
     renderHud();
     if (g.lives <= 0) gameOver(); else live.textContent = `Packet lost: ${p.word.term}. ${g.lives} lives left.`;
   }
@@ -326,7 +325,11 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
   }
 
   function gameOver() {
+    if (!g.running) return; // already over: never record a game twice
     g.running = false;
+    g.paused = false;
+    overlay.hidden = true;
+    overlay.replaceChildren();
     cancelAnimationFrame(g.raf);
     const best = store.get(bestKey(g.mode)) ?? 0;
     const isBest = g.score > best;
@@ -366,7 +369,7 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     if (a === 'start') start();
     if (a === 'pause') pause();
     if (a === 'resume') resume();
-    if (a === 'quit') { g.lives = 0; gameOver(); }
+    if (a === 'quit' && g.running) { g.lives = 0; gameOver(); }
     if (a === 'clear-history' && confirm('Delete all saved Pipeline Rush scores in this browser?')) {
       store.set(HISTORY_KEY, []);
       for (const k of Object.keys(MODES)) store.set(bestKey(k), null);
