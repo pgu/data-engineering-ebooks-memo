@@ -473,28 +473,22 @@ dialog[open] { display: flex; flex-direction: column; }
 .gm-lives { color: #d0476a; letter-spacing: 2px; font-size: 1.1rem; }
 .gm-stage { position: relative; }
 .gm-board {
-  --lane-h: 52px;
-  position: relative; block-size: calc(var(--lane-h) * 5); overflow: hidden;
+  --sink-h: 40px;
+  position: relative; block-size: clamp(320px, 62dvh, 560px); overflow: hidden;
   border: 1px solid var(--border); border-radius: var(--radius);
   background:
-    linear-gradient(90deg, transparent calc(100% - 56px), color-mix(in oklab, #d0476a 14%, transparent) 0),
+    linear-gradient(180deg, transparent calc(100% - var(--sink-h)), color-mix(in oklab, #d0476a 14%, transparent) 0),
+    repeating-linear-gradient(90deg, transparent 0 79px, color-mix(in oklab, var(--border) 45%, transparent) 79px 80px),
     var(--surface);
   user-select: none; cursor: text;
 }
-.gm-lane {
-  position: absolute; inset-inline: 0; top: calc(var(--lane) * var(--lane-h)); block-size: var(--lane-h);
-  border-bottom: 1px dashed var(--border);
-}
-.gm-lane::after { /* pipe */
-  content: ""; position: absolute; inset-inline: 8px 56px; top: 50%; block-size: 6px; translate: 0 -50%;
-  border-radius: 3px; background: var(--surface-2);
-}
 .gm-sink {
-  position: absolute; inset-block: 0; inset-inline-end: 0; inline-size: 56px; display: grid; place-items: center;
-  writing-mode: vertical-rl; text-transform: uppercase; letter-spacing: .3em; font-size: .7rem; color: #d0476a;
+  position: absolute; inset-inline: 0; inset-block-end: 0; block-size: var(--sink-h); display: grid; place-items: center;
+  text-transform: uppercase; letter-spacing: .3em; font-size: .7rem; color: #d0476a;
+  border-top: 2px dashed color-mix(in oklab, #d0476a 45%, transparent);
 }
 .gm-packet {
-  position: absolute; left: 0; top: calc(var(--lane) * var(--lane-h) + 9px); block-size: calc(var(--lane-h) - 18px);
+  position: absolute; left: 0; top: 0; block-size: 34px;
   display: flex; align-items: center; padding: 0 12px; white-space: pre; z-index: 1;
   border-radius: 8px; border: 1px solid var(--border); background: var(--surface); box-shadow: var(--shadow);
   font: 600 1rem/1 ui-monospace, "SF Mono", Menlo, Consolas, monospace;
@@ -529,6 +523,6 @@ dialog[open] { display: flex; flex-direction: column; }
   .gm-board.levelup, .gm-input-row.shake { animation: none; }
 }
 @media (width < 640px) {
-  .gm-board { --lane-h: 44px; }
+  .gm-packet { block-size: 30px; }
   .gm-packet { font-size: .85rem; padding: 0 8px; }
 }

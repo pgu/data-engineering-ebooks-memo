@@ -1,8 +1,9 @@
 // "Pipeline Rush" typing game. Keywords (from the books' indexes) flow as data packets down
-// pipeline lanes; type a packet's keyword to load it before it reaches the sink.
+// the pipeline from top to bottom; type a packet's keyword to load it before it reaches the sink.
 // Words come from seed/index-referential.json (built by tools/build-data.mjs).
 
-const LANES = 5;
+const MAX_ON_BOARD = 6;
+const SLOWER = { easy: 1, medium: 1.15, hard: 1.3 }; // longer words fall slower (same speed within a bucket, so packets never catch up)
 const LIVES = 3;
 const WORDS_PER_LEVEL = 8;
 const MODES = {
@@ -23,7 +24,7 @@ function el(tag, attrs = {}, ...children) {
     else if (k in e && !k.startsWith('aria-') && !k.startsWith('data-')) e[k] = v;
     else e.setAttribute(k, v);
   }
-  e.append(...children.flat().filter((c) => c != null && c !== false));
+  e.append(...children.flat(Infinity).filter((c) => c != null && c !== false));
   return e;
 }
 const store = {
@@ -55,8 +56,8 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     el('button', { type: 'button', class: 'gm-pause', text: 'Pause', 'data-gm': 'pause' }));
   const logBox = el('ol', { class: 'gm-log', hidden: true, 'aria-label': 'Loaded keywords' });
   const overlay = el('div', { class: 'gm-overlay', hidden: true });
-  board.append(...Array.from({ length: LANES }, (_, i) => el('div', { class: 'gm-lane', style: `--lane:${i}` })),
-    el('div', { class: 'gm-sink', text: 'sink' }));
+  const sink = el('div', { class: 'gm-sink', text: 'sink' });
+  board.append(sink);
   root.replaceChildren(el('div', { class: 'gm' }, setup, hud, el('div', { class: 'gm-stage' }, board, overlay), inputRow, logBox, live));
 
   function bestKey(mode) { return `pipeline-rush-best:${mode}`; }
@@ -128,18 +129,25 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
   }
 
   function spawn() {
-    const used = new Set(g.packets.map((p) => p.lane));
-    const free = [...Array(LANES).keys()].filter((l) => !used.has(l));
-    if (!free.length) return;
     const word = nextWord();
-    if (!word) return;
-    const lane = free[Math.floor(Math.random() * free.length)];
+    if (!word) return false;
     const typed = el('span', { class: 'typed' });
     const rest = el('span', { class: 'rest', text: word.term });
-    const node = el('div', { class: `gm-packet b-${word.bucket}`, style: `--lane:${lane}` }, typed, rest);
+    const node = el('div', { class: `gm-packet b-${word.bucket}` }, typed, rest);
     board.append(node);
-    const travel = Math.max(5, 15 - g.level * 0.8) * (1 + Math.max(0, word.term.length - 8) / 25); // seconds to cross
-    g.packets.push({ word, lane, node, typed, rest, x: -node.offsetWidth, travel });
+    const w = node.offsetWidth, hgt = node.offsetHeight, width = board.clientWidth;
+    // Pick a column where no packet is still near the top (they all fall at one speed, so no later overlap).
+    const busy = g.packets.filter((p) => p.y < hgt * 1.8).map((p) => [p.x - 8, p.x + p.node.offsetWidth + 8]);
+    let x = null;
+    for (let i = 0; i < 12 && x == null; i++) {
+      const c = Math.random() * Math.max(0, width - w);
+      if (!busy.some(([a, b]) => c < b && c + w > a)) x = c;
+    }
+    if (x == null) { node.remove(); g.bags[MODES[g.mode].buckets(g.level).join()]?.push(word); return false; }
+    const travel = Math.max(5, 15 - g.level * 0.8) * SLOWER[word.bucket]; // seconds to fall
+    g.packets.push({ word, node, typed, rest, x, y: -hgt, travel });
+    node.style.transform = `translate(${x}px, ${-hgt}px)`;
+    return true;
   }
 
   function tick(now) {
@@ -148,18 +156,17 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     g.last = now;
     if (!g.running || g.paused) return;
     g.activeMs += dt * 1000;
-    const width = board.clientWidth;
+    const height = board.clientHeight;
     g.spawnIn -= dt;
-    const maxOnBoard = Math.min(2 + Math.ceil(g.level / 2), LANES);
+    const maxOnBoard = Math.min(2 + Math.ceil(g.level / 2), MAX_ON_BOARD);
     if ((g.spawnIn <= 0 && g.packets.length < maxOnBoard) || !g.packets.length) {
-      spawn();
-      g.spawnIn = Math.max(0.9, 3.2 - g.level * 0.22);
+      if (spawn()) g.spawnIn = Math.max(0.9, 3.2 - g.level * 0.22);
     }
     for (const p of [...g.packets]) {
       if (!g.running) break; // jammed during this frame
-      p.x += (width / p.travel) * dt;
-      p.node.style.transform = `translateX(${p.x}px)`;
-      if (p.x + p.node.offsetWidth >= width) lose(p);
+      p.y += (height / p.travel) * dt;
+      p.node.style.transform = `translate(${p.x}px, ${p.y}px)`;
+      if (p.y + p.node.offsetHeight >= height - sink.offsetHeight) lose(p);
     }
   }
 
@@ -191,8 +198,8 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
       p.rest.textContent = on ? p.word.term.slice(v.length) : p.word.term;
     }
   }
-  // The most advanced packet whose keyword starts with what was typed.
-  const targetFor = (v) => g.packets.filter((p) => norm(p.word.term).startsWith(v)).sort((a, b) => b.x - a.x)[0] ?? null;
+  // The lowest packet whose keyword starts with what was typed.
+  const targetFor = (v) => g.packets.filter((p) => norm(p.word.term).startsWith(v)).sort((a, b) => b.y - a.y)[0] ?? null;
 
   let prev = '';
   input.addEventListener('input', () => {
