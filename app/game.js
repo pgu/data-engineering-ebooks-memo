@@ -73,7 +73,7 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     const ids = visibleBookIds();
     const filteredCount = words ? words.filter((w) => w.books.some((b) => ids.has(b))).length : 0;
     const counts = words ? Object.fromEntries(['easy', 'medium', 'hard'].map((b) => [b, words.filter((w) => w.bucket === b).length])) : {};
-    setup.replaceChildren(
+    setup.replaceChildren(...[
       el('h2', { text: summary ? 'Pipeline jammed!' : 'Pipeline Rush' }),
       summary
         ? el('div', { class: 'gm-summary' },
@@ -96,7 +96,7 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
         el('input', { type: 'checkbox', checked: g.onlyFiltered, 'data-gm': 'filtered' }),
         ` Only keywords from the books currently filtered (${ids.size} book${ids.size === 1 ? '' : 's'}, ${filteredCount} words)`),
       el('p', {}, el('button', { type: 'button', class: 'gm-start', 'data-gm': 'start', disabled: !words, text: summary ? 'Play again' : 'Start' })),
-    );
+    ].filter(Boolean)); // optional parts are null: don't render them as text
   }
 
   function renderHud() {
