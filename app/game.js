@@ -3,16 +3,34 @@
 // Words come from seed/index-referential.json (built by tools/build-data.mjs).
 
 const MAX_ON_BOARD = 6;
-const SLOWER = { easy: 1, medium: 1.15, hard: 1.3 }; // longer words fall slower (same speed within a bucket, so packets never catch up)
 const LIVES = 3;
 const WORDS_PER_LEVEL = 8;
+// Progressive: share of short (≤10) / medium (≤20) / long (≤25) keywords per level; the last row repeats.
+const MIX = [
+  { easy: 1 },
+  { easy: 0.8, medium: 0.2 },
+  { easy: 0.6, medium: 0.4 },
+  { easy: 0.4, medium: 0.5, hard: 0.1 },
+  { easy: 0.3, medium: 0.5, hard: 0.2 },
+  { easy: 0.2, medium: 0.5, hard: 0.3 },
+  { easy: 0.15, medium: 0.45, hard: 0.4 },
+  { easy: 0.1, medium: 0.4, hard: 0.5 },
+];
 const MODES = {
-  easy: { label: 'Easy', hint: 'up to 10 characters', buckets: () => ['easy'] },
-  medium: { label: 'Medium', hint: 'up to 20 characters', buckets: () => ['medium'] },
-  hard: { label: 'Hard', hint: 'up to 25 characters', buckets: () => ['hard'] },
-  progressive: { label: 'Progressive', hint: 'easy → medium → hard as you level up',
-    buckets: (level) => (level <= 3 ? ['easy'] : level <= 6 ? ['medium'] : ['hard']) },
+  easy: { label: 'Easy', hint: 'up to 10 characters', mix: () => ({ easy: 1 }) },
+  medium: { label: 'Medium', hint: 'up to 20 characters', mix: () => ({ medium: 1 }) },
+  hard: { label: 'Hard', hint: 'up to 25 characters', mix: () => ({ hard: 1 }) },
+  progressive: { label: 'Progressive', hint: 'short words first, then a growing mix of longer ones',
+    mix: (level) => MIX[Math.min(level, MIX.length) - 1] },
 };
+const SIZE_LABEL = { easy: 'short', medium: 'medium', hard: 'long' };
+// Seconds for a packet to fall: faster each level, slower for longer keywords (5 chars ≈ ×1, 25 chars ≈ ×1.5).
+const travelTime = (level, term) => Math.max(5, 15 - level * 0.8) * (0.875 + term.length / 40);
+function pickBucket(mix) {
+  let r = Math.random();
+  for (const [b, w] of Object.entries(mix)) if ((r -= w) <= 0) return b;
+  return Object.keys(mix).at(-1);
+}
 
 const norm = (s) => s.toLowerCase();
 function el(tag, attrs = {}, ...children) {
@@ -61,12 +79,39 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
   root.replaceChildren(el('div', { class: 'gm' }, setup, hud, el('div', { class: 'gm-stage' }, board, overlay), inputRow, logBox, live));
 
   function bestKey(mode) { return `pipeline-rush-best:${mode}`; }
+  // Score history (this browser only): every finished game, newest first, capped.
+  const HISTORY_KEY = 'pipeline-rush-history';
+  const HISTORY_MAX = 100;
+  const history = () => (Array.isArray(store.get(HISTORY_KEY)) ? store.get(HISTORY_KEY) : []);
+  const dateFmt = new Intl.DateTimeFormat(undefined, { dateStyle: 'medium', timeStyle: 'short' });
 
-  function pool(level) {
-    const buckets = MODES[g.mode].buckets(level);
+  function historyTable() {
+    const all = history();
+    if (!all.length) return el('p', { class: 'muted', text: 'No games played yet in this browser.' });
+    const filter = g.historyMode;
+    const rows = all.filter((r) => !filter || r.mode === filter);
+    const top = [...rows].sort((a, b) => b.score - a.score || a.at.localeCompare(b.at)).slice(0, 10);
+    const latest = all[0]?.at;
+    return el('div', { class: 'gm-history-body' },
+      el('div', { class: 'gm-history-tabs', role: 'group', 'aria-label': 'Show scores for' },
+        [['', 'All modes'], ...Object.entries(MODES).map(([k, m]) => [k, m.label])].map(([k, label]) =>
+          el('button', { type: 'button', 'data-gm-hist': k, 'aria-pressed': String((filter ?? '') === k), text: label }))),
+      top.length ? el('table', { class: 'gm-history-table' },
+        el('caption', { class: 'visually-hidden', text: 'Top scores' }),
+        el('thead', {}, el('tr', {}, ['#', 'Score', 'Mode', 'Level', 'Keywords', 'WPM', 'Accuracy', 'Date'].map((t) => el('th', { scope: 'col', text: t })))),
+        el('tbody', {}, top.map((r, i) => el('tr', { class: r.at === latest ? 'latest' : null },
+          el('td', { text: i + 1 }), el('td', {}, el('strong', { text: r.score })), el('td', { text: MODES[r.mode]?.label ?? r.mode }),
+          el('td', { text: r.level }), el('td', { text: r.cleared }), el('td', { text: r.wpm }), el('td', { text: `${r.accuracy}%` }),
+          el('td', {}, el('time', { datetime: r.at, text: dateFmt.format(new Date(r.at)) }), r.at === latest ? el('span', { class: 'gm-latest', text: 'last game' }) : null)))))
+        : el('p', { class: 'muted', text: 'No games in this mode yet.' }),
+      el('p', { class: 'muted gm-history-foot' }, `${all.length} game${all.length === 1 ? '' : 's'} saved in this browser · `,
+        el('button', { type: 'button', class: 'linkish', 'data-gm': 'clear-history', text: 'Clear history' })));
+  }
+
+  function pool(bucket) {
     const ids = g.onlyFiltered ? visibleBookIds() : null;
-    let list = words.filter((w) => buckets.includes(w.bucket) && (!ids || w.books.some((b) => ids.has(b))));
-    if (list.length < 12) list = words.filter((w) => buckets.includes(w.bucket)); // too few: fall back to all books
+    let list = words.filter((w) => w.bucket === bucket && (!ids || w.books.some((b) => ids.has(b))));
+    if (list.length < 12) list = words.filter((w) => w.bucket === bucket); // too few: fall back to all books
     return list;
   }
 
@@ -97,6 +142,8 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
         el('input', { type: 'checkbox', checked: g.onlyFiltered, 'data-gm': 'filtered' }),
         ` Only keywords from the books currently filtered (${ids.size} book${ids.size === 1 ? '' : 's'}, ${filteredCount} words)`),
       el('p', {}, el('button', { type: 'button', class: 'gm-start', 'data-gm': 'start', disabled: !words, text: summary ? 'Play again' : 'Start' })),
+      el('section', { class: 'gm-history', 'aria-labelledby': 'gm-history-title' },
+        el('h3', { id: 'gm-history-title', text: 'Best scores' }), historyTable()),
     ].filter(Boolean)); // optional parts are null: don't render them as text
   }
 
@@ -108,7 +155,9 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
       el('span', {}, 'Combo ', el('strong', { text: `×${g.combo}` })),
       el('span', {}, el('strong', { text: wpm() }), ' WPM'),
       el('span', {}, el('strong', { text: `${accuracy()}%` }), ' accuracy'),
-      el('span', { class: 'muted', text: MODES[g.mode].label }),
+      el('span', { class: 'muted', text: g.mode === 'progressive'
+        ? `Mix: ${Object.entries(MODES.progressive.mix(g.level)).map(([b, w]) => `${Math.round(w * 100)}% ${SIZE_LABEL[b]}`).join(' · ')}`
+        : MODES[g.mode].label }),
     );
   }
   const wpm = () => (g.activeMs > 3000 ? Math.round((g.correctKeys / 5) / (g.activeMs / 60000)) : 0);
@@ -116,10 +165,10 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
 
   // ---------- game loop ----------
   function nextWord() {
-    const buckets = MODES[g.mode].buckets(g.level).join();
-    if (!g.bags[buckets]?.length) g.bags[buckets] = shuffle([...pool(g.level)]);
+    const bucket = pickBucket(MODES[g.mode].mix(g.level));
+    if (!g.bags[bucket]?.length) g.bags[bucket] = shuffle([...pool(bucket)]);
     const onBoard = new Set(g.packets.map((p) => norm(p.word.term)));
-    const bag = g.bags[buckets];
+    const bag = g.bags[bucket];
     for (let i = bag.length - 1; i >= 0; i--) {
       // Avoid two packets on board sharing a prefix (typing would be ambiguous).
       const t = norm(bag[i].term);
@@ -136,15 +185,23 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     const node = el('div', { class: `gm-packet b-${word.bucket}` }, typed, rest);
     board.append(node);
     const w = node.offsetWidth, hgt = node.offsetHeight, width = board.clientWidth;
-    // Pick a column where no packet is still near the top (they all fall at one speed, so no later overlap).
-    const busy = g.packets.filter((p) => p.y < hgt * 1.8).map((p) => [p.x - 8, p.x + p.node.offsetWidth + 8]);
+    const fall = board.clientHeight - sink.offsetHeight;
+    const travel = travelTime(g.level, word.term);
+    const speed = fall / travel;
+    // Columns to avoid: packets still near the top, and slower packets this one would catch up with before the sink.
+    const busy = g.packets.filter((p) => {
+      if (p.y < hgt * 1.8) return true;
+      const pSpeed = fall / p.travel;
+      if (speed <= pSpeed) return false;
+      const catchUp = (p.y - 6) / (speed - pSpeed); // gap between its top and our bottom (we start at -hgt)
+      return catchUp < (fall - p.y - p.node.offsetHeight) / pSpeed;
+    }).map((p) => [p.x - 8, p.x + p.node.offsetWidth + 8]);
     let x = null;
     for (let i = 0; i < 12 && x == null; i++) {
       const c = Math.random() * Math.max(0, width - w);
       if (!busy.some(([a, b]) => c < b && c + w > a)) x = c;
     }
-    if (x == null) { node.remove(); g.bags[MODES[g.mode].buckets(g.level).join()]?.push(word); return false; }
-    const travel = Math.max(5, 15 - g.level * 0.8) * SLOWER[word.bucket]; // seconds to fall
+    if (x == null) { node.remove(); g.bags[word.bucket]?.push(word); return false; }
     g.packets.push({ word, node, typed, rest, x, y: -hgt, travel });
     node.style.transform = `translate(${x}px, ${-hgt}px)`;
     return true;
@@ -156,7 +213,7 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     g.last = now;
     if (!g.running || g.paused) return;
     g.activeMs += dt * 1000;
-    const height = board.clientHeight;
+    const fall = board.clientHeight - sink.offsetHeight; // distance to the sink
     g.spawnIn -= dt;
     const maxOnBoard = Math.min(2 + Math.ceil(g.level / 2), MAX_ON_BOARD);
     if ((g.spawnIn <= 0 && g.packets.length < maxOnBoard) || !g.packets.length) {
@@ -164,9 +221,9 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     }
     for (const p of [...g.packets]) {
       if (!g.running) break; // jammed during this frame
-      p.y += (height / p.travel) * dt;
+      p.y += (fall / p.travel) * dt;
       p.node.style.transform = `translate(${p.x}px, ${p.y}px)`;
-      if (p.y + p.node.offsetHeight >= height - sink.offsetHeight) lose(p);
+      if (p.y + p.node.offsetHeight >= fall) lose(p);
     }
   }
 
@@ -265,6 +322,10 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     hud.hidden = board.hidden = inputRow.hidden = logBox.hidden = true;
     setup.hidden = false;
     g.summary = { score: g.score, level: g.level, cleared: g.cleared, wpm: wpm(), accuracy: accuracy(), best: isBest, missed: g.missed };
+    if (g.score > 0 || g.cleared > 0) {
+      const { score, level, cleared, wpm: w, accuracy: acc } = g.summary;
+      store.set(HISTORY_KEY, [{ score, mode: g.mode, level, cleared, wpm: w, accuracy: acc, at: new Date().toISOString() }, ...history()].slice(0, HISTORY_MAX));
+    }
     renderSetup();
     live.textContent = `Game over. ${g.score} points.`;
     setup.querySelector('[data-gm="start"]')?.focus();
@@ -293,6 +354,13 @@ export function createGame(root, { wordsUrl, visibleBookIds, titleOf, openBook }
     if (a === 'pause') pause();
     if (a === 'resume') resume();
     if (a === 'quit') { g.lives = 0; gameOver(); }
+    if (a === 'clear-history' && confirm('Delete all saved Pipeline Rush scores in this browser?')) {
+      store.set(HISTORY_KEY, []);
+      for (const k of Object.keys(MODES)) store.set(bestKey(k), null);
+      renderSetup();
+    }
+    const hist = e.target.closest('[data-gm-hist]');
+    if (hist) { g.historyMode = hist.dataset.gmHist || null; renderSetup(); setup.querySelector(`[data-gm-hist="${hist.dataset.gmHist}"]`)?.focus(); }
     const book = e.target.closest('[data-gm-book]');
     if (book) { pause(); openBook(book.dataset.gmBook); }
   });

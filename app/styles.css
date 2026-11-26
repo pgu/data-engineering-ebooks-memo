@@ -526,3 +526,17 @@ dialog[open] { display: flex; flex-direction: column; }
   .gm-packet { block-size: 30px; }
   .gm-packet { font-size: .85rem; padding: 0 8px; }
 }
+
+/* Game score history */
+.gm-history { border-top: 1px solid var(--border); padding-top: 12px; }
+.gm-history h3 { margin: 0 0 8px; font-size: 1rem; }
+.gm-history-tabs { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 8px; }
+.gm-history-tabs button { border: 1px solid var(--border); border-radius: 999px; background: var(--surface); padding: 2px 12px; min-block-size: 28px; cursor: pointer; font-size: .82rem; }
+.gm-history-tabs button[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--on-accent); }
+.gm-history-body { overflow-x: auto; }
+.gm-history-table { border-collapse: collapse; inline-size: 100%; font-size: .88rem; font-variant-numeric: tabular-nums; }
+.gm-history-table th, .gm-history-table td { padding: 5px 10px; text-align: start; border-bottom: 1px solid var(--border); white-space: nowrap; }
+.gm-history-table th { color: var(--muted); font-weight: 600; font-size: .75rem; text-transform: uppercase; letter-spacing: .05em; }
+.gm-history-table tr.latest td { background: var(--accent-soft); }
+.gm-latest { margin-inline-start: 8px; font-size: .72rem; padding: 0 6px; border-radius: 999px; background: var(--accent); color: var(--on-accent); }
+.gm-history-foot { margin: 8px 0 0; font-size: .8rem; }
