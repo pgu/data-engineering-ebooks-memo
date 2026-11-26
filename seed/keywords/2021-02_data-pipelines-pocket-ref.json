@@ -1,0 +1,210 @@
+{
+  "folder": "2021-02_data-pipelines-pocket-ref",
+  "deckId": "deb06",
+  "images": [
+    {
+      "file": "memo0.png",
+      "kind": "chapters",
+      "caption": "Chapter table with keywords: ingestion, transformation, orchestration, validation, monitoring",
+      "keywords": [
+        "data pipelines",
+        "data ingestion",
+        "batch vs streaming",
+        "ETL",
+        "ELT",
+        "data modeling",
+        "orchestration",
+        "scheduling",
+        "data validation",
+        "data quality",
+        "monitoring",
+        "alerting",
+        "modern data infrastructure"
+      ]
+    },
+    {
+      "file": "memo1.png",
+      "kind": "memo",
+      "caption": "Python script extracting PostgreSQL orders to CSV and uploading to S3",
+      "keywords": [
+        "Python",
+        "PostgreSQL",
+        "psycopg2",
+        "Boto3",
+        "Amazon S3",
+        "CSV",
+        "configparser",
+        "full extraction",
+        "data extraction",
+        "data ingestion"
+      ]
+    },
+    {
+      "file": "memo2.png",
+      "kind": "memo",
+      "caption": "Redshift COPY command loading CSV from S3 with IAM role",
+      "keywords": [
+        "Amazon Redshift",
+        "COPY command",
+        "Amazon S3",
+        "IAM role",
+        "SQL",
+        "data loading",
+        "CSV"
+      ]
+    },
+    {
+      "file": "memo3.png",
+      "kind": "memo",
+      "caption": "Snowflake external S3 stage with storage integration and file format",
+      "keywords": [
+        "Snowflake",
+        "external stage",
+        "storage integration",
+        "Amazon S3",
+        "file format",
+        "SQL",
+        "data loading"
+      ]
+    },
+    {
+      "file": "memo4.png",
+      "kind": "memo",
+      "caption": "Snowflake COPY INTO from S3 stage with filename pattern",
+      "keywords": [
+        "Snowflake",
+        "COPY INTO",
+        "external stage",
+        "Amazon S3",
+        "CSV",
+        "SQL",
+        "data loading"
+      ]
+    },
+    {
+      "file": "memo5.png",
+      "kind": "memo",
+      "caption": "Python Snowflake connector executing COPY INTO load from S3 stage",
+      "keywords": [
+        "Python",
+        "Snowflake",
+        "snowflake-connector-python",
+        "COPY INTO",
+        "configparser",
+        "Amazon S3",
+        "data loading"
+      ]
+    },
+    {
+      "file": "memo6.png",
+      "kind": "memo",
+      "caption": "SQL model deriving current order status counts from CDC table",
+      "keywords": [
+        "SQL",
+        "change data capture",
+        "CDC",
+        "data modeling",
+        "common table expression",
+        "window aggregation",
+        "GROUP BY",
+        "incremental data",
+        "deduplication"
+      ]
+    },
+    {
+      "file": "memo7.png",
+      "kind": "memo",
+      "caption": "Airflow ELT DAG with BashOperator and PostgresOperator dependencies",
+      "keywords": [
+        "Apache Airflow",
+        "DAG",
+        "BashOperator",
+        "PostgresOperator",
+        "ELT",
+        "orchestration",
+        "task dependencies",
+        "scheduling",
+        "Python",
+        "Amazon Redshift"
+      ]
+    },
+    {
+      "file": "memo8.png",
+      "kind": "memo",
+      "caption": "SQL z-score anomaly check on daily revenue for data validation",
+      "keywords": [
+        "SQL",
+        "data validation",
+        "data quality",
+        "z-score",
+        "anomaly detection",
+        "window functions",
+        "validation test"
+      ]
+    }
+  ],
+  "technologies": [
+    "Python",
+    "SQL",
+    "Apache Airflow",
+    "PostgreSQL",
+    "MySQL",
+    "MongoDB",
+    "Amazon S3",
+    "Amazon Redshift",
+    "Amazon Redshift Spectrum",
+    "Snowflake",
+    "dbt",
+    "Apache Kafka",
+    "Kafka Connect",
+    "Debezium",
+    "Apache Spark",
+    "Boto3",
+    "psycopg2",
+    "CSV",
+    "JSON"
+  ],
+  "topics": [
+    "data pipelines",
+    "data ingestion",
+    "data extraction",
+    "data loading",
+    "full extraction",
+    "incremental extraction",
+    "incremental loads",
+    "ETL",
+    "ELT",
+    "change data capture",
+    "CDC",
+    "binary log replication",
+    "batch vs streaming",
+    "data transformation",
+    "data modeling",
+    "deduplication",
+    "orchestration",
+    "DAG",
+    "scheduling",
+    "task dependencies",
+    "data validation",
+    "data quality",
+    "validation tests",
+    "anomaly detection",
+    "monitoring",
+    "alerting",
+    "pipeline performance metrics",
+    "pipeline maintenance",
+    "schema changes",
+    "idempotency",
+    "data warehouse",
+    "cloud data warehouse",
+    "modern data infrastructure",
+    "external tables",
+    "credentials management"
+  ],
+  "providers": [
+    "AWS",
+    "Snowflake",
+    "Open source (Apache)",
+    "Vendor-neutral"
+  ]
+}

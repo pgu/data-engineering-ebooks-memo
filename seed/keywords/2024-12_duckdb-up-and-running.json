@@ -1,0 +1,275 @@
+{
+  "folder": "2024-12_duckdb-up-and-running",
+  "deckId": "deb20",
+  "images": [
+    {
+      "file": "memo0.png",
+      "kind": "chapters",
+      "caption": "Chapter list: DuckDB basics, SQL, Polars, EDA, JSON, JupySQL, remote data, MotherDuck",
+      "keywords": [
+        "DuckDB",
+        "SQL",
+        "Polars",
+        "exploratory data analysis",
+        "EDA",
+        "JSON",
+        "JupySQL",
+        "remote data access",
+        "MotherDuck",
+        "data import",
+        "cloud computing"
+      ]
+    },
+    {
+      "file": "memo1.png",
+      "kind": "memo",
+      "caption": "Python duckdb.connect then CREATE TABLE AS SELECT from read_csv_auto",
+      "keywords": [
+        "DuckDB",
+        "Python",
+        "SQL",
+        "CSV",
+        "read_csv_auto",
+        "CREATE TABLE AS SELECT",
+        "data import",
+        "pandas DataFrames",
+        "in-memory databases"
+      ]
+    },
+    {
+      "file": "memo2.png",
+      "kind": "memo",
+      "caption": "Load CSV with pandas and register the DataFrame in DuckDB",
+      "keywords": [
+        "DuckDB",
+        "pandas",
+        "Python",
+        "CSV",
+        "pandas DataFrames",
+        "register() method",
+        "data import"
+      ]
+    },
+    {
+      "file": "memo3.png",
+      "kind": "memo",
+      "caption": "Create a DuckDB table from read_parquet with LIMIT",
+      "keywords": [
+        "DuckDB",
+        "Python",
+        "SQL",
+        "Parquet",
+        "read_parquet",
+        "CREATE TABLE AS SELECT",
+        "data import"
+      ]
+    },
+    {
+      "file": "memo4.png",
+      "kind": "memo",
+      "caption": "COPY FROM statement loading a Parquet file into a table",
+      "keywords": [
+        "DuckDB",
+        "SQL",
+        "Parquet",
+        "COPY statement",
+        "data import",
+        "bulk loading"
+      ]
+    },
+    {
+      "file": "memo5.png",
+      "kind": "memo",
+      "caption": "duckdb.sql query over a DataFrame returned as Polars with .pl()",
+      "keywords": [
+        "DuckDB",
+        "Polars",
+        "Polars DataFrames",
+        "SQL",
+        "Python",
+        "sql() function",
+        "ORDER BY"
+      ]
+    },
+    {
+      "file": "memo6.png",
+      "kind": "memo",
+      "caption": "CREATE TABLE flights from read_csv_auto via conn.execute",
+      "keywords": [
+        "DuckDB",
+        "SQL",
+        "CSV",
+        "read_csv_auto",
+        "CREATE TABLE AS SELECT",
+        "data import",
+        "flights dataset"
+      ]
+    },
+    {
+      "file": "memo7.png",
+      "kind": "memo",
+      "caption": "Plot airports on a map with folium CircleMarker",
+      "keywords": [
+        "Python",
+        "folium",
+        "maps",
+        "geospatial analysis",
+        "data visualization",
+        "exploratory data analysis",
+        "airports"
+      ]
+    },
+    {
+      "file": "memo8.png",
+      "kind": "memo",
+      "caption": "Spatial extension: ST_DWithin query for airports near Miami",
+      "keywords": [
+        "DuckDB",
+        "spatial extension",
+        "extensions",
+        "geospatial analysis",
+        "ST_DWithin",
+        "ST_GeomFromText",
+        "Point data type",
+        "SQL",
+        "Python",
+        "GIS"
+      ]
+    },
+    {
+      "file": "memo9.png",
+      "kind": "memo",
+      "caption": "Pie chart of airports per state with Matplotlib and Seaborn",
+      "keywords": [
+        "Python",
+        "Matplotlib",
+        "Seaborn",
+        "pie charts",
+        "data visualization",
+        "exploratory data analysis",
+        "pandas DataFrames"
+      ]
+    },
+    {
+      "file": "memo10.png",
+      "kind": "memo",
+      "caption": "Query nested JSON fields with read_json and bracket notation",
+      "keywords": [
+        "DuckDB",
+        "JSON",
+        "nested JSON",
+        "read_json() function",
+        "SQL",
+        "nested object data type",
+        "semi-structured data"
+      ]
+    },
+    {
+      "file": "memo11.png",
+      "kind": "memo",
+      "caption": "JupySQL queries DuckDB and database server, visualized with Matplotlib",
+      "keywords": [
+        "JupySQL",
+        "DuckDB",
+        "CSV",
+        "SQL",
+        "Matplotlib",
+        "pie charts",
+        "data visualization",
+        "database server",
+        "Jupyter Notebook"
+      ]
+    },
+    {
+      "file": "memo12.png",
+      "kind": "memo",
+      "caption": "Query a remote Parquet file directly from a GitHub URL",
+      "keywords": [
+        "DuckDB",
+        "Parquet",
+        "remote file access",
+        "httpfs extension",
+        "HTTPS",
+        "GitHub",
+        "SQL",
+        "remote data access"
+      ]
+    },
+    {
+      "file": "memo13.png",
+      "kind": "memo",
+      "caption": "Create table from Hugging Face dataset using hf:// path",
+      "keywords": [
+        "DuckDB",
+        "Hugging Face Datasets",
+        "hf:// paths",
+        "CSV",
+        "remote file access",
+        "CREATE TABLE AS SELECT",
+        "SQL"
+      ]
+    }
+  ],
+  "technologies": [
+    "DuckDB",
+    "MotherDuck",
+    "Python",
+    "SQL",
+    "Polars",
+    "pandas",
+    "JupySQL",
+    "Jupyter Notebook",
+    "Parquet",
+    "CSV",
+    "JSON",
+    "Excel",
+    "MySQL",
+    "SQLAlchemy",
+    "Matplotlib",
+    "Seaborn",
+    "folium",
+    "GeoPandas",
+    "Hugging Face Datasets",
+    "DuckDB CLI",
+    "httpfs extension",
+    "spatial extension",
+    "Rust",
+    "R"
+  ],
+  "topics": [
+    "in-process databases",
+    "OLAP",
+    "columnar storage",
+    "vectorized execution",
+    "parallel execution",
+    "lazy evaluation",
+    "predicate pushdown",
+    "late materialization",
+    "join reordering",
+    "data import",
+    "data export",
+    "exploratory data analysis",
+    "EDA",
+    "descriptive analytics",
+    "data visualization",
+    "geospatial analysis",
+    "nested JSON",
+    "remote file access",
+    "glob patterns",
+    "in-memory databases",
+    "persistent databases",
+    "hybrid queries",
+    "database sharing",
+    "joins",
+    "aggregation",
+    "ELT",
+    "extensions",
+    "cloud data warehouse",
+    "SaaS",
+    "DataFrames"
+  ],
+  "providers": [
+    "DuckDB",
+    "Open source (Apache)"
+  ]
+}

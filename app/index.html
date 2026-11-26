@@ -17,13 +17,16 @@
 
     <search class="search">
       <label for="q" class="visually-hidden">Search books</label>
-      <input id="q" type="search" placeholder="Search titles, authors, topics, chapters…" autocomplete="off" spellcheck="false">
+      <input id="q" type="search" placeholder="Search books and pictures by keyword…" autocomplete="off" spellcheck="false" list="kw-list">
+      <datalist id="kw-list"></datalist>
     </search>
 
     <nav class="views" aria-label="View">
       <button type="button" data-view="shelf" aria-pressed="true">Shelf</button>
       <button type="button" data-view="table" aria-pressed="false">Table</button>
       <button type="button" data-view="graph" aria-pressed="false">Graph</button>
+      <button type="button" data-view="pictures" aria-pressed="false">Pictures</button>
+      <button type="button" data-view="game" aria-pressed="false">Typing game</button>
     </nav>
   </header>
 
@@ -43,6 +46,7 @@
         <button type="button" id="toggle-filters" class="toggle-filters" aria-controls="filters" aria-expanded="false">Filters</button>
         <p id="result-count" class="result-count"></p>
         <div id="active-filters" class="active-filters" aria-label="Active filters"></div>
+        <button type="button" id="pic-hint" class="pic-hint" hidden></button>
 
         <div class="view-controls" data-for="shelf">
           <label>Sort
@@ -120,6 +124,15 @@
         </div>
       </section>
 
+      <section id="view-pictures" class="view" aria-label="Pictures view" hidden>
+        <p class="graph-hint">Pictures attached to each book (chapter list, companion repo, topic memos). Search a keyword above to find the matching pictures across books.</p>
+        <div id="gallery" class="gallery"></div>
+      </section>
+
+      <section id="view-game" class="view" aria-label="Typing game" hidden>
+        <div id="game" class="game"></div>
+      </section>
+
       <p id="empty" class="empty" hidden>No book matches these filters. <button type="button" data-action="clear">Clear all filters</button></p>
     </main>
   </div>
@@ -131,6 +144,16 @@
       <span id="dlg-pos"></span>
       <button type="button" data-step="1" aria-label="Next book">Next →</button>
       <button type="button" command="close" commandfor="book-dialog" class="dlg-close" autofocus>Close</button>
+    </footer>
+  </dialog>
+
+  <dialog id="pic-viewer" class="pic-viewer" closedby="any" aria-labelledby="pv-title">
+    <div id="pv-body"></div>
+    <footer class="dlg-nav">
+      <button type="button" data-pv-step="-1" aria-label="Previous picture">← Prev</button>
+      <span id="pv-pos"></span>
+      <button type="button" data-pv-step="1" aria-label="Next picture">Next →</button>
+      <button type="button" command="close" commandfor="pic-viewer" class="pv-close" autofocus>Close</button>
     </footer>
   </dialog>
 

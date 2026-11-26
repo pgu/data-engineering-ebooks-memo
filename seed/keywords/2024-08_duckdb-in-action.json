@@ -1,0 +1,19 @@
+{
+  "folder": "2024-08_duckdb-in-action",
+  "deckId": "deb21",
+  "images": [
+    { "file": "memo0.png", "kind": "chapters", "caption": "Ten chapters: DuckDB intro, SQL, Python, MotherDuck, pipelines, data apps, performance", "keywords": ["DuckDB", "SQL", "Python", "MotherDuck", "aggregation", "data pipelines", "data apps", "performance", "large datasets", "exploratory data analysis"] },
+    { "file": "gh.png", "kind": "repo", "caption": "Companion repo: ch03 schema.sql with sequences, tables, view; dagster, dbt, dlt folders", "keywords": ["DuckDB", "SQL", "Parquet", "CSV", "Dagster", "dbt", "dlt", "Streamlit", "CREATE SEQUENCE", "CREATE TABLE", "views", "primary key", "date_trunc", "GROUP BY", "schema migrations"] },
+    { "file": "memo1.png", "kind": "memo", "caption": "DuckDB CLI querying a remote CSV with read_csv_auto, exporting to CSV", "keywords": ["DuckDB", "DuckDB CLI", "SQL", "read_csv_auto", "CSV", "remote files", "data export", "command-line interface"] },
+    { "file": "memo2.png", "kind": "memo", "caption": "INSERT from remote CSV with time_bucket, FILTER clause and ON CONFLICT DO NOTHING", "keywords": ["DuckDB", "SQL", "INSERT INTO", "time_bucket", "FILTER clause", "coalesce", "read_csv_auto", "ON CONFLICT", "upsert", "idempotency", "data ingestion", "REST API"] },
+    { "file": "memo3.png", "kind": "memo", "caption": "DuckDB PIVOT statement aggregating kWh per year", "keywords": ["DuckDB", "SQL", "PIVOT statement", "pivoting", "aggregation", "sum", "max"] },
+    { "file": "memo4.png", "kind": "memo", "caption": "ASOF JOIN with running sum window function over prices", "keywords": ["DuckDB", "SQL", "ASOF JOIN", "window functions", "OVER clause", "running total", "time series", "joins"] },
+    { "file": "memo5.png", "kind": "memo", "caption": "Python API: in-memory connection, install httpfs extension, read_csv", "keywords": ["DuckDB", "Python", "duckdb.connect", "in-memory database", "httpfs extension", "extensions", "read_csv", "remote files"] },
+    { "file": "memo6.png", "kind": "memo", "caption": "Defining a dlt pipeline with DuckDB as destination", "keywords": ["dlt", "DuckDB", "Python", "data pipelines", "data ingestion", "data load tool", "destination"] },
+    { "file": "memo7.png", "kind": "memo", "caption": "Dagster asset using DuckDBResource to load ATP CSV files", "keywords": ["Dagster", "DuckDB", "Python", "software-defined assets", "DuckDBResource", "orchestration", "read_csv_auto", "CREATE OR REPLACE TABLE", "strptime", "data pipelines"] },
+    { "file": "memo8.png", "kind": "memo", "caption": "Query processing pipeline: parser, planner, optimizer, physical planner", "keywords": ["DuckDB", "SQL", "query processing", "parser", "query planner", "query optimizer", "logical plan", "physical plan", "query plans", "performance"] }
+  ],
+  "technologies": ["DuckDB", "MotherDuck", "SQL", "Python", "Parquet", "CSV", "JSON", "dbt", "Dagster", "dlt", "Streamlit", "Apache Superset", "Apache Arrow", "Polars", "pandas", "PostgreSQL", "SQLite", "Amazon S3", "Plotly", "httpfs extension", "DuckDB CLI"],
+  "topics": ["in-process OLAP", "OLAP", "exploratory data analysis", "aggregation", "window functions", "pivoting", "ASOF JOIN", "common table expressions", "subqueries", "grouping sets", "data ingestion", "data pipelines", "data transformation", "data modeling", "data testing", "orchestration", "ETL", "data apps", "dashboards", "business intelligence", "query planning", "query optimization", "vectorized query engine", "vectorization", "performance", "large datasets", "extensions", "user-defined functions", "nested JSON", "schema inference", "time series", "upsert", "data export", "cloud data warehouse", "data sharing"],
+  "providers": ["DuckDB", "Open source (Apache)"]
+}

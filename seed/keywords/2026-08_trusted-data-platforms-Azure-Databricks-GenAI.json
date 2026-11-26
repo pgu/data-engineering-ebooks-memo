@@ -1,0 +1,299 @@
+{
+  "folder": "2026-08_trusted-data-platforms-Azure-Databricks-GenAI",
+  "deckId": "deb12",
+  "images": [
+    {
+      "file": "memo0.png",
+      "kind": "chapters",
+      "caption": "Chapter list: data platforms, Azure, Databricks, medallion layers with GenAI, governance",
+      "keywords": [
+        "data platforms",
+        "Microsoft Azure",
+        "Azure Databricks",
+        "data mesh",
+        "observability",
+        "medallion architecture",
+        "Delta Lake",
+        "Unity Catalog",
+        "data pipelines",
+        "landing zone",
+        "generative AI",
+        "master data management",
+        "entity resolution",
+        "data contracts",
+        "federated governance"
+      ]
+    },
+    {
+      "file": "gh.png",
+      "kind": "repo",
+      "caption": "Companion repo: Electroniz silver DLT pipeline with expectations and SCD Type 2",
+      "keywords": [
+        "Delta Live Tables",
+        "PySpark",
+        "Databricks notebooks",
+        "streaming tables",
+        "expectations",
+        "expect_or_drop",
+        "apply_changes",
+        "slowly changing dimensions",
+        "SCD Type 2",
+        "silver layer",
+        "gold layer",
+        "data contracts",
+        "master data management",
+        "SQL"
+      ]
+    },
+    {
+      "file": "memo1.png",
+      "kind": "memo",
+      "caption": "Structured, semi-structured and unstructured data: table, JSON, XML, logs",
+      "keywords": [
+        "structured data",
+        "semi-structured data",
+        "unstructured data",
+        "JSON",
+        "XML",
+        "log files",
+        "data formats"
+      ]
+    },
+    {
+      "file": "memo2.png",
+      "kind": "memo",
+      "caption": "Lambda architecture: batch, serving and speed layers with Spark Streaming",
+      "keywords": [
+        "Lambda architecture",
+        "batch layer",
+        "serving layer",
+        "speed layer",
+        "Spark Streaming",
+        "Apache Spark",
+        "change data capture",
+        "batch processing",
+        "real-time view",
+        "aggregation"
+      ]
+    },
+    {
+      "file": "memo3.png",
+      "kind": "memo",
+      "caption": "Data experts team, data product creation process and endorsement badges",
+      "keywords": [
+        "data products",
+        "data contracts",
+        "data steward",
+        "data owner",
+        "data architect",
+        "data engineer",
+        "data quality",
+        "privacy",
+        "endorsement",
+        "governed tags",
+        "master data",
+        "certified datasets",
+        "data governance"
+      ]
+    },
+    {
+      "file": "memo4.png",
+      "kind": "memo",
+      "caption": "Unity Catalog three-level namespace: metastore, catalogs, schemas, tables, volumes, models",
+      "keywords": [
+        "Unity Catalog",
+        "metastore",
+        "catalog",
+        "schema",
+        "three-level namespace",
+        "foreign tables",
+        "volumes",
+        "metric views",
+        "machine learning models",
+        "external location",
+        "Delta Sharing",
+        "Clean Rooms",
+        "service credential"
+      ]
+    },
+    {
+      "file": "memo5.png",
+      "kind": "memo",
+      "caption": "Watermark technique for incremental data ingestion",
+      "keywords": [
+        "watermark",
+        "incremental ingestion",
+        "incremental loading",
+        "data ingestion",
+        "high-water mark",
+        "timestamps"
+      ]
+    },
+    {
+      "file": "memo6.png",
+      "kind": "memo",
+      "caption": "Databricks SQL MERGE WITH SCHEMA EVOLUTION upserting CDC employees",
+      "keywords": [
+        "MERGE",
+        "upsert",
+        "schema evolution",
+        "change data capture",
+        "CDC",
+        "Delta Lake",
+        "Unity Catalog",
+        "Databricks notebooks",
+        "SQL",
+        "Apache Spark"
+      ]
+    },
+    {
+      "file": "memo7.png",
+      "kind": "memo",
+      "caption": "Azure Data Factory batch ingestion pipeline with ForEach, copy and watermark",
+      "keywords": [
+        "Azure Data Factory",
+        "Data Factory",
+        "batch ingestion",
+        "copy data activity",
+        "lookup activity",
+        "ForEach",
+        "watermark",
+        "incremental loading",
+        "orchestration",
+        "REST API"
+      ]
+    },
+    {
+      "file": "memo8.png",
+      "kind": "memo",
+      "caption": "Silver table expectations panel: upserted records and DROP actions",
+      "keywords": [
+        "Lakeflow Spark Declarative Pipelines",
+        "Delta Live Tables",
+        "expectations",
+        "data quality",
+        "silver layer",
+        "data validation",
+        "upsert",
+        "Unity Catalog"
+      ]
+    },
+    {
+      "file": "memo9.png",
+      "kind": "memo",
+      "caption": "Catalog Explorer data quality monitoring dashboard of bronze tables",
+      "keywords": [
+        "data quality monitoring",
+        "Lakehouse Monitoring",
+        "Catalog Explorer",
+        "Unity Catalog",
+        "bronze layer",
+        "data observability",
+        "alerts",
+        "Databricks SQL Warehouse"
+      ]
+    },
+    {
+      "file": "memo10.png",
+      "kind": "memo",
+      "caption": "ODCS YAML data contract for PII-masked golden record customer product",
+      "keywords": [
+        "data contracts",
+        "Open Data Contract Standard",
+        "ODCS",
+        "YAML",
+        "data products",
+        "golden record",
+        "PII",
+        "data masking",
+        "master data management",
+        "materialized views",
+        "data freshness"
+      ]
+    }
+  ],
+  "technologies": [
+    "Azure Databricks",
+    "Apache Spark",
+    "PySpark",
+    "Spark SQL",
+    "Delta Lake",
+    "Delta Live Tables",
+    "Lakeflow Spark Declarative Pipelines",
+    "Lakeflow Jobs",
+    "Lakeflow Connect",
+    "Auto Loader",
+    "Unity Catalog",
+    "Delta Sharing",
+    "Databricks SQL",
+    "Lakehouse Monitoring",
+    "Databricks Genie",
+    "Databricks Assistant",
+    "Mosaic AI",
+    "Agent Bricks",
+    "Azure Data Factory",
+    "Azure Data Lake Storage Gen2",
+    "Event Hubs",
+    "Azure Key Vault",
+    "Microsoft Entra ID",
+    "Microsoft Purview",
+    "Azure Synapse Analytics",
+    "Azure DevOps",
+    "Power BI",
+    "Claude Code",
+    "Splink",
+    "Python"
+  ],
+  "topics": [
+    "data platforms",
+    "data lakehouse",
+    "medallion architecture",
+    "bronze layer",
+    "silver layer",
+    "gold layer",
+    "landing zone",
+    "Lambda architecture",
+    "Kappa architecture",
+    "data mesh",
+    "data products",
+    "data contracts",
+    "federated governance",
+    "data governance",
+    "data stewardship",
+    "endorsement",
+    "governed tags",
+    "data quality",
+    "expectations",
+    "data quality monitoring",
+    "observability",
+    "data lineage",
+    "master data management",
+    "entity resolution",
+    "golden record",
+    "slowly changing dimensions",
+    "SCD Type 2",
+    "change data capture",
+    "CDC",
+    "watermark",
+    "incremental ingestion",
+    "batch processing",
+    "stream processing",
+    "schema evolution",
+    "ACID transactions",
+    "declarative pipelines",
+    "orchestration",
+    "fine-grained access control",
+    "attribute-based access control",
+    "PII",
+    "data masking",
+    "compliance",
+    "generative AI",
+    "large language models",
+    "self-service analytics"
+  ],
+  "providers": [
+    "Azure",
+    "Databricks",
+    "Open source (Apache)"
+  ]
+}

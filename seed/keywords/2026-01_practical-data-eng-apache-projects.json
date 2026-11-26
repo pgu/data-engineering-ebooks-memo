@@ -1,0 +1,203 @@
+{
+  "folder": "2026-01_practical-data-eng-apache-projects",
+  "deckId": "deb23",
+  "images": [
+    {
+      "file": "gh.png",
+      "kind": "repo",
+      "caption": "Companion repo per chapter with Iceberg bronze/silver table DDL",
+      "keywords": [
+        "Apache Iceberg",
+        "SQL",
+        "Docker Compose",
+        "PostgreSQL",
+        "Apache Spark",
+        "Jupyter",
+        "Apache Superset",
+        "Trino",
+        "Kafka Connect",
+        "ClickHouse",
+        "Streamlit",
+        "MinIO",
+        "partitioning",
+        "medallion architecture",
+        "bronze layer"
+      ]
+    },
+    {
+      "file": "memo1.png",
+      "kind": "memo",
+      "caption": "The data engineering lifecycle: ingestion, processing, storage, serving",
+      "keywords": [
+        "data engineering lifecycle",
+        "data ingestion",
+        "data processing",
+        "data storage",
+        "data serving",
+        "analytics"
+      ]
+    },
+    {
+      "file": "memo2.png",
+      "kind": "memo",
+      "caption": "Runtime lakehouse architecture: Iceberg REST catalog, MinIO, Spark, Jupyter, Docker",
+      "keywords": [
+        "data lakehouse",
+        "Apache Iceberg",
+        "Iceberg REST catalog",
+        "Tabular",
+        "MinIO",
+        "Apache Spark",
+        "PyIceberg",
+        "Jupyter",
+        "Docker",
+        "Python",
+        "SQL",
+        "query engine"
+      ]
+    },
+    {
+      "file": "memo3.png",
+      "kind": "memo",
+      "caption": "PySpark job loading pageview JSON from MinIO into Iceberg bronze table",
+      "keywords": [
+        "PySpark",
+        "Apache Spark",
+        "Apache Iceberg",
+        "MinIO",
+        "S3A",
+        "JSON",
+        "bronze layer",
+        "overwrite mode",
+        "data ingestion",
+        "Python",
+        "error handling"
+      ]
+    },
+    {
+      "file": "memo4.png",
+      "kind": "memo",
+      "caption": "Bronze-to-silver transformer: SparkSession configured with Iceberg Hive catalog",
+      "keywords": [
+        "PySpark",
+        "SparkSession",
+        "Apache Iceberg",
+        "Hive catalog",
+        "SparkSessionCatalog",
+        "bronze layer",
+        "silver layer",
+        "medallion architecture",
+        "data transformation",
+        "Python"
+      ]
+    },
+    {
+      "file": "memo5.png",
+      "kind": "memo",
+      "caption": "Silver users transformation with email regex validation and full name",
+      "keywords": [
+        "PySpark",
+        "silver layer",
+        "data quality",
+        "data validation",
+        "regex",
+        "withColumn",
+        "concat_ws",
+        "data transformation",
+        "Python"
+      ]
+    },
+    {
+      "file": "memo6.png",
+      "kind": "memo",
+      "caption": "Airflow PythonOperator tasks exporting CSV and uploading to MinIO",
+      "keywords": [
+        "Apache Airflow",
+        "PythonOperator",
+        "DAG",
+        "orchestration",
+        "MinIO",
+        "CSV",
+        "Python",
+        "customer segmentation"
+      ]
+    }
+  ],
+  "technologies": [
+    "Apache Iceberg",
+    "Apache Spark",
+    "PySpark",
+    "Spark MLlib",
+    "Apache Airflow",
+    "Apache Kafka",
+    "Kafka Connect",
+    "Apache Flink",
+    "Apache Superset",
+    "Trino",
+    "ClickHouse",
+    "Debezium",
+    "MinIO",
+    "PyIceberg",
+    "Iceberg REST catalog",
+    "PostgreSQL",
+    "Redpanda",
+    "OpenSearch",
+    "Streamlit",
+    "Flask",
+    "Jupyter",
+    "Docker",
+    "Docker Compose",
+    "Python",
+    "SQL",
+    "Java",
+    "SQLAlchemy",
+    "CSV",
+    "JSON"
+  ],
+  "topics": [
+    "data engineering lifecycle",
+    "data ingestion",
+    "data processing",
+    "data storage",
+    "data serving",
+    "data lakehouse",
+    "medallion architecture",
+    "multi-hop architecture",
+    "bronze layer",
+    "silver layer",
+    "gold layer",
+    "ETL",
+    "change data capture",
+    "CDC",
+    "single message transforms",
+    "streaming data",
+    "real-time analytics",
+    "anomaly detection",
+    "orchestration",
+    "DAG",
+    "incremental processing",
+    "partitioning",
+    "table formats",
+    "data quality",
+    "data validation",
+    "data transformation",
+    "business intelligence",
+    "visualization",
+    "materialized views",
+    "recommendation engine",
+    "alternating least squares",
+    "feature engineering",
+    "vector embeddings",
+    "vector similarity search",
+    "semantic search",
+    "customer segmentation",
+    "TLS",
+    "security",
+    "object storage",
+    "open source"
+  ],
+  "providers": [
+    "Open source (Apache)",
+    "Vendor-neutral"
+  ]
+}

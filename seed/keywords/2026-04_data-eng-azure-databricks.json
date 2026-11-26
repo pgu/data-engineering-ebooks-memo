@@ -1,0 +1,391 @@
+{
+  "folder": "2026-04_data-eng-azure-databricks",
+  "deckId": "deb08",
+  "images": [
+    {
+      "file": "memo0.png",
+      "kind": "chapters",
+      "caption": "Chapter list: ingestion, Spark, streaming, Delta Lake, pipelines, CI/CD, governance, ML",
+      "keywords": [
+        "Azure Databricks",
+        "Apache Spark",
+        "Delta Lake",
+        "Lakeflow Spark Declarative Pipelines",
+        "data ingestion",
+        "real-time data pipelines",
+        "ACID transactions",
+        "schema evolution",
+        "orchestration",
+        "CI/CD",
+        "DevOps",
+        "query optimization",
+        "cost management",
+        "data governance",
+        "machine learning"
+      ]
+    },
+    {
+      "file": "memo1.png",
+      "kind": "memo",
+      "caption": "Azure Databricks Data Intelligence Platform reference lakehouse architecture",
+      "keywords": [
+        "Azure Databricks",
+        "data intelligence platform",
+        "Auto Loader",
+        "Lakeflow Connect",
+        "Delta Live Tables",
+        "Photon",
+        "Databricks SQL",
+        "Unity Catalog",
+        "Delta Lake",
+        "Apache Iceberg",
+        "Delta Sharing",
+        "Mosaic AI",
+        "ADLS Gen2",
+        "Event Hubs",
+        "Data Factory"
+      ]
+    },
+    {
+      "file": "memo2.png",
+      "kind": "memo",
+      "caption": "Unity Catalog object model and proposed governed lakehouse architecture on Azure",
+      "keywords": [
+        "Unity Catalog",
+        "metastore",
+        "external location",
+        "storage credential",
+        "Delta Sharing",
+        "Lakehouse Federation",
+        "Azure Data Factory",
+        "medallion architecture",
+        "managed tables",
+        "external volume",
+        "Power BI",
+        "Databricks Asset Bundles",
+        "Azure DevOps",
+        "Microsoft Entra ID",
+        "CI/CD"
+      ]
+    },
+    {
+      "file": "memo3.png",
+      "kind": "memo",
+      "caption": "PySpark reading CSV from ADLS with explicit StructType schema",
+      "keywords": [
+        "PySpark",
+        "Apache Spark",
+        "ADLS Gen2",
+        "CSV",
+        "StructType",
+        "explicit schema",
+        "abfss",
+        "batch ingestion",
+        "Python"
+      ]
+    },
+    {
+      "file": "memo4.png",
+      "kind": "memo",
+      "caption": "Download SFTP files with paramiko into DBFS using Key Vault secrets",
+      "keywords": [
+        "SFTP",
+        "paramiko",
+        "Python",
+        "DBFS",
+        "dbutils secrets",
+        "Azure Key Vault",
+        "secret management",
+        "data ingestion",
+        "CSV",
+        "Apache Spark"
+      ]
+    },
+    {
+      "file": "memo5.png",
+      "kind": "memo",
+      "caption": "Spark cluster architecture on Azure Databricks: driver, executors, cluster manager",
+      "keywords": [
+        "Apache Spark",
+        "Azure Databricks",
+        "driver",
+        "executors",
+        "worker nodes",
+        "SparkSession",
+        "SparkContext",
+        "cluster manager",
+        "auto-scaling",
+        "Azure Key Vault",
+        "Microsoft Entra ID",
+        "ADLS Gen2",
+        "Azure Monitor"
+      ]
+    },
+    {
+      "file": "memo6.png",
+      "kind": "memo",
+      "caption": "Spark DAG execution flow with Catalyst, Photon and adaptive query execution",
+      "keywords": [
+        "Apache Spark",
+        "DAG",
+        "lazy evaluation",
+        "Catalyst Optimizer",
+        "logical plan",
+        "physical plan",
+        "code generation",
+        "Photon",
+        "adaptive query execution",
+        "AQE",
+        "dynamic partition pruning",
+        "skew join",
+        "shuffle",
+        "performance monitoring"
+      ]
+    },
+    {
+      "file": "memo7.png",
+      "kind": "memo",
+      "caption": "Spark partitioning strategies: hash, range, file-based, pruning, skew",
+      "keywords": [
+        "Apache Spark",
+        "partitioning",
+        "hash partitioning",
+        "range partitioning",
+        "file-based partitioning",
+        "partition pruning",
+        "data skew",
+        "performance tuning",
+        "scalability"
+      ]
+    },
+    {
+      "file": "memo8.png",
+      "kind": "memo",
+      "caption": "Spark scaling strategies: horizontal, vertical, load balancing, skew mitigation",
+      "keywords": [
+        "Apache Spark",
+        "horizontal scaling",
+        "vertical scaling",
+        "load balancing",
+        "data skew",
+        "salting",
+        "worker nodes",
+        "cost optimization",
+        "performance tuning"
+      ]
+    },
+    {
+      "file": "memo9.png",
+      "kind": "memo",
+      "caption": "Querying raw Parquet files versus a Delta Lake table with transaction log",
+      "keywords": [
+        "Delta Lake",
+        "Parquet",
+        "transaction log",
+        "delta log",
+        "data lake",
+        "query engine",
+        "ACID transactions",
+        "JSON"
+      ]
+    },
+    {
+      "file": "memo10.png",
+      "kind": "memo",
+      "caption": "Spark Declarative Pipelines bronze tables ingesting CSV with Auto Loader",
+      "keywords": [
+        "Lakeflow Spark Declarative Pipelines",
+        "Delta Live Tables",
+        "Auto Loader",
+        "cloudFiles",
+        "Structured Streaming",
+        "bronze layer",
+        "medallion architecture",
+        "incremental processing",
+        "schema inference",
+        "CSV",
+        "Python"
+      ]
+    },
+    {
+      "file": "memo11.png",
+      "kind": "memo",
+      "caption": "Silver customers table with expectations, deduplication and standardization",
+      "keywords": [
+        "Lakeflow Spark Declarative Pipelines",
+        "Delta Live Tables",
+        "expectations",
+        "expect_or_drop",
+        "data quality",
+        "silver layer",
+        "deduplication",
+        "data cleansing",
+        "PySpark",
+        "Structured Streaming"
+      ]
+    },
+    {
+      "file": "memo12.png",
+      "kind": "memo",
+      "caption": "Spark Declarative Pipeline run results: streaming tables and expectations",
+      "keywords": [
+        "Lakeflow Spark Declarative Pipelines",
+        "Delta Live Tables",
+        "streaming tables",
+        "expectations",
+        "data quality",
+        "Unity Catalog",
+        "bronze layer",
+        "silver layer",
+        "pipeline monitoring"
+      ]
+    },
+    {
+      "file": "memo13.png",
+      "kind": "memo",
+      "caption": "Quarantine pattern: silver drops invalid orders, quarantine table captures them",
+      "keywords": [
+        "quarantine pattern",
+        "expect_or_drop",
+        "data quality",
+        "Lakeflow Spark Declarative Pipelines",
+        "Delta Live Tables",
+        "silver layer",
+        "data validation",
+        "PySpark"
+      ]
+    },
+    {
+      "file": "memo14.png",
+      "kind": "memo",
+      "caption": "Python data quality threshold check sending alerts on expectation failures",
+      "keywords": [
+        "data quality",
+        "alerting",
+        "expectations",
+        "data quality monitoring",
+        "failure rate threshold",
+        "Slack",
+        "PagerDuty",
+        "Databricks SQL",
+        "Python"
+      ]
+    },
+    {
+      "file": "memo15.png",
+      "kind": "memo",
+      "caption": "Comparison of Lakeflow Jobs, Azure Data Factory and Apache Airflow",
+      "keywords": [
+        "orchestration",
+        "Lakeflow Jobs",
+        "Azure Data Factory",
+        "Apache Airflow",
+        "DAG",
+        "workflow orchestration",
+        "DBU",
+        "cost considerations",
+        "hybrid cloud"
+      ]
+    },
+    {
+      "file": "memo16.png",
+      "kind": "memo",
+      "caption": "SQL on system tables to trace downstream lineage of PII-tagged columns",
+      "keywords": [
+        "Unity Catalog",
+        "system tables",
+        "column lineage",
+        "data lineage",
+        "PII",
+        "tags",
+        "information schema",
+        "data governance",
+        "SQL"
+      ]
+    }
+  ],
+  "technologies": [
+    "Azure Databricks",
+    "Apache Spark",
+    "PySpark",
+    "Structured Streaming",
+    "Photon",
+    "Delta Lake",
+    "Delta Live Tables",
+    "Lakeflow Spark Declarative Pipelines",
+    "Lakeflow Jobs",
+    "Lakeflow Connect",
+    "Auto Loader",
+    "Unity Catalog",
+    "Delta Sharing",
+    "Databricks SQL",
+    "Databricks Asset Bundles",
+    "MLflow",
+    "Mosaic AI",
+    "Azure Data Lake Storage Gen2",
+    "Azure Data Factory",
+    "Event Hubs",
+    "Azure Key Vault",
+    "Microsoft Entra ID",
+    "Azure DevOps",
+    "Azure Synapse Analytics",
+    "Apache Airflow",
+    "Apache Iceberg",
+    "Power BI",
+    "Terraform",
+    "Parquet",
+    "Python"
+  ],
+  "topics": [
+    "data lakehouse",
+    "medallion architecture",
+    "bronze layer",
+    "silver layer",
+    "gold layer",
+    "data ingestion",
+    "batch ingestion",
+    "incremental processing",
+    "real-time data pipelines",
+    "stream processing",
+    "ACID transactions",
+    "schema evolution",
+    "schema enforcement",
+    "transaction log",
+    "declarative pipelines",
+    "expectations",
+    "data quality",
+    "quarantine pattern",
+    "orchestration",
+    "CI/CD",
+    "DevOps",
+    "infrastructure as code",
+    "environment separation",
+    "performance tuning",
+    "query optimization",
+    "adaptive query execution",
+    "Catalyst Optimizer",
+    "lazy evaluation",
+    "partitioning",
+    "partition pruning",
+    "data skew",
+    "salting",
+    "liquid clustering",
+    "Z-ordering",
+    "caching",
+    "auto-scaling",
+    "cost management",
+    "data governance",
+    "data lineage",
+    "fine-grained access control",
+    "security",
+    "compliance",
+    "PII",
+    "secret management",
+    "machine learning"
+  ],
+  "providers": [
+    "Azure",
+    "Databricks",
+    "Open source (Apache)"
+  ]
+}

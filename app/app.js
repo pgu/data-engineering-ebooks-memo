@@ -4,6 +4,7 @@
 import { ZONES, ZONE, BOOK_BAND, zoneOf, zoneCenter } from './lifecycle.js';
 
 const CSV_URL = '../seed/data-engineering-ebooks.csv';
+const MEDIA_URL = '../seed/media.json'; // built by tools/build-data.mjs (pictures + inferred keywords)
 const GRAPH_DIMS = ['technologies', 'topics', 'platform'];
 const ZONED_DIMS = ['technologies', 'topics']; // dims that support the lifecycle layout
 const COVERS_DIR = '../ebook-covers/';
@@ -19,10 +20,41 @@ const ALIASES = {
   iceberg: 'Apache Iceberg',
   hudi: 'Apache Hudi',
   airflow: 'Apache Airflow',
+  'iceberg tables': 'Apache Iceberg',
+  hadoop: 'Apache Hadoop',
+  avro: 'Apache Avro',
+  orc: 'Apache ORC',
+  hive: 'Apache Hive',
+  athena: 'Amazon Athena',
+  emr: 'Amazon EMR',
+  redshift: 'Amazon Redshift',
+  'redshift spectrum': 'Amazon Redshift Spectrum',
+  sagemaker: 'Amazon SageMaker',
+  'amazon kinesis data streams': 'Amazon Kinesis',
+  'lake formation': 'AWS Lake Formation',
+  'step functions': 'AWS Step Functions',
+  'glue data catalog': 'AWS Glue Data Catalog',
+  'event hubs': 'Azure Event Hubs',
+  adls: 'Azure Data Lake Storage',
+  'azure data lake storage gen2': 'Azure Data Lake Storage',
+  'azure sql': 'Azure SQL Database',
+  'cloud storage': 'Google Cloud Storage',
+  'cortex ai': 'Snowflake Cortex',
+  'protocol buffers': 'Protobuf',
+  'jupyter notebook': 'Jupyter',
+  // topics
   'data catalogs': 'Data catalog',
   'data lakes': 'Data lake',
   'data architectures': 'Data architecture',
+  cdc: 'Change data capture',
+  'data lakehouse': 'Lakehouse',
+  'personally identifiable information': 'PII',
+  'infrastructure as code': 'Infrastructure as code',
 };
+// Cloud platforms are providers, not technologies.
+const NOT_TECH = new Set(['amazon web services', 'microsoft azure', 'google cloud platform', 'aws', 'azure', 'google cloud']);
+
+const KIND_LABEL = { chapters: 'Chapters', repo: 'Companion repo', memo: 'Memo' };
 
 const MONTHS = ['january', 'february', 'march', 'april', 'may', 'june', 'july', 'august', 'september', 'october', 'november', 'december'];
 
@@ -57,7 +89,9 @@ function parseCSV(text) {
     Object.fromEntries(header.map((h, j) => [h.trim(), (r[j] ?? '').trim()])));
 }
 
-function toBooks(records) {
+const folderOf = (coverFile) => (coverFile || '').replace(/\.(jpe?g|webp|png|avif|gif)$/i, '');
+
+function toBooks(records, media = {}) {
   const normTech = makeNormalizerWithLabels();
   const normTopic = makeNormalizerWithLabels({ capitalize: true });
   const books = records.map((r, idx) => {
@@ -84,14 +118,25 @@ function toBooks(records) {
       chapters: splitList(r['Chapters covered in deck'], '|'),
       summary: r['Summary'],
     };
+    // Pictures + keywords inferred from them (seed/media.json) enrich the CSV tags.
+    const m = media[folderOf(book.coverFile)];
+    const dir = COVERS_DIR + encodeURI(folderOf(book.coverFile)) + '/';
+    book.pictures = (m?.images ?? []).map((img, i) => ({ ...img, i, book, src: dir + encodeURI(img.file),
+      text: fold([img.caption, ...img.keywords, KIND_LABEL[img.kind]].join(' \u0001 ')) }));
+    for (const t of m?.technologies ?? []) if (!NOT_TECH.has(t.toLowerCase())) book.techKeys.push(normTech.add(t));
+    for (const t of m?.topics ?? []) book.topicKeys.push(normTopic.add(t));
+    book.techKeys = [...new Set(book.techKeys)];
+    book.topicKeys = [...new Set(book.topicKeys)];
+    book.platform = [...new Set([...book.platform, ...(m?.providers ?? [])])];
     return book;
   });
   for (const b of books) {
     b.technologies = b.techKeys.map(normTech.label);
     b.topics = b.topicKeys.map(normTopic.label);
-    b.extras = [b.repo && 'Companion repo', b.chapters.length && 'Deck chapters'].filter(Boolean);
+    b.extras = [b.repo && 'Companion repo', b.chapters.length && 'Deck chapters', b.pictures.length && 'Pictures'].filter(Boolean);
     b.searchText = fold([b.title, b.subtitle, ...b.authors, b.publisher, b.category, ...b.platform,
-      ...b.technologies, ...b.topics, b.type, b.summary, ...b.chapters, String(b.year), b.id].join(' \u0001 '));
+      ...b.technologies, ...b.topics, b.type, b.summary, ...b.chapters, String(b.year), b.id].join(' \u0001 '))
+      + ' \u0001 ' + b.pictures.map((p) => p.text).join(' \u0001 ');
   }
   return books;
 }
@@ -204,7 +249,7 @@ function writeHash() {
 
 function readHash() {
   const p = new URLSearchParams(location.hash.slice(1));
-  state.view = ['shelf', 'table', 'graph'].includes(p.get('view')) ? p.get('view') : 'shelf';
+  state.view = ['shelf', 'table', 'graph', 'pictures', 'game'].includes(p.get('view')) ? p.get('view') : 'shelf';
   state.q = p.get('q') || '';
   state.filters = new Map();
   state.modes = new Map();
@@ -437,12 +482,23 @@ function buildCard(b) {
       h('p', { class: 'authors', text: b.authors.join(', ') }),
       h('ul', { class: 'badges', 'aria-label': 'Platform' },
         b.platform.map((p) => h('li', { class: 'badge', text: p }))),
-      h('p', { class: 'summary', text: b.summary })),
+      h('p', { class: 'summary', text: b.summary }),
+      b.pictures.length ? h('button', { type: 'button', class: 'card-pics', 'data-pics-of': b.id }) : null),
   );
+}
+
+function updateCardPictures(b, card) {
+  const btn = $('.card-pics', card);
+  if (!btn) return;
+  const n = matchingPictures(b).length;
+  const searching = queryTerms().length > 0;
+  btn.textContent = searching ? `${n} of ${b.pictures.length} pictures match` : `${b.pictures.length} pictures`;
+  btn.classList.toggle('hit', searching && n > 0);
 }
 
 function renderShelf(list) {
   const root = $('#shelf');
+  for (const b of list) updateCardPictures(b, cards.get(b.id));
   const sections = [];
   if (!state.group) {
     const grid = h('div', { class: 'grid' });
@@ -769,6 +825,8 @@ function renderGraphPanel() {
     h('p', { class: 'authors', text: b.authors.join(', ') }),
     h('p', { class: 'meta' }, `${b.month} ${b.year} · ${b.publisher}${b.edition ? ` · ${b.edition} ed.` : ''} · ${b.type}`),
     h('p', { class: 'summary', text: b.summary }),
+    b.pictures.length ? h('details', { class: 'gp-more', 'data-sec': 'pictures', open: panelOpen.pictures ?? true },
+      h('summary', { text: `Pictures (${b.pictures.length})` }), pictureThumbs(b.pictures, 'book')) : null,
     h('h3', { text: 'Platform' }), tagButtons('platform', b.platform),
     h('h3', { text: 'Technologies' }), tagButtons('technologies', b.technologies),
     h('details', { class: 'gp-more', 'data-sec': 'topics', open: !!panelOpen.topics }, h('summary', { text: `Topics (${b.topics.length})` }), tagButtons('topics', b.topics)),
@@ -812,6 +870,7 @@ function renderDialog(b) {
         row('Type', b.type),
         row('Platform', tagButtons('platform', b.platform)),
         row('Companion repo', b.repo && h('a', { href: b.repo, target: '_blank', rel: 'noopener', text: b.repo.replace(/^https?:\/\/(www\.)?/, '') }))),
+      b.pictures.length ? [h('h2', { text: `Pictures (${b.pictures.length})` }), pictureThumbs(b.pictures, 'book')] : null,
       h('h2', { text: 'Technologies' }), tagButtons('technologies', b.technologies),
       h('h2', { text: 'Topics' }), tagButtons('topics', b.topics),
       b.chapters.length ? [h('h2', { text: `Chapters covered in deck (${b.chapters.length})` }),
@@ -846,6 +905,102 @@ function stepBook(step) {
 }
 
 // ---------------------------------------------------------------------------
+// Pictures: thumbnails, gallery view, viewer
+// ---------------------------------------------------------------------------
+const queryTerms = () => fold(state.q).split(/\s+/).filter(Boolean);
+
+// A picture matches when every search term is in its caption/keywords (or names the book itself).
+function matchingPictures(b, terms = queryTerms()) {
+  if (!terms.length) return b.pictures;
+  const title = fold(b.title);
+  return b.pictures.filter((p) => terms.every((t) => p.text.includes(t) || title.includes(t)) && terms.some((t) => p.text.includes(t)));
+}
+const galleryPictures = (list = visibleBooks()) => list.flatMap((b) => matchingPictures(b));
+
+function pictureThumbs(pics, listKind) {
+  return h('ul', { class: 'pic-grid' }, pics.map((p) => h('li', {},
+    h('button', { type: 'button', class: `pic-thumb k-${p.kind}`, 'data-pic': `${p.book.id}:${p.i}`, 'data-list': listKind,
+      'aria-label': `${KIND_LABEL[p.kind]}${p.caption ? `: ${p.caption}` : ''}` },
+      h('img', { src: p.src, alt: '', loading: 'lazy', decoding: 'async' }),
+      h('span', { class: 'pic-kind', 'aria-hidden': 'true', text: KIND_LABEL[p.kind] })))));
+}
+
+let galleryKey = null;
+function renderGallery(list) {
+  const terms = queryTerms();
+  const sections = list.map((b) => [b, matchingPictures(b, terms)]).filter(([, pics]) => pics.length);
+  const key = sections.map(([b, pics]) => b.id + pics.map((p) => p.i).join('.')).join('|');
+  if (key === galleryKey) return;
+  galleryKey = key;
+  const root = $('#gallery');
+  if (!list.length) { root.replaceChildren(); return; } // #empty explains it
+  if (!sections.length) {
+    root.replaceChildren(h('p', { class: 'empty', text: terms.length ? `No picture matches “${state.q}”.` : 'No pictures for these books.' }));
+    return;
+  }
+  root.replaceChildren(...sections.map(([b, pics]) => h('section', { class: 'gal-book', style: `--hue:${hueOf(b)}`, 'aria-labelledby': `gal-${b.id}` },
+    h('header', { class: 'gal-head' },
+      coverEl(b, 'gal-cover'),
+      h('div', {},
+        h('h2', { id: `gal-${b.id}` }, h('button', { type: 'button', class: 'card-link', 'data-open': b.id, text: b.title })),
+        h('p', { class: 'meta' }, `${b.year} · ${b.publisher} · ${pics.length}${terms.length ? ` of ${b.pictures.length}` : ''} picture${pics.length === 1 ? '' : 's'}`,
+          b.repo ? [' · ', h('a', { href: b.repo, target: '_blank', rel: 'noopener', text: 'Companion repo ↗' })] : null))),
+    pictureThumbs(pics, 'gallery'))));
+}
+
+let viewerList = [];
+let viewerIdx = 0;
+function openPicture(ref, listKind = 'book') {
+  const [bid, i] = ref.split(':');
+  const b = BY_ID.get(bid);
+  const pic = b?.pictures[Number(i)];
+  if (!pic) return;
+  viewerList = listKind === 'gallery' ? galleryPictures() : listKind === 'match' ? matchingPictures(b) : b.pictures;
+  if (!viewerList.includes(pic)) viewerList = b.pictures;
+  viewerIdx = viewerList.indexOf(pic);
+  renderViewer();
+  const dlg = $('#pic-viewer');
+  if (!dlg.open) dlg.showModal();
+}
+function stepPicture(step) {
+  if (viewerList.length < 2) return;
+  viewerIdx = (viewerIdx + step + viewerList.length) % viewerList.length;
+  renderViewer();
+}
+function renderViewer() {
+  const p = viewerList[viewerIdx];
+  const b = p.book;
+  const repoLabel = b.repo?.replace(/^https?:\/\/(www\.)?/, '');
+  const img = h('img', { class: 'pv-img', src: p.src, alt: p.caption || `${KIND_LABEL[p.kind]} — ${b.title}` });
+  const q = fold(state.q);
+  $('#pv-body').replaceChildren(h('figure', { class: 'pv', style: `--hue:${hueOf(b)}` },
+    h('header', { class: 'pv-head' },
+      h('p', { class: 'eyebrow', text: `${KIND_LABEL[p.kind]} · ${p.file}` }),
+      h('h1', { id: 'pv-title', text: b.title })),
+    p.kind === 'repo' && b.repo
+      ? h('a', { class: 'pv-imglink', href: b.repo, target: '_blank', rel: 'noopener', 'aria-label': `Open ${repoLabel} on GitHub` }, img)
+      : img,
+    h('figcaption', {},
+      p.kind === 'repo' && (b.repo
+        ? h('p', {}, h('a', { class: 'pv-repo', href: b.repo, target: '_blank', rel: 'noopener', text: `Open ${repoLabel} on GitHub ↗` }))
+        : h('p', { class: 'muted', text: 'No repository link in the catalogue for this book.' })),
+      p.caption && h('p', { class: 'pv-caption', text: p.caption }),
+      p.keywords.length ? h('ul', { class: 'chips', 'aria-label': 'Keywords (click to search)' }, p.keywords.map((k) =>
+        h('li', {}, h('button', { type: 'button', class: 'chip', 'data-kw': k, 'aria-pressed': String(!!q && fold(k) === q), text: k })))) : null,
+      h('p', {}, h('button', { type: 'button', class: 'linkish', 'data-open-book': b.id, text: 'Book details' })))));
+  $('#pv-pos').textContent = `${viewerIdx + 1} / ${viewerList.length}`;
+  for (const btn of $('[data-pv-step]')) btn.disabled = viewerList.length < 2;
+}
+
+// Search everything (books + pictures) for a keyword and show the matching pictures.
+function searchKeyword(k) {
+  state.q = k;
+  $('#q').value = k;
+  for (const d of $('dialog[open]')) d.close();
+  setView('pictures');
+}
+
+// ---------------------------------------------------------------------------
 // Orchestration
 // ---------------------------------------------------------------------------
 function announce(msg) { $('#status').textContent = msg; }
@@ -855,6 +1010,7 @@ function update({ animate = false } = {}) {
   const apply = () => {
     if (state.view === 'shelf') renderShelf(list);
     if (state.view === 'table') renderTable(list);
+    if (state.view === 'pictures') renderGallery(list);
   };
   withTransition(apply, animate && state.view !== 'graph');
   if (state.view === 'graph') { renderGraph(); syncGraphPanel(); }
@@ -862,7 +1018,11 @@ function update({ animate = false } = {}) {
   updateActiveFilters();
   const text = `${list.length} of ${BOOKS.length} books`;
   $('#result-count').textContent = text;
-  $('#empty').hidden = list.length > 0 || state.view === 'graph';
+  $('#empty').hidden = list.length > 0 || ['graph', 'game'].includes(state.view);
+  const hint = $('#pic-hint');
+  const nPics = state.q && !['pictures', 'game'].includes(state.view) ? galleryPictures(list).length : 0;
+  hint.hidden = !nPics;
+  hint.textContent = `${nPics} matching picture${nPics === 1 ? '' : 's'} →`;
   announce(text);
 
   const sortVal = `${state.sort.key}:${state.sort.dir}`;
@@ -889,6 +1049,22 @@ function setView(view) {
   for (const c of $$('.view-controls')) c.hidden = c.dataset.for !== view;
   document.body.dataset.view = view;
   update();
+  if (view === 'game') startGameView(); else game?.pause();
+}
+
+// Typing game: loaded on first visit.
+let game = null;
+async function startGameView() {
+  if (!game) {
+    const { createGame } = await import('./game.js');
+    game = createGame($('#game'), {
+      wordsUrl: '../seed/index-referential.json',
+      visibleBookIds: () => new Set(visibleBooks().map((b) => b.id)),
+      titleOf: (id) => BY_ID.get(id)?.title ?? id,
+      openBook,
+    });
+  }
+  game.show();
 }
 
 function wireEvents() {
@@ -926,6 +1102,15 @@ function wireEvents() {
   }
 
   document.addEventListener('click', (e) => {
+    const pic = e.target.closest('[data-pic]');
+    if (pic) { openPicture(pic.dataset.pic, pic.dataset.list); return; }
+    const picsOf = e.target.closest('[data-pics-of]');
+    if (picsOf) { const b = BY_ID.get(picsOf.dataset.picsOf); const m = matchingPictures(b); openPicture(`${b.id}:${(m[0] ?? b.pictures[0]).i}`, m.length ? 'match' : 'book'); return; }
+    const kw = e.target.closest('[data-kw]');
+    if (kw) { searchKeyword(kw.dataset.kw); return; }
+    const ob = e.target.closest('[data-open-book]');
+    if (ob) { $('#pic-viewer').close(); openBook(ob.dataset.openBook); return; }
+    if (e.target.closest('#pic-hint')) { withTransition(() => setView('pictures')); return; }
     const open = e.target.closest('[data-open]');
     if (open) { openBook(open.dataset.open); return; }
     const rm = e.target.closest('[data-remove]');
@@ -969,19 +1154,32 @@ function wireEvents() {
   });
   dlg.addEventListener('close', () => { state.book = null; writeHash(); });
 
+  const pv = $('#pic-viewer');
+  pv.addEventListener('click', (e) => {
+    const step = e.target.closest('[data-pv-step]');
+    if (step) stepPicture(Number(step.dataset.pvStep));
+  });
+  pv.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') { e.preventDefault(); stepPicture(1); }
+    if (e.key === 'ArrowLeft') { e.preventDefault(); stepPicture(-1); }
+  });
+
   // Light-dismiss fallback where <dialog closedby> is unsupported.
   if (!('closedBy' in HTMLDialogElement.prototype)) {
-    const outside = (e) => {
-      const r = dlg.getBoundingClientRect();
-      return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
-    };
-    let pressedOutside = false;
-    dlg.addEventListener('pointerdown', (e) => { pressedOutside = outside(e); });
-    dlg.addEventListener('pointerup', (e) => { if (pressedOutside && outside(e)) dlg.close(); });
+    for (const d of $('dialog[closedby="any"]')) {
+      const outside = (e) => {
+        const r = d.getBoundingClientRect();
+        return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
+      };
+      let pressedOutside = false;
+      d.addEventListener('pointerdown', (e) => { pressedOutside = outside(e); });
+      d.addEventListener('pointerup', (e) => { if (pressedOutside && outside(e)) d.close(); });
+    }
   }
-  // Invoker commands fallback for the dialog Close button.
+  // Invoker commands fallback for the dialogs' Close buttons.
   if (!('commandForElement' in HTMLButtonElement.prototype)) {
     $('.dlg-close').addEventListener('click', () => dlg.close());
+    $('.pv-close').addEventListener('click', () => pv.close());
   }
 
   // Collapse the filter panel by default on narrow screens.
@@ -1009,7 +1207,12 @@ async function main() {
       h('code', { text: 'python3 -m http.server 8000' }), ', then open ', h('code', { text: 'http://localhost:8000/app/' }), '.'));
     return;
   }
-  BOOKS = toBooks(parseCSV(text));
+  let media = {};
+  try {
+    const res = await fetch(MEDIA_URL);
+    if (res.ok) media = (await res.json()).books ?? {};
+  } catch { /* pictures are optional */ }
+  BOOKS = toBooks(parseCSV(text), media);
   BY_ID = new Map(BOOKS.map((b) => [b.id, b]));
   await resolveCovers(BOOKS);
 
@@ -1019,11 +1222,17 @@ async function main() {
   const years = BOOKS.map((b) => b.year).filter(Boolean);
   const techCount = new Set(BOOKS.flatMap((b) => b.technologies)).size;
   const topicCount = new Set(BOOKS.flatMap((b) => b.topics)).size;
-  $('#stats').textContent = `${BOOKS.length} books · ${Math.min(...years)}–${Math.max(...years)} · ${techCount} technologies · ${topicCount} topics · ${new Set(BOOKS.map((b) => b.publisher)).size} publishers`;
+  const picCount = BOOKS.reduce((n, b) => n + b.pictures.length, 0);
+  $('#stats').textContent = `${BOOKS.length} books · ${picCount} pictures · ${Math.min(...years)}–${Math.max(...years)} · ${techCount} technologies · ${topicCount} topics · ${new Set(BOOKS.map((b) => b.publisher)).size} publishers`;
 
   for (const b of BOOKS) { cards.set(b.id, buildCard(b)); rows.set(b.id, buildRow(b)); }
   const tbody = $('#book-table tbody');
   for (const b of BOOKS) tbody.append(rows.get(b.id));
+
+  // Keyword suggestions for the search box: tags + picture keywords.
+  const kws = new Map();
+  for (const b of BOOKS) for (const k of [...b.technologies, ...b.topics, ...b.pictures.flatMap((p) => p.keywords)]) kws.set(fold(k), kws.get(fold(k)) ?? k);
+  $('#kw-list').replaceChildren(...[...kws.values()].sort(collator.compare).map((k) => h('option', { value: k })));
 
   buildFacets();
   wireEvents();

@@ -1,0 +1,402 @@
+{
+  "folder": "2026-08_serverless-etl-analytics-aws-glue",
+  "deckId": "deb15",
+  "images": [
+    {
+      "file": "memo0.png",
+      "kind": "chapters",
+      "caption": "Three-part chapter list: Glue basics, data management and security, tuning and scenarios",
+      "keywords": [
+        "AWS Glue",
+        "data ingestion",
+        "data preparation",
+        "data layouts",
+        "metadata management",
+        "data security",
+        "data sharing",
+        "data pipeline management",
+        "monitoring",
+        "tuning",
+        "machine learning",
+        "generative AI",
+        "data lake",
+        "open table formats",
+        "cost optimization"
+      ]
+    },
+    {
+      "file": "gh.png",
+      "kind": "repo",
+      "caption": "Companion repo: Glue job ingesting CSV from S3 with Spark DataFrames",
+      "keywords": [
+        "AWS Glue",
+        "Apache Spark",
+        "PySpark",
+        "Python",
+        "Amazon S3",
+        "GlueContext",
+        "DynamicFrame",
+        "SparkSession",
+        "JDBC",
+        "Apache Kafka",
+        "Apache Airflow",
+        "Amazon MWAA",
+        "AWS Step Functions",
+        "AWS Glue workflows",
+        "data ingestion"
+      ]
+    },
+    {
+      "file": "memo1.png",
+      "kind": "memo",
+      "caption": "Apache Spark cluster architecture: driver, cluster manager, worker executors",
+      "keywords": [
+        "Apache Spark",
+        "Spark driver",
+        "SparkSession",
+        "cluster manager",
+        "worker node",
+        "executor",
+        "task",
+        "data shuffle",
+        "spark-submit",
+        "distributed processing"
+      ]
+    },
+    {
+      "file": "memo2.png",
+      "kind": "memo",
+      "caption": "AWS Glue Data Catalog storage, partitions, partition indexes and consuming services",
+      "keywords": [
+        "AWS Glue Data Catalog",
+        "Glue Data Catalog",
+        "partition indexes",
+        "partitioning",
+        "Amazon Athena",
+        "Redshift Spectrum",
+        "Amazon EMR",
+        "Apache Spark",
+        "Apache Hive",
+        "Presto",
+        "Amazon S3",
+        "Amazon RDS",
+        "Amazon DynamoDB",
+        "Amazon DocumentDB",
+        "Hive metastore"
+      ]
+    },
+    {
+      "file": "memo3.png",
+      "kind": "memo",
+      "caption": "Glue Studio visual job: Redshift source, Change Schema, Filter, S3 target",
+      "keywords": [
+        "AWS Glue Studio",
+        "AWS Glue",
+        "visual ETL",
+        "Amazon Redshift",
+        "Amazon S3",
+        "ApplyMapping",
+        "Change Schema",
+        "Filter transform",
+        "data preview",
+        "ETL"
+      ]
+    },
+    {
+      "file": "memo4.png",
+      "kind": "memo",
+      "caption": "Glue Studio Evaluate Data Quality node with DQDL rules and results",
+      "keywords": [
+        "AWS Glue Data Quality",
+        "AWS Glue Studio",
+        "data quality",
+        "DQDL",
+        "data quality rules",
+        "ColumnExists",
+        "IsComplete",
+        "ColumnDataType",
+        "anomaly detection",
+        "Amazon CloudWatch",
+        "Amazon S3"
+      ]
+    },
+    {
+      "file": "memo5.png",
+      "kind": "memo",
+      "caption": "Apache Parquet versus Apache ORC file layouts",
+      "keywords": [
+        "Parquet",
+        "Apache ORC",
+        "columnar storage",
+        "file formats",
+        "row groups",
+        "column chunks",
+        "stripes",
+        "footer",
+        "data layouts"
+      ]
+    },
+    {
+      "file": "memo6.png",
+      "kind": "memo",
+      "caption": "PyDeequ AnalysisRunner computing size, completeness and min/max/mean metrics",
+      "keywords": [
+        "Deequ",
+        "PyDeequ",
+        "Apache Spark",
+        "Python",
+        "data quality",
+        "data profiling",
+        "completeness",
+        "analyzers",
+        "data quality metrics"
+      ]
+    },
+    {
+      "file": "memo7.png",
+      "kind": "memo",
+      "caption": "PyDeequ VerificationSuite checks: uniqueness, completeness, allowed values",
+      "keywords": [
+        "Deequ",
+        "PyDeequ",
+        "Apache Spark",
+        "Python",
+        "data quality",
+        "data validation",
+        "VerificationSuite",
+        "uniqueness",
+        "completeness",
+        "data quality checks"
+      ]
+    },
+    {
+      "file": "memo8.png",
+      "kind": "memo",
+      "caption": "Glue ETL jobs loading databases into an S3 data lake, then aggregation",
+      "keywords": [
+        "AWS Glue",
+        "ETL",
+        "Amazon S3",
+        "data lake",
+        "databases",
+        "data aggregation",
+        "data ingestion",
+        "analytics"
+      ]
+    },
+    {
+      "file": "memo9.png",
+      "kind": "memo",
+      "caption": "AWS Glue workflow graph: trigger, crawler, job",
+      "keywords": [
+        "AWS Glue workflows",
+        "AWS Glue",
+        "Glue crawler",
+        "trigger",
+        "Glue job",
+        "orchestration",
+        "data pipeline management"
+      ]
+    },
+    {
+      "file": "memo10.png",
+      "kind": "memo",
+      "caption": "Step Functions state machine running Glue crawler then Glue job",
+      "keywords": [
+        "AWS Step Functions",
+        "AWS Glue",
+        "Glue crawler",
+        "state machine",
+        "Amazon States Language",
+        "orchestration",
+        "wait state",
+        "choice state",
+        "JSON"
+      ]
+    },
+    {
+      "file": "memo11.png",
+      "kind": "memo",
+      "caption": "Airflow DAG on Amazon MWAA with Glue crawler and job operators",
+      "keywords": [
+        "Apache Airflow",
+        "Amazon MWAA",
+        "AWS Glue",
+        "DAG",
+        "AwsGlueCrawlerOperator",
+        "AwsGlueJobOperator",
+        "orchestration",
+        "Glue crawler"
+      ]
+    },
+    {
+      "file": "memo12.png",
+      "kind": "memo",
+      "caption": "AWS Glue Studio monitoring dashboard: job runs, DPU hours, worker types",
+      "keywords": [
+        "AWS Glue Studio",
+        "AWS Glue",
+        "monitoring",
+        "job runs",
+        "DPU hours",
+        "worker types",
+        "Amazon CloudWatch",
+        "observability",
+        "cost optimization"
+      ]
+    },
+    {
+      "file": "memo13.png",
+      "kind": "memo",
+      "caption": "Amazon Athena console querying a Glue Data Catalog table with SQL",
+      "keywords": [
+        "Amazon Athena",
+        "Glue Data Catalog",
+        "AWS Glue Data Catalog",
+        "SQL",
+        "interactive query",
+        "data analysis",
+        "serverless"
+      ]
+    },
+    {
+      "file": "memo14.png",
+      "kind": "memo",
+      "caption": "Glue streaming CDC job: dedupe DMS records, write partitioned Parquet micro-batches",
+      "keywords": [
+        "AWS Glue",
+        "change data capture",
+        "CDC",
+        "AWS DMS",
+        "Amazon Kinesis",
+        "PySpark",
+        "deduplication",
+        "window functions",
+        "forEachBatch",
+        "micro-batch",
+        "checkpointing",
+        "Parquet",
+        "partitioning",
+        "Amazon S3",
+        "streaming"
+      ]
+    },
+    {
+      "file": "memo15.png",
+      "kind": "memo",
+      "caption": "YAML data contract with schema and SLA latency properties",
+      "keywords": [
+        "data contracts",
+        "Open Data Contract Standard",
+        "ODCS",
+        "YAML",
+        "schema",
+        "SLA",
+        "data governance"
+      ]
+    },
+    {
+      "file": "memo16.png",
+      "kind": "memo",
+      "caption": "Open table formats layered between engines and storage",
+      "keywords": [
+        "open table formats",
+        "Apache Iceberg",
+        "Apache Hudi",
+        "Delta Lake",
+        "Apache Spark",
+        "Trino",
+        "Apache Flink",
+        "Apache Hive",
+        "Amazon Redshift",
+        "Amazon S3",
+        "HDFS",
+        "Apache Hadoop",
+        "lakehouse"
+      ]
+    }
+  ],
+  "technologies": [
+    "AWS Glue",
+    "AWS Glue Studio",
+    "Glue Data Catalog",
+    "AWS Glue Data Quality",
+    "AWS Glue Schema Registry",
+    "Apache Spark",
+    "PySpark",
+    "Python",
+    "SQL",
+    "Amazon S3",
+    "Amazon Athena",
+    "Amazon Redshift",
+    "Redshift Spectrum",
+    "Amazon EMR",
+    "AWS Lake Formation",
+    "AWS Step Functions",
+    "Amazon MWAA",
+    "Apache Airflow",
+    "AWS Lambda",
+    "AWS DMS",
+    "Amazon Kinesis",
+    "Amazon MSK",
+    "Apache Kafka",
+    "Amazon SageMaker",
+    "Deequ",
+    "Apache Iceberg",
+    "Apache Hudi",
+    "Delta Lake",
+    "Parquet",
+    "Apache ORC"
+  ],
+  "topics": [
+    "serverless ETL",
+    "ETL",
+    "data ingestion",
+    "data preparation",
+    "data lake",
+    "data catalog",
+    "metadata management",
+    "crawlers",
+    "partitioning",
+    "partition indexes",
+    "partition pruning",
+    "data layouts",
+    "file formats",
+    "columnar storage",
+    "compaction",
+    "data quality",
+    "data profiling",
+    "data security",
+    "access control",
+    "data sharing",
+    "data governance",
+    "data contracts",
+    "data mesh",
+    "orchestration",
+    "data pipeline management",
+    "job bookmarks",
+    "incremental processing",
+    "change data capture",
+    "CDC",
+    "streaming",
+    "micro-batch",
+    "schema registry",
+    "schema evolution",
+    "monitoring",
+    "observability",
+    "performance tuning",
+    "data skew",
+    "auto scaling",
+    "cost optimization",
+    "open table formats",
+    "upserts",
+    "CI/CD",
+    "infrastructure as code",
+    "zero-ETL",
+    "generative AI"
+  ],
+  "providers": [
+    "AWS",
+    "Open source (Apache)"
+  ]
+}

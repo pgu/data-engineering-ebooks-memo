@@ -1,0 +1,249 @@
+{
+  "folder": "2024-04_data-eng-google-cloud-platform",
+  "deckId": "deb19",
+  "images": [
+    {
+      "file": "memo0.png",
+      "kind": "chapters",
+      "caption": "Chapter list: BigQuery, Cloud Composer, Dataproc, Pub/Sub, Dataflow, Looker Studio",
+      "keywords": [
+        "BigQuery",
+        "Cloud Composer",
+        "Dataproc",
+        "Pub/Sub",
+        "Dataflow",
+        "Looker Studio",
+        "data warehouse",
+        "data lake",
+        "streaming",
+        "machine learning",
+        "data governance",
+        "cost strategy",
+        "CI/CD",
+        "IAM"
+      ]
+    },
+    {
+      "file": "gh.png",
+      "kind": "repo",
+      "caption": "GitHub repo: BigQuery Python script building daily fact table",
+      "keywords": [
+        "GitHub",
+        "BigQuery",
+        "Python",
+        "SQL",
+        "fact table",
+        "dimension table",
+        "Cloud SQL",
+        "Cloud Storage",
+        "PySpark",
+        "Hive",
+        "HDFS",
+        "Apache Airflow",
+        "gcloud"
+      ]
+    },
+    {
+      "file": "memo1.png",
+      "kind": "memo",
+      "caption": "Data life cycle flow and data engineer focus diagram",
+      "keywords": [
+        "data life cycle",
+        "data lake",
+        "data warehouse",
+        "data mart",
+        "dashboard",
+        "ad hoc queries",
+        "machine learning",
+        "job orchestrator",
+        "ETL",
+        "infrastructure"
+      ]
+    },
+    {
+      "file": "memo2.png",
+      "kind": "memo",
+      "caption": "Distributed filesystem splitting large file into 128 MB blocks",
+      "keywords": [
+        "distributed filesystem",
+        "HDFS",
+        "Hadoop",
+        "block storage",
+        "file metadata",
+        "data replication"
+      ]
+    },
+    {
+      "file": "memo3.png",
+      "kind": "memo",
+      "caption": "MapReduce word count: map, shuffle, reduce steps",
+      "keywords": [
+        "MapReduce",
+        "map",
+        "shuffle",
+        "reduce",
+        "Hadoop",
+        "distributed processing",
+        "word count"
+      ]
+    },
+    {
+      "file": "memo4.png",
+      "kind": "memo",
+      "caption": "GCP services map: storage, big data analytics, AI/BI, infrastructure",
+      "keywords": [
+        "BigQuery",
+        "Cloud Storage",
+        "Cloud Composer",
+        "Dataproc",
+        "Dataplex",
+        "Pub/Sub",
+        "Dataflow",
+        "Datastream",
+        "Data Fusion",
+        "Bigtable",
+        "Spanner",
+        "Vertex AI",
+        "Looker Studio",
+        "Cloud Build",
+        "IAM"
+      ]
+    },
+    {
+      "file": "memo5.png",
+      "kind": "memo",
+      "caption": "Airflow DAG structure by role: extract-load, transform, data mart",
+      "keywords": [
+        "Apache Airflow",
+        "Cloud Composer",
+        "DAG",
+        "BigQuery",
+        "Cloud Storage",
+        "MySQL",
+        "landing zone",
+        "raw zone",
+        "data mart",
+        "data lake",
+        "orchestration"
+      ]
+    },
+    {
+      "file": "memo6.png",
+      "kind": "memo",
+      "caption": "Streaming pattern: Pub/Sub to Dataflow to BigQuery with GCS",
+      "keywords": [
+        "Pub/Sub",
+        "Dataflow",
+        "BigQuery",
+        "Cloud Storage",
+        "streaming",
+        "stream processing",
+        "Apache Beam"
+      ]
+    },
+    {
+      "file": "memo7.png",
+      "kind": "memo",
+      "caption": "BigQuery policy tags taxonomy for data masking of PII",
+      "keywords": [
+        "BigQuery",
+        "policy tags",
+        "data masking",
+        "PII",
+        "column-level security",
+        "data governance",
+        "Dataplex"
+      ]
+    },
+    {
+      "file": "memo8.png",
+      "kind": "memo",
+      "caption": "CI/CD flow with Cloud Build, Source Repository, Container Registry",
+      "keywords": [
+        "CI/CD",
+        "Cloud Build",
+        "Cloud Source Repositories",
+        "Container Registry",
+        "container image",
+        "deployment",
+        "DevOps"
+      ]
+    }
+  ],
+  "technologies": [
+    "BigQuery",
+    "Cloud Storage",
+    "Cloud Composer",
+    "Apache Airflow",
+    "Dataproc",
+    "Dataproc Serverless",
+    "Apache Spark",
+    "PySpark",
+    "Hadoop",
+    "HDFS",
+    "Hive",
+    "Pub/Sub",
+    "Dataflow",
+    "Apache Beam",
+    "Looker Studio",
+    "Vertex AI",
+    "BigQuery ML",
+    "Dataplex",
+    "Dataform",
+    "Datastream",
+    "Cloud SQL",
+    "Bigtable",
+    "Spanner",
+    "Cloud Build",
+    "Terraform",
+    "Python",
+    "SQL",
+    "MySQL",
+    "Data Fusion",
+    "Dataprep"
+  ],
+  "topics": [
+    "data warehouse",
+    "data lake",
+    "data mart",
+    "data life cycle",
+    "ETL",
+    "ELT",
+    "batch loading",
+    "streaming",
+    "stream processing",
+    "distributed filesystem",
+    "MapReduce",
+    "orchestration",
+    "DAG",
+    "fact table",
+    "dimension table",
+    "star schema",
+    "Kimball",
+    "Inmon",
+    "partitioning",
+    "clustering",
+    "data governance",
+    "data masking",
+    "policy tags",
+    "PII",
+    "data lineage",
+    "IAM",
+    "access control",
+    "project management",
+    "cost optimization",
+    "BigQuery slots",
+    "CI/CD",
+    "infrastructure as code",
+    "machine learning",
+    "MLOps",
+    "data visualization",
+    "serverless",
+    "data engineer career",
+    "certification"
+  ],
+  "providers": [
+    "Google Cloud",
+    "Open source (Apache)"
+  ]
+}
