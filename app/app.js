@@ -972,14 +972,15 @@ function renderViewer() {
   const b = p.book;
   const repoLabel = b.repo?.replace(/^https?:\/\/(www\.)?/, '');
   const img = h('img', { class: 'pv-img', src: p.src, alt: p.caption || `${KIND_LABEL[p.kind]} — ${b.title}` });
+  const zoomBtn = h('button', { type: 'button', class: 'pv-zoom', 'data-pv-zoom': '1', 'aria-pressed': 'false', text: 'Zoom to full size' });
   const q = fold(state.q);
   $('#pv-body').replaceChildren(h('figure', { class: 'pv', style: `--hue:${hueOf(b)}` },
     h('header', { class: 'pv-head' },
       h('p', { class: 'eyebrow', text: `${KIND_LABEL[p.kind]} · ${p.file}` }),
-      h('h1', { id: 'pv-title', text: b.title })),
-    p.kind === 'repo' && b.repo
+      h('h1', { id: 'pv-title', text: b.title }), zoomBtn),
+    h('div', { class: 'pv-frame' }, p.kind === 'repo' && b.repo
       ? h('a', { class: 'pv-imglink', href: b.repo, target: '_blank', rel: 'noopener', 'aria-label': `Open ${repoLabel} on GitHub` }, img)
-      : img,
+      : img),
     h('figcaption', {},
       p.kind === 'repo' && (b.repo
         ? h('p', {}, h('a', { class: 'pv-repo', href: b.repo, target: '_blank', rel: 'noopener', text: `Open ${repoLabel} on GitHub ↗` }))
@@ -989,14 +990,14 @@ function renderViewer() {
         h('li', {}, h('button', { type: 'button', class: 'chip', 'data-kw': k, 'aria-pressed': String(!!q && fold(k) === q), text: k })))) : null,
       h('p', {}, h('button', { type: 'button', class: 'linkish', 'data-open-book': b.id, text: 'Book details' })))));
   $('#pv-pos').textContent = `${viewerIdx + 1} / ${viewerList.length}`;
-  for (const btn of $('[data-pv-step]')) btn.disabled = viewerList.length < 2;
+  for (const btn of $$('[data-pv-step]')) btn.disabled = viewerList.length < 2;
 }
 
 // Search everything (books + pictures) for a keyword and show the matching pictures.
 function searchKeyword(k) {
   state.q = k;
   $('#q').value = k;
-  for (const d of $('dialog[open]')) d.close();
+  for (const d of $$('dialog[open]')) d.close();
   setView('pictures');
 }
 
@@ -1158,6 +1159,16 @@ function wireEvents() {
   pv.addEventListener('click', (e) => {
     const step = e.target.closest('[data-pv-step]');
     if (step) stepPicture(Number(step.dataset.pvStep));
+    // Zoom: the button, or a click on the picture itself (the repo picture keeps its link).
+    const zoomBtn = e.target.closest('[data-pv-zoom]');
+    if (zoomBtn || (e.target.matches('.pv-img') && !e.target.closest('a'))) {
+      const fig = $('.pv', pv);
+      const on = !fig.classList.contains('zoomed');
+      fig.classList.toggle('zoomed', on);
+      const btn = $('[data-pv-zoom]', pv);
+      btn.setAttribute('aria-pressed', String(on));
+      btn.textContent = on ? 'Fit to screen' : 'Zoom to full size';
+    }
   });
   pv.addEventListener('keydown', (e) => {
     if (e.key === 'ArrowRight') { e.preventDefault(); stepPicture(1); }
@@ -1166,7 +1177,7 @@ function wireEvents() {
 
   // Light-dismiss fallback where <dialog closedby> is unsupported.
   if (!('closedBy' in HTMLDialogElement.prototype)) {
-    for (const d of $('dialog[closedby="any"]')) {
+    for (const d of $$('dialog[closedby="any"]')) {
       const outside = (e) => {
         const r = d.getBoundingClientRect();
         return e.clientX < r.left || e.clientX > r.right || e.clientY < r.top || e.clientY > r.bottom;
