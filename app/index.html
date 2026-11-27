@@ -19,6 +19,18 @@
       <label for="q" class="visually-hidden">Search books</label>
       <input id="q" type="search" placeholder="Search books and pictures by keyword…" autocomplete="off" spellcheck="false" list="kw-list">
       <datalist id="kw-list"></datalist>
+      <button type="button" class="search-help-btn" popovertarget="search-help" aria-label="Search tips" title="Search tips">?</button>
+      <section id="search-help" class="search-help" popover aria-labelledby="search-help-title">
+        <h2 id="search-help-title">Search tips</h2>
+        <ul>
+          <li><strong>Type words</strong> to search books and their pictures. Results are ranked by relevance and must contain every word. Small typos are tolerated (<code>parqet</code>), and word variants match each other (<code>partitioned</code> → partitioning).</li>
+          <li><strong>Pick a suggestion</strong> from the list. Entries marked <em>Group</em> search a whole notion at once: <code>Data quality</code> also covers data quality checks, AWS Glue Data Quality and more. A bar below then lets you narrow to one keyword, or widen a keyword to its group.</li>
+          <li><strong>Use "quotes"</strong> for an exact phrase: <code>"data engineer"</code> won't match "data engineering".</li>
+          <li><strong>Pictures view</strong>: exact matches are labelled with the keyword they matched. <em>Include close matches</em> adds <span class="sh-close">≈ close</span> ones (typos, word variants), which also appear automatically when nothing matches exactly.</li>
+          <li><strong>Combine</strong> with the filters on the left. Remove the search with the × on its chip above the results.</li>
+        </ul>
+        <button type="button" class="search-help-close" popovertarget="search-help" popovertargetaction="hide">Got it</button>
+      </section>
     </search>
 
     <nav class="views" aria-label="View">
@@ -51,6 +63,7 @@
         <div class="view-controls" data-for="shelf">
           <label>Sort
             <select id="shelf-sort">
+              <option value="relevance:descending">Most relevant</option>
               <option value="date:descending">Newest first</option>
               <option value="date:ascending">Oldest first</option>
               <option value="title:ascending">Title A–Z</option>
@@ -69,8 +82,8 @@
         </div>
 
         <div class="view-controls" data-for="pictures" hidden>
-          <label title="Off: the search must appear as a whole phrase in a picture keyword or caption. On: each word may appear anywhere, even inside longer words.">
-            <input id="pic-partial" type="checkbox"> Include partial matches
+          <label title="Off: pictures whose keyword or caption contains the search as a whole phrase (or a group's keywords). On: also close matches (typos, word variants, words spread over keyword and caption), ranked. Tip: put the search in quotes for an exact phrase everywhere.">
+            <input id="pic-partial" type="checkbox"> Include close matches
           </label>
         </div>
 

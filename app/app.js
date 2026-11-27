@@ -2,6 +2,7 @@
 // Serve the repository root over HTTP (e.g. `python3 -m http.server`) and open /app/.
 
 import { ZONES, ZONE, BOOK_BAND, zoneOf, zoneCenter } from './lifecycle.js';
+import { createSearch } from './search.js';
 
 const CSV_URL = '../seed/data-engineering-ebooks.csv';
 const MEDIA_URL = '../seed/media.json';
@@ -10,6 +11,11 @@ const GRAPH_DIMS = ['technologies', 'topics', 'platform'];
 const ZONED_DIMS = ['technologies', 'topics']; // dims that support the lifecycle layout
 const COVERS_DIR = '../ebook-covers/';
 const D3_URL = 'https://cdn.jsdelivr.net/npm/d3@7.9.0/+esm';
+const MINISEARCH_URL = 'https://cdn.jsdelivr.net/npm/minisearch@7.2.0/+esm';
+const POPOVER_POLYFILL_URL = 'https://cdn.jsdelivr.net/npm/@oddbird/popover-polyfill@0.7.3/dist/popover.min.js';
+
+// Popover API (search tips): load the polyfill only where it's missing.
+if (!Object.hasOwn(HTMLElement.prototype, 'popover')) import(POPOVER_POLYFILL_URL).catch(() => {});
 
 // ---------------------------------------------------------------------------
 // Normalisation of free-text tags (edit freely as the CSV grows)
@@ -204,6 +210,7 @@ const SORTS = {
   platform: (a, b) => collator.compare(a.platform.join(', '), b.platform.join(', ')),
   type: (a, b) => collator.compare(a.type, b.type),
   chapters: (a, b) => a.chapters.length - b.chapters.length,
+  relevance: (a, b) => (searchResult()?.bookScore.get(a.id) ?? 0) - (searchResult()?.bookScore.get(b.id) ?? 0),
 };
 
 const GROUPS = {
@@ -226,7 +233,7 @@ const state = {
   graphDim: 'technologies',
   graphMin: 2,
   graphLayout: 'lifecycle', // 'lifecycle' | 'free'
-  picMatch: 'exact', // pictures: 'exact' phrase | 'partial' words
+  picMatch: 'exact', // pictures: 'exact' phrase/group only | 'close' = also typo-tolerant / word-variant matches
   book: null, // book open in the modal
   sel: null, // book previewed in the graph side panel
   selTag: null, // tag node last clicked in the graph (panel lists its books)
@@ -268,7 +275,7 @@ function readHash() {
   state.graphDim = GRAPH_DIMS.includes(p.get('dim')) ? p.get('dim') : 'technologies';
   state.graphMin = Math.max(1, Number(p.get('min')) || 2);
   state.graphLayout = p.get('layout') === 'free' ? 'free' : 'lifecycle';
-  state.picMatch = p.get('pm') === 'partial' ? 'partial' : 'exact';
+  state.picMatch = ['close', 'partial'].includes(p.get('pm')) ? 'close' : 'exact';
   state.book = p.get('book');
   state.sel = BY_ID.has(p.get('sel')) ? p.get('sel') : null;
   state.selTag = p.get('tag');
@@ -294,11 +301,31 @@ function loadGroups(list) {
 }
 const activeGroup = () => KW_GROUPS.get(fold(state.q.trim().replace(/\s+/g, ' '))) ?? null;
 
+// Ranked search (MiniSearch, see search.js); null until loaded or if the CDN is unreachable.
+let SEARCH = null;
+const escapeRe = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const quotedPhrase = () => /^"(.+)"$/.exec(state.q.trim())?.[1].trim() ?? null; // "exact phrase"
+const phraseRe = (phrase) => new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(fold(phrase).replace(/\s+/g, ' '))}(e?s)?($|[^\\p{L}\\p{N}])`, 'u');
+let srCache = { key: null, value: null };
+function searchResult() {
+  const q = state.q.trim();
+  if (!SEARCH || !q) return null;
+  if (srCache.key !== q) {
+    const g = activeGroup();
+    srCache = { key: q, value: SEARCH.query(g ? { any: g.members } : quotedPhrase() ?? q) };
+  }
+  return srCache.value;
+}
+
 function matchesQuery(b) {
   if (!state.q) return true;
+  const quoted = quotedPhrase();
+  if (quoted) return phraseRe(quoted).test(b.searchText);
   const g = activeGroup();
   if (g) return [...g.set].some((m) => b.kwFold.has(m) || b.searchText.includes(m)) || b.searchText.includes(fold(state.q.trim()));
-  return fold(state.q).split(/\s+/).filter(Boolean).every((t) => b.searchText.includes(t));
+  const sr = searchResult();
+  if (sr) return sr.bookScore.has(b.id);
+  return fold(state.q).split(/\s+/).filter(Boolean).every((t) => b.searchText.includes(t)); // fallback
 }
 
 function matchesFacet(b, key, set = state.filters.get(key)) {
@@ -953,36 +980,48 @@ function stepBook(step) {
 // ---------------------------------------------------------------------------
 const queryTerms = () => fold(state.q).split(/\s+/).filter(Boolean);
 
-// Picture matching:
-// - exact (default): the whole query as a phrase, on word boundaries (plural allowed), in a keyword or the caption.
-//   "data engineer" matches the keyword "data engineers" but not "data engineering".
-// - partial: every word somewhere in the picture's text (or the book title), e.g. "data" + "engineer…".
-const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+// Picture matching, two tiers:
+// - precise: the query as a whole phrase (word boundaries, plurals allowed) in a keyword or the caption,
+//   or any member keyword of a group. "data engineer" matches "data engineers", not "data engineering".
+// - close: ranked search results that aren't precise (typos, word variants, words spread over keyword + caption).
+//   Shown when "Include close matches" is ticked, or automatically when nothing matches precisely.
 let hitCache = { key: null, map: new WeakMap() };
 function pictureHits(p) {
-  const key = `${state.picMatch}:${state.q}`;
+  const key = state.q;
   if (hitCache.key !== key) hitCache = { key, map: new WeakMap() };
   if (hitCache.map.has(p)) return hitCache.map.get(p);
-  const phrase = fold(state.q).trim().replace(/\s+/g, ' ');
-  let hits = null;
-  if (state.picMatch === 'partial') {
-    const terms = phrase.split(' ');
-    const title = fold(p.book.title);
-    if (terms.every((t) => p.text.includes(t) || title.includes(t)) && terms.some((t) => p.text.includes(t))) {
-      hits = p.keywords.filter((k) => terms.some((t) => fold(k).includes(t)));
-    }
-  } else {
-    const re = new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(phrase)}(e?s)?($|[^\\p{L}\\p{N}])`, 'u');
-    const g = activeGroup(); // a group matches any of its member keywords
-    const kw = p.keywords.filter((k) => (g ? g.set.has(fold(k)) : false) || re.test(fold(k)));
-    if (kw.length || re.test(fold(p.caption))) hits = kw;
-  }
+  const re = phraseRe(quotedPhrase() ?? state.q.trim());
+  const g = quotedPhrase() ? null : activeGroup(); // a group matches any of its member keywords
+  const kw = p.keywords.filter((k) => (g ? g.set.has(fold(k)) : false) || re.test(fold(k)));
+  const hits = kw.length || re.test(fold(p.caption)) ? kw : null;
   hitCache.map.set(p, hits);
   return hits;
 }
+// Close match: the ranked-search entry ({ score, terms }) of a non-precise picture, or null.
+function closeHit(p) {
+  if (pictureHits(p) || quotedPhrase()) return null;
+  const sr = searchResult();
+  if (sr) return sr.pictures.get(p) ?? null;
+  const terms = fold(state.q).split(/\s+/).filter(Boolean); // fallback without MiniSearch: all words present
+  return terms.every((t) => p.text.includes(t)) ? { score: 0, terms } : null;
+}
+// Close matches are added when asked for, or when no visible picture matches precisely.
+let closeAutoCache = { key: null, value: false };
+function includeClose() {
+  if (state.picMatch === 'close') return true;
+  if (quotedPhrase() || activeGroup()) return false;
+  const key = state.q + JSON.stringify([...state.filters].map(([k, v]) => [k, [...v]]));
+  if (closeAutoCache.key !== key) {
+    closeAutoCache = { key, value: !BOOKS.some((b) => matches(b) && b.pictures.some((p) => pictureHits(p))) };
+  }
+  return closeAutoCache.value;
+}
 function matchingPictures(b) {
   if (!state.q.trim()) return b.pictures;
-  return b.pictures.filter((p) => pictureHits(p));
+  const precise = b.pictures.filter((p) => pictureHits(p));
+  if (!includeClose()) return precise;
+  const close = b.pictures.filter((p) => closeHit(p)).sort((x, y) => closeHit(y).score - closeHit(x).score);
+  return [...precise, ...close];
 }
 const galleryPictures = (list = visibleBooks()) => list.flatMap((b) => matchingPictures(b));
 
@@ -998,7 +1037,13 @@ function pictureThumbs(pics, listKind) {
 function hitLabel(p) {
   if (!state.q.trim()) return null;
   const hits = pictureHits(p);
-  if (!hits) return null;
+  if (!hits) {
+    const c = closeHit(p);
+    if (!c) return null;
+    // Show the keyword that contains a matched (stemmed / corrected) term, else the terms themselves.
+    const k = p.keywords.find((kw) => c.terms.some((t) => fold(kw).includes(t))) ?? c.terms.join(' ');
+    return h('span', { class: 'pic-hit close', title: `Close match: ${c.terms.join(', ')}`, text: `≈ ${k}` });
+  }
   const text = hits.length ? hits[0] + (hits.length > 1 ? ` +${hits.length - 1}` : '') : 'in caption';
   return h('span', { class: 'pic-hit', title: hits.join(', ') || 'Matched in the caption', text });
 }
@@ -1009,7 +1054,7 @@ function renderGallery(list) {
   const all = list.map((b) => [b, matchingPictures(b)]);
   const sections = all.filter(([, pics]) => pics.length);
   const others = all.filter(([b, pics]) => !pics.length && b.pictures.length).map(([b]) => b); // match in text only
-  const key = state.picMatch + state.q + all.map(([b, pics]) => b.id + pics.map((p) => p.i).join('.')).join('|');
+  const key = state.picMatch + state.q + includeClose() + all.map(([b, pics]) => b.id + pics.map((p) => p.i).join('.')).join('|');
   if (key === galleryKey) return;
   galleryKey = key;
   const root = $('#gallery');
@@ -1017,11 +1062,13 @@ function renderGallery(list) {
   const q = state.q.trim();
   const g = activeGroup();
   const nPics = sections.reduce((n, [, pics]) => n + pics.length, 0);
-  const how = g ? ` (group: ${g.members.length} keywords)` : state.picMatch === 'exact' ? ' (exact phrase)' : ' (partial words)';
+  const auto = includeClose() && state.picMatch !== 'close';
+  const how = g ? ` (group: ${g.members.length} keywords)` : quotedPhrase() ? ' (exact phrase, in quotes)'
+    : auto ? ' — no exact match, showing close matches (typos, word variants)' : includeClose() ? ' (exact + close matches)' : '';
   const summary = !terms.length ? null : nPics
     ? h('p', { class: 'gal-summary' }, h('strong', { text: `${nPics} picture${nPics === 1 ? '' : 's'}` }),
       ` match “${q}” in ${sections.length} book${sections.length === 1 ? '' : 's'}${how}.`,
-      state.picMatch === 'exact' && !g ? ' Tick “Include partial matches” to widen.' : '')
+      !includeClose() && !g && !quotedPhrase() ? ' Tick “Include close matches” to widen.' : '')
     : h('p', { class: 'gal-summary' }, h('strong', { text: 'No picture matches' }), ` “${q}”${how}. `,
       `${others.length} book${others.length === 1 ? '' : 's'} mention it in their text (topics, chapters, summary):`);
   // Books matched by their text only: compact rows, pictures on demand.
@@ -1160,7 +1207,7 @@ function update({ animate = false } = {}) {
   $('#graph-dim').value = state.graphDim;
   $('#graph-min').value = state.graphMin;
   $('#graph-layout').value = state.graphLayout;
-  $('#pic-partial').checked = state.picMatch === 'partial';
+  $('#pic-partial').checked = state.picMatch === 'close';
   $('#graph-layout-ctl').hidden = !ZONED_DIMS.includes(state.graphDim);
   writeHash();
 }
@@ -1197,7 +1244,15 @@ function wireEvents() {
   let t;
   q.addEventListener('input', () => {
     clearTimeout(t);
-    t = setTimeout(() => { state.q = q.value.trim(); update(); }, 120);
+    t = setTimeout(() => {
+      const before = state.q;
+      state.q = q.value.trim();
+      // Searching sorts by relevance (unless a custom sort was chosen); clearing goes back to newest first.
+      const isDefault = state.sort.key === 'date' && state.sort.dir === 'descending';
+      if (!before && state.q && isDefault) state.sort = { key: 'relevance', dir: 'descending' };
+      if (!state.q && state.sort.key === 'relevance') state.sort = { key: 'date', dir: 'descending' };
+      update();
+    }, 120);
   });
 
   $('#shelf-sort').addEventListener('change', (e) => {
@@ -1215,7 +1270,7 @@ function wireEvents() {
     if (state.view === 'graph' && !isZoned()) { graph.key = null; renderGraph(); } // free layout sizes to the container
   });
   $('#graph-layout').addEventListener('change', (e) => { state.graphLayout = e.target.value; update(); });
-  $('#pic-partial').addEventListener('change', (e) => { state.picMatch = e.target.checked ? 'partial' : 'exact'; update(); });
+  $('#pic-partial').addEventListener('change', (e) => { state.picMatch = e.target.checked ? 'close' : 'exact'; update(); });
   $('#graph-min').addEventListener('change', (e) => { state.graphMin = Math.max(1, Math.min(6, Number(e.target.value) || 1)); update(); });
 
   // Table header sort via invoker commands, with click fallback.
@@ -1362,6 +1417,10 @@ async function main() {
     const res = await fetch(GROUPS_URL);
     if (res.ok) loadGroups((await res.json()).groups ?? []);
   } catch { /* groups are optional */ }
+  try {
+    const { default: MiniSearch } = await import(MINISEARCH_URL);
+    SEARCH = createSearch(MiniSearch, BOOKS, { fold });
+  } catch { /* offline: simple word matching is used instead */ }
   for (const b of BOOKS) b.kwFold = new Set([...b.technologies, ...b.topics, ...b.pictures.flatMap((p) => p.keywords)].map(fold));
   BY_ID = new Map(BOOKS.map((b) => [b.id, b]));
   await resolveCovers(BOOKS);
