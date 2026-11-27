@@ -1,0 +1,1139 @@
+{
+ "about": "Keyword groups used by the search. Edit freely, then run node tools/build-data.mjs (members are recomputed, your edits are kept). name: label shown in search. pattern: whole-phrase match on all keywords (plurals included); null = only \"include\". include / exclude: keywords to add / remove by hand. To drop a group for good, delete it AND add its pattern to \"rejected\" (otherwise it is proposed again). \"auto\": true = proposed by the script (harmless to keep or remove).",
+ "rejected": [
+  "generation",
+  "load",
+  "transform",
+  "tag",
+  "task",
+  "stream",
+  "infrastructure",
+  "trigger",
+  "workload",
+  "capacity"
+ ],
+ "groups": [
+  {
+   "name": "Access control",
+   "pattern": "access control",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "access control",
+    "attribute-based access control",
+    "fine-grained access control",
+    "role-based access control"
+   ]
+  },
+  {
+   "name": "Agent",
+   "pattern": "agent",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Agent Bricks",
+    "agents",
+    "AI agents",
+    "data agents",
+    "data quality agent",
+    "multi-agent systems",
+    "Strands Agents SDK"
+   ]
+  },
+  {
+   "name": "Aggregation",
+   "pattern": "aggregation",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "aggregation",
+    "data aggregation",
+    "window aggregation"
+   ]
+  },
+  {
+   "name": "Amazon Bedrock",
+   "pattern": "amazon bedrock",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon Bedrock",
+    "Amazon Bedrock AgentCore",
+    "Amazon Bedrock Knowledge Bases"
+   ]
+  },
+  {
+   "name": "Amazon S3",
+   "pattern": "amazon s3",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon S3",
+    "Amazon S3 Tables",
+    "Amazon S3 Vectors"
+   ]
+  },
+  {
+   "name": "AWS Glue",
+   "pattern": "aws glue",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "AWS Glue",
+    "AWS Glue Data Catalog",
+    "AWS Glue Data Quality",
+    "AWS Glue DataBrew",
+    "AWS Glue Schema Registry",
+    "AWS Glue Studio",
+    "AWS Glue workflows"
+   ]
+  },
+  {
+   "name": "BigQuery",
+   "pattern": "bigquery",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "BigQuery",
+    "BigQuery ML",
+    "BigQuery slots"
+   ]
+  },
+  {
+   "name": "CLONE",
+   "pattern": "clone",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "CLONE",
+    "deep clone",
+    "shallow clone"
+   ]
+  },
+  {
+   "name": "Cluster",
+   "pattern": "cluster",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "cluster",
+    "cluster management",
+    "cluster manager",
+    "multi-cluster warehouse"
+   ]
+  },
+  {
+   "name": "Compaction",
+   "pattern": "compaction",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "auto compaction",
+    "compaction",
+    "data compaction",
+    "file compaction"
+   ]
+  },
+  {
+   "name": "Cost",
+   "pattern": "cost",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "AWS Cost Explorer",
+    "cost",
+    "cost allocation tags",
+    "cost considerations",
+    "cost management",
+    "cost optimization",
+    "cost strategy",
+    "performance & cost",
+    "total cost of ownership"
+   ]
+  },
+  {
+   "name": "Crawler",
+   "pattern": "crawler",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "crawlers",
+    "Glue crawler",
+    "Glue crawlers"
+   ]
+  },
+  {
+   "name": "CSV",
+   "pattern": "csv",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "CSV",
+    "Parquet/CSV/JSON",
+    "read_csv",
+    "read_csv_auto"
+   ]
+  },
+  {
+   "name": "Dashboard",
+   "pattern": "dashboard",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "BI dashboards",
+    "dashboard",
+    "dashboards",
+    "real-time dashboard"
+   ]
+  },
+  {
+   "name": "Data catalog",
+   "pattern": "data catalog",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "AWS Glue Data Catalog",
+    "business data catalog",
+    "data catalog",
+    "data catalogs",
+    "Glue Data Catalog"
+   ]
+  },
+  {
+   "name": "Data engineer",
+   "pattern": "data engineer",
+   "include": [],
+   "exclude": [],
+   "members": [
+    "data engineer",
+    "data engineer career"
+   ]
+  },
+  {
+   "name": "Data engineering",
+   "pattern": "data engineering",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data engineering",
+    "data engineering lifecycle",
+    "data engineering workloads",
+    "GenAI for data engineering",
+    "Synapse data engineering"
+   ]
+  },
+  {
+   "name": "Data lake",
+   "pattern": "data lake",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Azure Data Lake Storage",
+    "Azure Data Lake Storage Gen2",
+    "data lake",
+    "Data lake management",
+    "data lake storage",
+    "data lake zones",
+    "data lakes"
+   ]
+  },
+  {
+   "name": "Data lake storage",
+   "pattern": "data lake storage",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Azure Data Lake Storage",
+    "Azure Data Lake Storage Gen2",
+    "data lake storage"
+   ]
+  },
+  {
+   "name": "Data model",
+   "pattern": "data model",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "conceptual data model",
+    "data models",
+    "logical data model",
+    "physical data model"
+   ]
+  },
+  {
+   "name": "Data pipeline",
+   "pattern": "data pipeline",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data pipeline management",
+    "data pipelines",
+    "real-time data pipelines"
+   ]
+  },
+  {
+   "name": "Data product",
+   "pattern": "data product",
+   "include": [
+    "data as a product"
+   ],
+   "exclude": [],
+   "members": [
+    "data as a product",
+    "data products"
+   ]
+  },
+  {
+   "name": "Data quality",
+   "pattern": "data quality",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "AWS Glue Data Quality",
+    "data quality",
+    "data quality agent",
+    "data quality checks",
+    "data quality expectations",
+    "data quality metrics",
+    "data quality monitoring",
+    "data quality rules",
+    "data quality score"
+   ]
+  },
+  {
+   "name": "Data type",
+   "pattern": "data type",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data types",
+    "nested object data type",
+    "Point data type"
+   ]
+  },
+  {
+   "name": "Data warehouse",
+   "pattern": "data warehouse",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "cloud data warehouse",
+    "data warehouse",
+    "data warehouse migration",
+    "enterprise data warehouse",
+    "modern data warehouse",
+    "relational data warehouse",
+    "Synapse data warehouse"
+   ]
+  },
+  {
+   "name": "Database",
+   "pattern": "database",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Azure SQL Database",
+    "database",
+    "database server",
+    "database sharing",
+    "Databases",
+    "databases and schemas",
+    "in-memory database",
+    "in-memory databases",
+    "in-process databases",
+    "persistent databases",
+    "SQL database",
+    "transactional databases",
+    "vector databases"
+   ]
+  },
+  {
+   "name": "DataFrame",
+   "pattern": "dataframe",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "DataFrame",
+    "DataFrames",
+    "pandas DataFrames",
+    "Polars DataFrames"
+   ]
+  },
+  {
+   "name": "Deployment",
+   "pattern": "deployment",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "deployment",
+    "deployment (DABs)",
+    "deployment pipeline",
+    "deployment pipelines"
+   ]
+  },
+  {
+   "name": "Driver",
+   "pattern": "driver",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "driver",
+    "driver logs",
+    "Spark driver"
+   ]
+  },
+  {
+   "name": "DuckDB",
+   "pattern": "duckdb",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "DuckDB",
+    "DuckDB CLI",
+    "duckdb.connect"
+   ]
+  },
+  {
+   "name": "EMR",
+   "pattern": "emr",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon EMR",
+    "EMR",
+    "EMR Serverless"
+   ]
+  },
+  {
+   "name": "Entity",
+   "pattern": "entity",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "entity relationship diagram",
+    "entity resolution",
+    "named entity"
+   ]
+  },
+  {
+   "name": "ETL",
+   "pattern": "etl",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "ELT vs ETL",
+    "ETL",
+    "ETL framework",
+    "ETL jobs",
+    "reverse ETL",
+    "Serverless ETL",
+    "visual ETL",
+    "zero ETL",
+    "zero-ETL"
+   ]
+  },
+  {
+   "name": "Event-driven",
+   "pattern": "event-driven",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "event-driven",
+    "event-driven analytics",
+    "event-driven architecture",
+    "event-driven processing"
+   ]
+  },
+  {
+   "name": "Extension",
+   "pattern": "extension",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "extensions",
+    "httpfs extension",
+    "spatial extension"
+   ]
+  },
+  {
+   "name": "File format",
+   "pattern": "file format",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "file format",
+    "file formats",
+    "open file formats"
+   ]
+  },
+  {
+   "name": "Flink",
+   "pattern": "flink",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon Managed Service for Apache Flink",
+    "Apache Flink",
+    "Flink"
+   ]
+  },
+  {
+   "name": "Gold layer",
+   "pattern": "gold layer",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "bronze/silver/gold layers",
+    "gold layer",
+    "silver/gold layers"
+   ]
+  },
+  {
+   "name": "Governance",
+   "pattern": "governance",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data governance",
+    "federated computational governance",
+    "federated governance",
+    "governance",
+    "governance & security",
+    "governance boundary",
+    "metadata and governance layer",
+    "Unity Catalog governance"
+   ]
+  },
+  {
+   "name": "Group",
+   "pattern": "group",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "calculation groups",
+    "GROUP BY",
+    "group_by",
+    "groups",
+    "row groups"
+   ]
+  },
+  {
+   "name": "Hadoop",
+   "pattern": "hadoop",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Apache Hadoop",
+    "Hadoop",
+    "Hadoop migration"
+   ]
+  },
+  {
+   "name": "Hive",
+   "pattern": "hive",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Apache Hive",
+    "Hive",
+    "Hive catalog",
+    "Hive Metastore"
+   ]
+  },
+  {
+   "name": "IAM",
+   "pattern": "iam",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "AWS IAM",
+    "IAM",
+    "IAM role"
+   ]
+  },
+  {
+   "name": "Iceberg",
+   "pattern": "iceberg",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Apache Iceberg",
+    "Iceberg",
+    "Iceberg REST catalog",
+    "Iceberg tables",
+    "iceberg_metadata",
+    "iceberg_scan",
+    "iceberg_snapshots"
+   ]
+  },
+  {
+   "name": "Incremental load",
+   "pattern": "incremental load",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "full & incremental loads",
+    "incremental load",
+    "incremental loads"
+   ]
+  },
+  {
+   "name": "Ingestion",
+   "pattern": "ingestion",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "batch ingestion",
+    "data ingestion",
+    "incremental ingestion",
+    "ingestion",
+    "Ingestion strategies",
+    "real-time ingestion",
+    "streaming ingestion"
+   ]
+  },
+  {
+   "name": "Join",
+   "pattern": "join",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "ASOF JOIN",
+    "join reordering",
+    "joins",
+    "left anti join",
+    "skew join",
+    "SQL joins"
+   ]
+  },
+  {
+   "name": "JSON",
+   "pattern": "json",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "JSON",
+    "nested JSON",
+    "Parquet/CSV/JSON",
+    "PARSE_JSON",
+    "read_json() function"
+   ]
+  },
+  {
+   "name": "Kafka",
+   "pattern": "kafka",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Apache Kafka",
+    "Kafka",
+    "Kafka Connect"
+   ]
+  },
+  {
+   "name": "Lakehouse",
+   "pattern": "lakehouse",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data lakehouse",
+    "lakehouse",
+    "lakehouse architecture",
+    "Lakehouse Federation",
+    "Lakehouse Monitoring",
+    "open data lakehouse",
+    "open lakehouse"
+   ]
+  },
+  {
+   "name": "Lifecycle",
+   "pattern": "lifecycle",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data engineering lifecycle",
+    "DE lifecycle",
+    "lifecycle"
+   ]
+  },
+  {
+   "name": "MERGE",
+   "pattern": "merge",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "MERGE",
+    "MERGE INTO",
+    "merge-on-read"
+   ]
+  },
+  {
+   "name": "Metadata",
+   "pattern": "metadata",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "file metadata",
+    "iceberg_metadata",
+    "metadata",
+    "metadata and governance layer",
+    "metadata conversion",
+    "metadata management",
+    "metadata-driven pipelines"
+   ]
+  },
+  {
+   "name": "Metric",
+   "pattern": "metric",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data quality metrics",
+    "metric views",
+    "metrics",
+    "pipeline performance metrics"
+   ]
+  },
+  {
+   "name": "Migration",
+   "pattern": "migration",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "cloud migration",
+    "data warehouse migration",
+    "Hadoop migration",
+    "migration",
+    "migration to AWS",
+    "schema migrations"
+   ]
+  },
+  {
+   "name": "Monitoring",
+   "pattern": "monitoring",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data quality monitoring",
+    "Lakehouse Monitoring",
+    "monitoring",
+    "performance monitoring",
+    "pipeline maintenance & monitoring",
+    "pipeline monitoring"
+   ]
+  },
+  {
+   "name": "Notebook",
+   "pattern": "notebook",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Databricks notebooks",
+    "Jupyter Notebook",
+    "notebook",
+    "notebooks",
+    "Spark notebooks"
+   ]
+  },
+  {
+   "name": "Observability",
+   "pattern": "observability",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data observability",
+    "observability",
+    "observability design patterns"
+   ]
+  },
+  {
+   "name": "OLAP",
+   "pattern": "olap",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "in-process OLAP",
+    "OLAP",
+    "OLTP vs OLAP"
+   ]
+  },
+  {
+   "name": "OpenSearch",
+   "pattern": "opensearch",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon OpenSearch",
+    "Amazon OpenSearch Service",
+    "OpenSearch",
+    "OpenSearch Serverless"
+   ]
+  },
+  {
+   "name": "Orchestration",
+   "pattern": "orchestration",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data orchestration",
+    "orchestration",
+    "undercurrents (security, DataOps, orchestration)",
+    "workflow orchestration"
+   ]
+  },
+  {
+   "name": "Order",
+   "pattern": "order",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "higher-order functions",
+    "ORDER BY",
+    "orders",
+    "Z-order",
+    "Z-order indexing"
+   ]
+  },
+  {
+   "name": "Parquet",
+   "pattern": "parquet",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Parquet",
+    "Parquet/CSV/JSON",
+    "read_parquet"
+   ]
+  },
+  {
+   "name": "Partitioning",
+   "pattern": "partitioning",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "file-based partitioning",
+    "hash partitioning",
+    "hidden partitioning",
+    "partitioning",
+    "range partitioning"
+   ]
+  },
+  {
+   "name": "PostgreSQL",
+   "pattern": "postgresql",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon Aurora PostgreSQL",
+    "Amazon RDS for PostgreSQL",
+    "PostgreSQL"
+   ]
+  },
+  {
+   "name": "Prompt",
+   "pattern": "prompt",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "prompt",
+    "prompt engineering",
+    "prompt injection"
+   ]
+  },
+  {
+   "name": "Redshift",
+   "pattern": "redshift",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon Redshift",
+    "Amazon Redshift Spectrum",
+    "Redshift",
+    "Redshift Spectrum"
+   ]
+  },
+  {
+   "name": "Replication",
+   "pattern": "replication",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "binary log replication",
+    "data replication",
+    "leader-follower replication",
+    "real-time replication",
+    "replication",
+    "replication lag"
+   ]
+  },
+  {
+   "name": "SageMaker",
+   "pattern": "sagemaker",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Amazon SageMaker",
+    "Amazon SageMaker Unified Studio",
+    "SageMaker"
+   ]
+  },
+  {
+   "name": "Secret",
+   "pattern": "secret",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "AWS Secrets Manager",
+    "dbutils secrets",
+    "secret management",
+    "secrets",
+    "secrets management"
+   ]
+  },
+  {
+   "name": "Serverless",
+   "pattern": "serverless",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "Dataproc Serverless",
+    "EMR Serverless",
+    "OpenSearch Serverless",
+    "serverless",
+    "serverless compute",
+    "Serverless ETL",
+    "Synapse serverless SQL"
+   ]
+  },
+  {
+   "name": "Serving",
+   "pattern": "serving",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data serving",
+    "relational serving layer",
+    "serving",
+    "serving layer"
+   ]
+  },
+  {
+   "name": "Snapshot",
+   "pattern": "snapshot",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "iceberg_snapshots",
+    "snapshot",
+    "snapshots"
+   ]
+  },
+  {
+   "name": "Stage",
+   "pattern": "stage",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "external stage",
+    "stage",
+    "stages"
+   ]
+  },
+  {
+   "name": "Streaming",
+   "pattern": "streaming",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "batch vs streaming",
+    "event streaming",
+    "Spark Streaming",
+    "streaming",
+    "streaming data",
+    "streaming ingestion",
+    "streaming tables",
+    "streaming topics",
+    "Structured Streaming"
+   ]
+  },
+  {
+   "name": "Table format",
+   "pattern": "table format",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "open table formats",
+    "table format",
+    "table format selection",
+    "table formats"
+   ]
+  },
+  {
+   "name": "Timestamp",
+   "pattern": "timestamp",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "timestamp data",
+    "timestamp handling",
+    "timestamp_tz",
+    "timestamps"
+   ]
+  },
+  {
+   "name": "Transaction",
+   "pattern": "transaction",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "ACID transactions",
+    "transaction log",
+    "transactions"
+   ]
+  },
+  {
+   "name": "Transformation",
+   "pattern": "transformation",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data transformation",
+    "no-code transformation",
+    "Spark transformations",
+    "transformation",
+    "Transformation Replicator"
+   ]
+  },
+  {
+   "name": "Validation",
+   "pattern": "validation",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "data validation",
+    "schema validation",
+    "technical validation",
+    "validation",
+    "validation test",
+    "validation tests"
+   ]
+  },
+  {
+   "name": "View",
+   "pattern": "view",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "dynamic views",
+    "materialized view",
+    "materialized views",
+    "metric views",
+    "real-time view",
+    "temporary views",
+    "views"
+   ]
+  },
+  {
+   "name": "Warehouse",
+   "pattern": "warehouse",
+   "include": [],
+   "exclude": [],
+   "auto": true,
+   "members": [
+    "cloud data warehouse",
+    "data warehouse",
+    "data warehouse migration",
+    "Databricks SQL Warehouse",
+    "enterprise data warehouse",
+    "modern data warehouse",
+    "multi-cluster warehouse",
+    "relational data warehouse",
+    "SQL warehouses",
+    "Synapse data warehouse",
+    "virtual warehouse",
+    "warehouse",
+    "warehouse sizing",
+    "Warehouses & compute"
+   ]
+  }
+ ]
+}

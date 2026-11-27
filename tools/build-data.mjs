@@ -2,6 +2,8 @@
 // Builds the static data files the web app reads (GitHub Pages can't list directories):
 //   seed/media.json            pictures per ebook folder + per-picture keywords (from seed/keywords/*.json)
 //   seed/index-referential.json  merged, cleaned index.js keywords bucketed by length (typing game)
+//   seed/keyword-groups.json     keyword groups (e.g. "Data quality" → data quality checks, AWS Glue Data Quality…);
+//                                hand-editable: rebuilds keep your names / include / exclude / rejected
 //   ebook-covers/<folder>/thumbs/*.avif, ebook-covers/thumbs/*.avif  small AVIF thumbnails (macOS `sips`)
 // Run from the repo root:  node tools/build-data.mjs
 
@@ -259,3 +261,69 @@ writeFileSync(join(ROOT, 'seed', 'index-referential.json'), JSON.stringify({
   words,
 }) + '\n');
 console.log(`index-referential.json: ${rawCount} raw entries → ${words.length} keywords`, counts);
+
+// ---------------------------------------------------------------------------
+// 3. Keyword groups (search one notion, get all its variants)
+// ---------------------------------------------------------------------------
+// Universe: book-level technologies/topics + per-picture keywords (seed/keywords) + CSV Topics/Technologies.
+const GROUPS_FILE = join(ROOT, 'seed', 'keyword-groups.json');
+const variants = new Map(); // folded -> Map(display -> count)
+const addKw = (k) => {
+  const d = k.trim(); const f = d.toLowerCase();
+  if (!f) return;
+  const m = variants.get(f) ?? new Map(); m.set(d, (m.get(d) ?? 0) + 1); variants.set(f, m);
+};
+for (const kw of Object.values(bookKeywords)) {
+  if (!kw) continue;
+  kw.technologies.forEach(addKw); kw.topics.forEach(addKw); kw.images.forEach((i) => i.keywords.forEach(addKw));
+}
+for (const line of readFileSync(join(ROOT, 'seed', 'data-engineering-ebooks.csv'), 'utf8').split('\n').slice(1)) {
+  const cells = line.match(/("([^"]|"")*"|[^,]*)(,|$)/g)?.map((c) => c.replace(/,$/, '').replace(/^"|"$/g, '').replace(/""/g, '"')) ?? [];
+  for (const i of [10, 12]) (cells[i] ?? '').split(';').forEach(addKw); // Topics, Technologies
+}
+const display = (f) => [...(variants.get(f) ?? new Map([[f, 1]]))].sort((a, b) => b[1] - a[1] || /^[A-Z]/.test(b[0]) - /^[A-Z]/.test(a[0]))[0][0];
+const escRe = (x) => x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const phraseRe = (pat) => new RegExp(`(^|[^\\p{L}\\p{N}])${escRe(pat.toLowerCase())}(e?s)?($|[^\\p{L}\\p{N}])`, 'u');
+const universe = [...variants.keys()];
+const membersOf = (g) => {
+  const ex = new Set((g.exclude ?? []).map((x) => x.toLowerCase()));
+  const set = new Set(g.pattern ? universe.filter((k) => phraseRe(g.pattern).test(k)) : []);
+  for (const x of g.include ?? []) set.add(x.toLowerCase());
+  return [...set].filter((k) => !ex.has(k)).sort().map(display);
+};
+// Too broad to be a useful notion on their own.
+const NEVER = new Set(['data', 'table', 'tables', 'query', 'queries', 'file', 'files', 'model', 'models', 'cloud', 'sql', 'python', 'api',
+  'job', 'jobs', 'pipeline', 'pipelines', 'layer', 'service', 'services', 'function', 'functions', 'architecture', 'management', 'security',
+  'performance', 'storage', 'analytics', 'processing', 'engineering', 'design', 'pattern', 'patterns', 'tools', 'time', 'schema', 'catalog',
+  'format', 'formats', 'apache', 'aws', 'azure', 'amazon', 'google', 'microsoft', 'snowflake', 'databricks', 'fabric', 'spark', 'integration']);
+
+const saved = existsSync(GROUPS_FILE) ? JSON.parse(readFileSync(GROUPS_FILE, 'utf8')) : null;
+const rejected = saved?.rejected ?? ['generation', 'load', 'transform', 'tag', 'task', 'stream', 'infrastructure', 'trigger', 'workload', 'capacity'];
+const groupsOut = (saved?.groups ?? []).map((g) => ({ ...g, members: membersOf(g) }));
+const known = new Set([...groupsOut.map((g) => g.pattern?.toLowerCase()).filter(Boolean), ...rejected.map((r) => r.toLowerCase())]);
+// Propose new groups: an existing keyword (or its singular) found as a whole phrase in ≥ 3 keywords, ≤ 40.
+const singularOf = (k) => k.replace(/(?<=[a-z]{3})(ies)$/, 'y').replace(/(?<=[a-z]{3})(?<!s)s$/, '');
+const seenSig = new Set(groupsOut.map((g) => g.members.map((m) => m.toLowerCase()).sort().join('|')));
+const proposals = [];
+for (const pat of [...new Set(universe.flatMap((k) => [singularOf(k), k]))].sort((a, b) => a.length - b.length)) {
+  if (NEVER.has(pat) || NEVER.has(pat + 's') || known.has(pat) || known.has(singularOf(pat)) || pat.length < 3) continue;
+  const g = { name: '', pattern: pat, include: [], exclude: [], auto: true };
+  g.members = membersOf(g);
+  if (g.members.length < 3 || g.members.length > 40) continue;
+  const sig = g.members.map((m) => m.toLowerCase()).sort().join('|');
+  if (seenSig.has(sig)) continue; // same notion as a shorter pattern (e.g. "databases" vs "database")
+  seenSig.add(sig); known.add(pat);
+  const shown = display(pat);
+  g.name = shown === pat ? shown.charAt(0).toUpperCase() + shown.slice(1) : shown;
+  proposals.push(g);
+}
+const allGroups = [...groupsOut, ...proposals].sort((a, b) => a.name.localeCompare(b.name, 'en', { sensitivity: 'base' }));
+writeFileSync(GROUPS_FILE, JSON.stringify({
+  about: 'Keyword groups used by the search. Edit freely, then run node tools/build-data.mjs (members are recomputed, your edits are kept). '
+    + 'name: label shown in search. pattern: whole-phrase match on all keywords (plurals included); null = only "include". '
+    + 'include / exclude: keywords to add / remove by hand. To drop a group for good, delete it AND add its pattern to "rejected" '
+    + '(otherwise it is proposed again). "auto": true = proposed by the script (harmless to keep or remove).',
+  rejected,
+  groups: allGroups.map(({ name, pattern, include, exclude, auto, members }) => ({ name, pattern, include, exclude, ...(auto ? { auto } : {}), members })),
+}, null, 1) + '\n');
+console.log(`keyword-groups.json: ${allGroups.length} groups (${proposals.length} new), ${universe.length} keywords`);

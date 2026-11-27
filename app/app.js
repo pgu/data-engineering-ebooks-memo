@@ -4,7 +4,8 @@
 import { ZONES, ZONE, BOOK_BAND, zoneOf, zoneCenter } from './lifecycle.js';
 
 const CSV_URL = '../seed/data-engineering-ebooks.csv';
-const MEDIA_URL = '../seed/media.json'; // built by tools/build-data.mjs (pictures + inferred keywords)
+const MEDIA_URL = '../seed/media.json';
+const GROUPS_URL = '../seed/keyword-groups.json'; // editable keyword groups (see README) // built by tools/build-data.mjs (pictures + inferred keywords)
 const GRAPH_DIMS = ['technologies', 'topics', 'platform'];
 const ZONED_DIMS = ['technologies', 'topics']; // dims that support the lifecycle layout
 const COVERS_DIR = '../ebook-covers/';
@@ -279,8 +280,24 @@ function readHash() {
 let BOOKS = [];
 let BY_ID = new Map();
 
+// Keyword groups: one notion ("Data quality") → its variants (data quality checks, AWS Glue Data Quality…).
+const KW_GROUPS = new Map(); // folded name/pattern -> { name, members: [display], set: Set(folded) }
+const GROUPS_OF = new Map(); // folded member -> [group]
+function loadGroups(list) {
+  for (const g of list) {
+    if (!g.members?.length) continue;
+    const grp = { name: g.name, members: g.members, set: new Set(g.members.map(fold)) };
+    KW_GROUPS.set(fold(g.name), grp);
+    if (g.pattern) KW_GROUPS.set(fold(g.pattern), grp);
+    for (const m of grp.set) GROUPS_OF.set(m, [...(GROUPS_OF.get(m) ?? []), grp]);
+  }
+}
+const activeGroup = () => KW_GROUPS.get(fold(state.q.trim().replace(/\s+/g, ' '))) ?? null;
+
 function matchesQuery(b) {
   if (!state.q) return true;
+  const g = activeGroup();
+  if (g) return [...g.set].some((m) => b.kwFold.has(m) || b.searchText.includes(m)) || b.searchText.includes(fold(state.q.trim()));
   return fold(state.q).split(/\s+/).filter(Boolean).every((t) => b.searchText.includes(t));
 }
 
@@ -956,7 +973,8 @@ function pictureHits(p) {
     }
   } else {
     const re = new RegExp(`(^|[^\\p{L}\\p{N}])${escapeRe(phrase)}(e?s)?($|[^\\p{L}\\p{N}])`, 'u');
-    const kw = p.keywords.filter((k) => re.test(fold(k)));
+    const g = activeGroup(); // a group matches any of its member keywords
+    const kw = p.keywords.filter((k) => (g ? g.set.has(fold(k)) : false) || re.test(fold(k)));
     if (kw.length || re.test(fold(p.caption))) hits = kw;
   }
   hitCache.map.set(p, hits);
@@ -973,7 +991,7 @@ function pictureThumbs(pics, listKind) {
     h('button', { type: 'button', class: `pic-thumb k-${p.kind}`, 'data-pic': `${p.book.id}:${p.i}`, 'data-list': listKind,
       'aria-label': `${KIND_LABEL[p.kind]}${p.caption ? `: ${p.caption}` : ''}` },
       h('img', { src: p.thumbSrc, alt: '', loading: 'lazy', decoding: 'async' }),
-      h('span', { class: 'pic-kind', 'aria-hidden': 'true', text: KIND_LABEL[p.kind] }),
+      p.kind !== 'memo' && h('span', { class: 'pic-kind', 'aria-hidden': 'true', text: KIND_LABEL[p.kind] }),
       hitLabel(p)))));
 }
 // While searching: show which keyword made the picture match (or "in caption").
@@ -988,21 +1006,33 @@ function hitLabel(p) {
 let galleryKey = null;
 function renderGallery(list) {
   const terms = queryTerms();
-  const sections = list.map((b) => [b, matchingPictures(b)]).filter(([, pics]) => pics.length);
-  const key = state.picMatch + state.q + sections.map(([b, pics]) => b.id + pics.map((p) => p.i).join('.')).join('|');
+  const all = list.map((b) => [b, matchingPictures(b)]);
+  const sections = all.filter(([, pics]) => pics.length);
+  const others = all.filter(([b, pics]) => !pics.length && b.pictures.length).map(([b]) => b); // match in text only
+  const key = state.picMatch + state.q + all.map(([b, pics]) => b.id + pics.map((p) => p.i).join('.')).join('|');
   if (key === galleryKey) return;
   galleryKey = key;
   const root = $('#gallery');
   if (!list.length) { root.replaceChildren(); return; } // #empty explains it
-  if (!sections.length) {
-    root.replaceChildren(h('p', { class: 'empty', text: terms.length ? `No picture matches “${state.q}”.` : 'No pictures for these books.' }));
-    return;
-  }
+  const q = state.q.trim();
+  const g = activeGroup();
   const nPics = sections.reduce((n, [, pics]) => n + pics.length, 0);
-  const summary = terms.length ? h('p', { class: 'gal-summary' },
-    h('strong', { text: `${nPics} picture${nPics === 1 ? '' : 's'}` }),
-    ` match “${state.q.trim()}” in ${sections.length} book${sections.length === 1 ? '' : 's'}`,
-    state.picMatch === 'exact' ? ' (exact phrase). Tick “Include partial matches” to widen.' : ' (partial words).') : null;
+  const how = g ? ` (group: ${g.members.length} keywords)` : state.picMatch === 'exact' ? ' (exact phrase)' : ' (partial words)';
+  const summary = !terms.length ? null : nPics
+    ? h('p', { class: 'gal-summary' }, h('strong', { text: `${nPics} picture${nPics === 1 ? '' : 's'}` }),
+      ` match “${q}” in ${sections.length} book${sections.length === 1 ? '' : 's'}${how}.`,
+      state.picMatch === 'exact' && !g ? ' Tick “Include partial matches” to widen.' : '')
+    : h('p', { class: 'gal-summary' }, h('strong', { text: 'No picture matches' }), ` “${q}”${how}. `,
+      `${others.length} book${others.length === 1 ? '' : 's'} mention it in their text (topics, chapters, summary):`);
+  // Books matched by their text only: compact rows, pictures on demand.
+  const textOnly = others.length && terms.length ? h('section', { class: 'gal-others', 'aria-labelledby': 'gal-others-title' },
+    h('h2', { id: 'gal-others-title', text: nPics ? `Also mentioning “${q}”, without a matching picture (${others.length})` : `Books mentioning “${q}” (${others.length})` }),
+    h('ul', { class: 'gal-other-list' }, others.map((b) => h('li', { style: `--hue:${hueOf(b)}` },
+      h('details', { class: 'gal-other', 'data-lazy-pics': b.id },
+        h('summary', {}, coverEl(b, 'gal-cover'),
+          h('span', {}, h('span', { class: 'gal-other-title', text: b.title }),
+            h('span', { class: 'meta', text: `${b.year} · ${b.publisher} · show its ${b.pictures.length} picture${b.pictures.length === 1 ? '' : 's'}` }))),
+        h('p', {}, h('button', { type: 'button', class: 'linkish', 'data-open': b.id, text: 'Book details' }))))))) : null;
   root.replaceChildren(...[summary, ...sections.map(([b, pics]) => h('section', { class: 'gal-book', style: `--hue:${hueOf(b)}`, 'aria-labelledby': `gal-${b.id}` },
     h('header', { class: 'gal-head' },
       coverEl(b, 'gal-cover'),
@@ -1010,7 +1040,7 @@ function renderGallery(list) {
         h('h2', { id: `gal-${b.id}` }, h('button', { type: 'button', class: 'card-link', 'data-open': b.id, text: b.title })),
         h('p', { class: 'meta' }, `${b.year} · ${b.publisher} · ${pics.length}${terms.length ? ` of ${b.pictures.length}` : ''} picture${pics.length === 1 ? '' : 's'}`,
           b.repo ? [' · ', h('a', { href: b.repo, target: '_blank', rel: 'noopener', text: 'Companion repo ↗' })] : null))),
-    pictureThumbs(pics, 'gallery')))].filter(Boolean));
+    pictureThumbs(pics, 'gallery'))), textOnly].filter(Boolean));
 }
 
 let viewerList = [];
@@ -1059,6 +1089,30 @@ function renderViewer() {
   for (const btn of $$('[data-pv-step]')) btn.disabled = viewerList.length < 2;
 }
 
+// Group bar: when the search is a group, list its keywords (click one to narrow);
+// when it is a keyword that belongs to groups, offer to widen to the group.
+function renderGroupBar() {
+  const bar = $('#group-bar');
+  const q = state.q.trim();
+  const g = q && activeGroup();
+  const parents = q && !g ? (GROUPS_OF.get(fold(q)) ?? []) : [];
+  bar.hidden = state.view === 'game' || (!g && !parents.length);
+  if (bar.hidden) return;
+  const key = `${q}|${g?.name}|${parents.map((x) => x.name)}`;
+  if (bar.dataset.key === key) return;
+  bar.dataset.key = key;
+  bar.replaceChildren(g
+    ? h('p', {}, h('span', { class: 'gb-label', text: 'Group' }), h('strong', { text: g.name }),
+      h('span', { class: 'muted', text: ` · ${g.members.length} keywords, all included. Narrow to one: ` }),
+      h('span', { class: 'gb-chips' }, g.members.filter((m) => fold(m) !== fold(g.name)).map((m) =>
+        h('button', { type: 'button', class: 'chip', 'data-q': m, text: m }))))
+    : h('p', {}, h('span', { class: 'gb-label', text: 'Part of' }),
+      h('span', { class: 'gb-chips' }, parents.map((x) =>
+        h('button', { type: 'button', class: 'chip', 'data-q': x.name, title: `Search all ${x.members.length} keywords of this group` },
+          x.name, h('span', { class: 'chip-count', text: ` ${x.members.length}` })))),
+      h('span', { class: 'muted', text: ' — search the whole group' })));
+}
+
 // Search everything (books + pictures) for a keyword and show the matching pictures.
 function searchKeyword(k) {
   state.q = k;
@@ -1086,6 +1140,7 @@ function update({ animate = false } = {}) {
   const text = `${list.length} of ${BOOKS.length} books`;
   $('#result-count').textContent = text;
   $('#empty').hidden = list.length > 0 || ['graph', 'game'].includes(state.view);
+  renderGroupBar();
   const hint = $('#pic-hint');
   const nPics = state.q && !['pictures', 'game'].includes(state.view) ? galleryPictures(list).length : 0;
   hint.hidden = !nPics;
@@ -1175,6 +1230,8 @@ function wireEvents() {
     if (pic) { openPicture(pic.dataset.pic, pic.dataset.list); return; }
     const picsOf = e.target.closest('[data-pics-of]');
     if (picsOf) { const b = BY_ID.get(picsOf.dataset.picsOf); const m = matchingPictures(b); openPicture(`${b.id}:${(m[0] ?? b.pictures[0]).i}`, m.length ? 'match' : 'book'); return; }
+    const dq = e.target.closest('[data-q]');
+    if (dq) { state.q = dq.dataset.q; $('#q').value = state.q; update(); return; }
     const kw = e.target.closest('[data-kw]');
     if (kw) { searchKeyword(kw.dataset.kw); return; }
     const ob = e.target.closest('[data-open-book]');
@@ -1222,6 +1279,14 @@ function wireEvents() {
     if (e.key === 'ArrowLeft') { e.preventDefault(); stepBook(-1); }
   });
   dlg.addEventListener('close', () => { state.book = null; writeHash(); });
+
+  // Text-only matches in the gallery: render a book's pictures when its row is opened.
+  $('#gallery').addEventListener('toggle', (e) => {
+    const d = e.target;
+    if (!d.matches?.('details[data-lazy-pics]') || !d.open || d.dataset.loaded) return;
+    d.dataset.loaded = '1';
+    d.append(pictureThumbs(BY_ID.get(d.dataset.lazyPics).pictures, 'book'));
+  }, true);
 
   const pv = $('#pic-viewer');
   pv.addEventListener('click', (e) => {
@@ -1293,6 +1358,11 @@ async function main() {
     if (res.ok) ({ books: media = {}, covers: coverThumbs = {} } = await res.json());
   } catch { /* pictures are optional */ }
   BOOKS = toBooks(parseCSV(text), media, coverThumbs);
+  try {
+    const res = await fetch(GROUPS_URL);
+    if (res.ok) loadGroups((await res.json()).groups ?? []);
+  } catch { /* groups are optional */ }
+  for (const b of BOOKS) b.kwFold = new Set([...b.technologies, ...b.topics, ...b.pictures.flatMap((p) => p.keywords)].map(fold));
   BY_ID = new Map(BOOKS.map((b) => [b.id, b]));
   await resolveCovers(BOOKS);
 
@@ -1312,7 +1382,11 @@ async function main() {
   // Keyword suggestions for the search box: tags + picture keywords.
   const kws = new Map();
   for (const b of BOOKS) for (const k of [...b.technologies, ...b.topics, ...b.pictures.flatMap((p) => p.keywords)]) kws.set(fold(k), kws.get(fold(k)) ?? k);
-  $('#kw-list').replaceChildren(...[...kws.values()].sort(collator.compare).map((k) => h('option', { value: k })));
+  const groups = [...new Set(KW_GROUPS.values())].sort((a, b) => collator.compare(a.name, b.name));
+  const groupNames = new Set(groups.map((g) => fold(g.name)));
+  $('#kw-list').replaceChildren(
+    ...groups.map((g) => h('option', { value: g.name, label: `Group · ${g.members.length} keywords` })),
+    ...[...kws.values()].filter((k) => !groupNames.has(fold(k))).sort(collator.compare).map((k) => h('option', { value: k })));
 
   buildFacets();
   wireEvents();

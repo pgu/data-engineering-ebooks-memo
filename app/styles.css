@@ -411,13 +411,13 @@ dialog[open] { display: flex; flex-direction: column; }
 .pic-thumb img { inline-size: 100%; block-size: 100%; object-fit: cover; object-position: top left; display: block; transition: scale .2s ease; }
 .pic-thumb:hover img { scale: 1.04; }
 .pic-thumb:hover { border-color: var(--accent); }
+/* Type label (Chapters / Companion repo; memos have none): quiet so the picture leads */
 .pic-kind {
-  position: absolute; inset-inline-start: 4px; inset-block-end: 4px; padding: 0 6px; border-radius: 4px;
-  font-size: .66rem; font-weight: 600; background: rgb(0 0 0 / .62); color: #fff;
+  position: absolute; inset-inline-start: 4px; inset-block-end: 4px; padding: 0 5px; border-radius: 3px;
+  font-size: .62rem; font-weight: 500; letter-spacing: .01em;
+  background: rgb(255 255 255 / .82); color: #4a4d55; border: 1px solid rgb(0 0 0 / .08);
 }
-.pic-thumb.k-repo .pic-kind { background: #24292f; }
 .pic-thumb.k-repo .pic-kind::before { content: "↗ "; }
-.pic-thumb.k-chapters .pic-kind { background: oklch(0.45 0.12 250); }
 .gp .pic-grid { grid-template-columns: repeat(auto-fill, minmax(84px, 1fr)); gap: 6px; margin-top: 6px; }
 
 .gallery { display: flex; flex-direction: column; gap: 22px; }
@@ -654,3 +654,25 @@ dialog[open] { display: flex; flex-direction: column; }
 .gal-summary { margin: 0; color: var(--muted); }
 .gal-summary strong { color: var(--text); }
 .view-controls label:has(#pic-partial) { display: inline-flex; gap: 6px; align-items: center; cursor: pointer; }
+
+/* Keyword group bar */
+.group-bar { margin: -6px 0 14px; }
+.group-bar[hidden] { display: none; }
+.group-bar p { margin: 0; display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: .88rem; }
+.gb-label { font-size: .68rem; text-transform: uppercase; letter-spacing: .07em; color: var(--muted); font-weight: 600; }
+.gb-chips { display: contents; }
+.group-bar .chip { font-size: .8rem; }
+
+/* Gallery: books matching in their text only */
+.gal-others { background: var(--surface); border: 1px dashed var(--border); border-radius: var(--radius); padding: 14px; }
+.gal-others h2 { margin: 0 0 10px; font-size: .95rem; }
+.gal-other-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+.gal-other > summary { display: flex; align-items: center; gap: 10px; cursor: pointer; list-style: none; padding: 4px; border-radius: 8px; }
+.gal-other > summary::-webkit-details-marker { display: none; }
+.gal-other > summary:hover { background: var(--surface-2); }
+.gal-other > summary .gal-cover { inline-size: 30px; }
+.gal-other > summary > span { display: flex; flex-direction: column; }
+.gal-other-title { font-weight: 600; }
+.gal-other[open] { padding-bottom: 8px; }
+.gal-other > p { margin: 4px 0 8px 44px; font-size: .85rem; }
+.gal-other .pic-grid { margin-inline-start: 44px; }

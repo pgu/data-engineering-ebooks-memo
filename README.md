@@ -15,6 +15,13 @@ node tools/build-data.mjs
 - [`seed/keywords/<folder>.json`](seed/keywords/): keywords inferred from each book's pictures (caption + keywords per picture, plus book-level technologies / topics / providers). Hand-editable; they enrich the CSV tags in the app.
 - `seed/media.json` (generated): pictures per book + their keywords.
 - `ebook-covers/<folder>/thumbs/*.avif` and `ebook-covers/thumbs/*.avif` (generated, macOS `sips`): small AVIF thumbnails (pictures 480 px wide, covers 160 px) used by the grids, table and graph; the viewer loads the original PNG. Only regenerated when the source is newer. On other systems thumbnails are skipped and the app falls back to the originals.
+- [`seed/keyword-groups.json`](seed/keyword-groups.json) (generated once, then **hand-editable**): groups one notion's keyword variants, e.g. *Data quality* → data quality checks, AWS Glue Data Quality, data quality rules… Searching a group name (suggested first in the search box) returns everything in the group; a bar under the toolbar lists its keywords to narrow down, and a keyword that belongs to groups offers to widen to them. Each group has:
+  - `name`: label shown in the search;
+  - `pattern`: whole-phrase match over all keywords, plurals included (`null` = members come only from `include`);
+  - `include` / `exclude`: keywords to add or remove by hand (fix semantic mistakes here, e.g. exclude "load balancing" from *Load*);
+  - `members`: computed, don't edit.
+
+  Rebuilds keep your edits and only add new proposals (a keyword, or its singular, found in ≥ 3 keywords). To drop a group for good, delete it **and** add its pattern to `rejected`.
 - `seed/index-referential.json` (generated): all `index.js` files merged and cleaned (sub-entries dropped, parentheses split, duplicates and near-duplicates merged, generic words removed), each keyword with its books and a length bucket: easy ≤ 10, medium ≤ 20, hard ≤ 25 characters.
 
 ## Library web app
