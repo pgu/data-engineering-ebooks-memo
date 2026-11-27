@@ -46,3 +46,5 @@ Search ([`app/search.js`](app/search.js), [MiniSearch](https://github.com/lucaon
 Filters: full-text search (titles, authors, summary, topics, chapters, picture keywords, with suggestions) plus facet chips with live counts. Values within a facet are OR'ed by default; multi-valued facets (technologies, topics, platform) can switch to **All** (AND). Facets combine with AND. The full state (view, filters, sort, open book) lives in the URL hash, so any view can be bookmarked or shared.
 
 Tag normalisation (e.g. `Spark` → `Apache Spark`, case-insensitive merges) is defined in `ALIASES` at the top of [`app/app.js`](app/app.js).
+
+Ideas for later: [search by meaning (embeddings) plan](SEMANTIC-SEARCH-PLAN.md).
